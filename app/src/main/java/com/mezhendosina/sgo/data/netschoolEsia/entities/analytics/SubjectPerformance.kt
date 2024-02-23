@@ -1,8 +1,9 @@
 package com.mezhendosina.sgo.data.netschoolEsia.entities.analytics
 
-
 import com.google.gson.annotations.SerializedName
+import com.mezhendosina.sgo.data.netschoolEsia.entities.common.Subject
 import com.mezhendosina.sgo.data.netschoolEsia.entities.common.Teacher
+import com.mezhendosina.sgo.data.netschoolEsia.entities.common.Term
 
 data class SubjectPerformance(
     @SerializedName("attendance")
@@ -24,5 +25,5 @@ data class SubjectPerformance(
     @SerializedName("teachers")
     val teachers: List<Teacher>,
     @SerializedName("term")
-    val term: Term
+    val term: Term,
 )

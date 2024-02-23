@@ -5,18 +5,16 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.color.DynamicColors
-import com.google.firebase.FirebaseApp
 import com.mezhendosina.sgo.app.BuildConfig
 import com.mezhendosina.sgo.data.AppSettings
 import com.mezhendosina.sgo.data.SettingsDataStore
-import com.mezhendosina.sgo.data.netschool.repo.LoginRepositoryInterface
+import com.mezhendosina.sgo.data.netschoolEsia.login.LoginRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -25,7 +23,7 @@ class RoutingActivity : AppCompatActivity() {
     lateinit var settingsDataStore: AppSettings
 
     @Inject
-    lateinit var loginRepositoryInterface: LoginRepositoryInterface
+    lateinit var loginRepository: LoginRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,13 +37,10 @@ class RoutingActivity : AppCompatActivity() {
 //        DynamicColors.applyToActivitiesIfAvailable(this.application)
 
         CoroutineScope(Dispatchers.Main).launch {
-            FirebaseApp.initializeApp(this@RoutingActivity)
+//            FirebaseApp.initializeApp(this@RoutingActivity)
 
             val intent =
                 if (settingsDataStore.getValue(SettingsDataStore.LOGGED_IN).first() == true) {
-                    withContext(Dispatchers.IO) {
-                        loginRepositoryInterface.login()
-                    }
                     Intent(this@RoutingActivity, MainActivity::class.java)
                 } else {
                     Intent(this@RoutingActivity, LoginActivity::class.java)

@@ -42,6 +42,8 @@ class ParseBackendResponseException(
 
 class LessonNotFoundException : NullPointerException()
 
+class StudentNotFoundException : NullPointerException()
+
 fun Exception.toDescription(): String {
     println(this.stackTraceToString())
     return when (this) {

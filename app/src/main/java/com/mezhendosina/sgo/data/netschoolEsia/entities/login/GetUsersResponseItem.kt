@@ -6,5 +6,5 @@ data class GetUsersResponseItem(
     @SerializedName("serverId")
     val serverId: String,
     @SerializedName("userId")
-    val userId: String,
+    val userId: Int,
 )
