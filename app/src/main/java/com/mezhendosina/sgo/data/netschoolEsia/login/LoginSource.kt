@@ -1,7 +1,7 @@
 package com.mezhendosina.sgo.data.netschoolEsia.login
 
 import com.mezhendosina.sgo.data.netschoolEsia.entities.login.GetTokenResponse
-import com.mezhendosina.sgo.data.netschoolEsia.entities.login.GetUsersResponseItem
+import com.mezhendosina.sgo.data.netschoolEsia.entities.users.UserInfo
 
 interface LoginSource {
     /**
@@ -14,5 +14,5 @@ interface LoginSource {
      */
     suspend fun getToken(refreshToken: String): GetTokenResponse
 
-    suspend fun getUsers(): List<GetUsersResponseItem>
+    suspend fun getUsers(): List<UserInfo>
 }

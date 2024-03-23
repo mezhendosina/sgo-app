@@ -16,58 +16,43 @@
 
 package com.mezhendosina.sgo.app.activities
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mezhendosina.sgo.app.utils.toDescription
-import com.mezhendosina.sgo.data.SettingsDataStore
-import com.mezhendosina.sgo.data.netschool.NetSchoolSingleton
 import com.mezhendosina.sgo.data.netschool.repo.LoginRepository
-import com.mezhendosina.sgo.data.netschool.repo.LoginRepositoryInterface
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-
 @HiltViewModel
 class MainViewModel
-@Inject constructor(
-    private val loginRepository: LoginRepositoryInterface,
-    private val settingsDataStore: SettingsDataStore
-) : ViewModel() {
+    @Inject
+    constructor(
+        private val loginRepository: LoginRepository,
+    ) : ViewModel() {
+        private val _errorMessage = MutableLiveData<String>()
+        val errorMessage: LiveData<String> = _errorMessage
 
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> = _errorMessage
-
-
-    suspend fun login() {
-        try {
-            val login = settingsDataStore.getValue(SettingsDataStore.LOGIN).first() ?: ""
-            if (login.isEmpty()) {
-                loginRepository.gosuslugiLogin()
-            } else {
-                loginRepository.login(firstLogin = false)
-            }
-
-        } catch (e: Exception) {
-            withContext(Dispatchers.Main) {
-                _errorMessage.value = e.toDescription()
-            }
-        }
-    }
-
-    fun logout() {
-        CoroutineScope(Dispatchers.IO).launch {
+        suspend fun login() {
             try {
-                loginRepository.logout()
-            } catch (_: Exception) {
+                loginRepository.login()
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    _errorMessage.value = e.toDescription()
+                }
+            }
+        }
+
+        fun logout() {
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    loginRepository.logout()
+                } catch (_: Exception) {
+                }
             }
         }
     }
-}

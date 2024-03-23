@@ -22,11 +22,9 @@ import androidx.lifecycle.ViewModel
 import com.mezhendosina.sgo.Singleton
 import com.mezhendosina.sgo.app.R
 import com.mezhendosina.sgo.app.model.answer.AnswerRepository
-import com.mezhendosina.sgo.data.netschool.base.toDescription
 import com.mezhendosina.sgo.data.SettingsDataStore
-import com.mezhendosina.sgo.data.netschool.NetSchoolSingleton
-import com.mezhendosina.sgo.data.netschool.repo.LessonRepository
-import com.mezhendosina.sgo.data.netschool.repo.LessonRepositoryInterface
+import com.mezhendosina.sgo.data.netschoolEsia.base.toDescription
+import com.mezhendosina.sgo.data.netschoolEsia.lesson.LessonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -34,52 +32,55 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class LessonContainerViewModel @Inject constructor(
-    private val answerRepository: AnswerRepository,
-    private val lessonRepository: LessonRepositoryInterface,
-    private val settingsDataStore: SettingsDataStore
-) : ViewModel() {
+class LessonContainerViewModel
+    @Inject
+    constructor(
+        private val answerRepository: AnswerRepository,
+        private val lessonRepository: LessonRepository,
+        private val settingsDataStore: SettingsDataStore,
+    ) : ViewModel() {
+        val lesson =
+            if (Singleton.lesson != null) {
+                Singleton.lesson!!
+            } else if (Singleton.pastMandatoryItem != null) {
+                Singleton.pastMandatoryItem!!.toLessonEntity()
+            } else {
+                null
+            }
 
-    val lesson = if (Singleton.lesson != null) {
-        Singleton.lesson!!
-    } else if (Singleton.pastMandatoryItem != null) {
-        Singleton.pastMandatoryItem!!.toLessonEntity()
-    } else null
-
-
-    suspend fun sendAnswers(context: Context) {
-        try {
-            val currentUserId =
-                settingsDataStore.getValue(SettingsDataStore.CURRENT_USER_ID).first() ?: -1
-            val assignId = lesson?.homework?.id ?: -1
-            answerRepository.sendTextAnswer(
-                assignId,
-                lessonRepository.getAnswerText(),
-                currentUserId
-            )
+        suspend fun sendAnswers(context: Context) {
+            try {
+                val currentUserId =
+                    settingsDataStore.getValue(SettingsDataStore.CURRENT_USER_ID).first() ?: -1
+                val assignId = lesson?.homework?.id ?: -1
+                answerRepository.sendTextAnswer(
+                    assignId,
+                    lessonRepository.getAnswerText(),
+                    currentUserId,
+                )
 //            val files = answerRepository.sendFiles(
 //                context,
 //                lessonRepository.answerFiles,
 //                lesson?.homework?.id ?: -1
 //            ) // TODO null exception handler
-            withContext(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
 //                lessonRepository.editAnswers(files)
-            }
-            withContext(Dispatchers.Main) {
-                Toast.makeText(
-                    context,
-                    R.string.answer_sended,
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        } catch (e: Exception) {
-            withContext(Dispatchers.Main) {
-                Toast.makeText(
-                    context,
-                    e.toDescription(),
-                    Toast.LENGTH_LONG
-                ).show()
+                }
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        context,
+                        R.string.answer_sended,
+                        Toast.LENGTH_LONG,
+                    ).show()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        context,
+                        e.toDescription(),
+                        Toast.LENGTH_LONG,
+                    ).show()
+                }
             }
         }
     }
-}

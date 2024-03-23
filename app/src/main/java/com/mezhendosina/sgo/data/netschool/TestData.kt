@@ -1,10 +1,7 @@
 package com.mezhendosina.sgo.data.netschool
 
 import com.mezhendosina.sgo.app.model.journal.entities.DiaryUiEntity
-import com.mezhendosina.sgo.app.uiEntities.GradesUiEntity
-import com.mezhendosina.sgo.data.grades.GradeItem
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.GradesItem
-
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.GradesItem
 
 object TestData {
     val homework = listOf<DiaryUiEntity>()

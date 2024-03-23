@@ -17,11 +17,9 @@
 package com.mezhendosina.sgo.app.model.grades
 
 import com.mezhendosina.sgo.Singleton
-import com.mezhendosina.sgo.app.model.journal.DiarySource
 import com.mezhendosina.sgo.data.grades.GradesFromHtml
-import com.mezhendosina.sgo.data.netschool.NetSchoolSingleton
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.GradesItem
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.gradeOptions.GradeOptions
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.GradesItem
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.gradeOptions.GradeOptions
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
@@ -37,63 +35,66 @@ typealias GradeActionListener = (grade: List<GradesItem>) -> Unit
 @Module
 @InstallIn(SingletonComponent::class)
 class GradesRepository
-@Inject constructor(
-    private val gradesSource: GradesSource,
-    private val diarySource: DiarySource
-) : GradesRepositoryInterface {
+    @Inject
+    constructor(
+        private val gradesSource: GradesSource,
+    ) : GradesRepositoryInterface {
+        private var grades = mutableListOf<GradesItem>()
+        private val listeners = mutableSetOf<GradeActionListener>()
 
-    private var grades = mutableListOf<GradesItem>()
-    private val listeners = mutableSetOf<GradeActionListener>()
+        private val _selectedGradesItem: MutableStateFlow<GradesItem?> = MutableStateFlow(null)
+        override val selectedGradesItem: StateFlow<GradesItem?> = _selectedGradesItem.asStateFlow()
 
-    private val _selectedGradesItem: MutableStateFlow<GradesItem?> = MutableStateFlow(null)
-    override val selectedGradesItem: StateFlow<GradesItem?> = _selectedGradesItem.asStateFlow()
-
-
-    override suspend fun loadGradesOptions(): GradeOptions {
-        val parentInfoLetter =
-            gradesSource.getParentInfoLetter(Singleton.at).body()?.string() ?: ""
-        return GradesFromHtml().getOptions(parentInfoLetter)
-    }
-
-    override fun setSelectedGradesItem(gradesItem: GradesItem) {
-        _selectedGradesItem.value = gradesItem
-    }
-
-
-    override suspend fun loadGrades(gradeOptions: GradeOptions, termid: String, sortType: Int) {
-        val at = Singleton.at
-        val getGradesRequest = gradesSource.getGrades(
-            at,
-            gradeOptions.PCLID.value,
-            gradeOptions.ReportType.first { it.is_selected }.value,
-            termid,
-            gradeOptions.SID.value
-        ).body()?.string() ?: ""
-
-        val gradesList = GradesFromHtml().extractGrades(getGradesRequest)
-
-        grades = gradesList
-            .filter {
-                it.avg != null && it.name != "Итого" && it.avg.toString().isNotEmpty()
-            }
-            .sortedBy {
-                when (sortType) {
-                    GradeSortType.BY_GRADE_VALUE, GradeSortType.BY_GRADE_VALUE_DESC -> it.avg
-                    GradeSortType.BY_LESSON_NAME -> it.name
-                    else -> it.name
-                }
-            }
-            .toMutableList()
-
-        if (sortType == GradeSortType.BY_GRADE_VALUE) {
-            grades = grades.asReversed()
+        override suspend fun loadGradesOptions(): GradeOptions {
+            val parentInfoLetter =
+                gradesSource.getParentInfoLetter(Singleton.at).body()?.string() ?: ""
+            return GradesFromHtml().getOptions(parentInfoLetter)
         }
 
-        withContext(Dispatchers.Main) {
-            Singleton.grades = grades
-            notifyListeners()
+        override fun setSelectedGradesItem(gradesItem: GradesItem) {
+            _selectedGradesItem.value = gradesItem
         }
-    }
+
+        override suspend fun loadGrades(
+            gradeOptions: GradeOptions,
+            termid: String,
+            sortType: Int,
+        ) {
+            val at = Singleton.at
+            val getGradesRequest =
+                gradesSource.getGrades(
+                    at,
+                    gradeOptions.PCLID.value,
+                    gradeOptions.ReportType.first { it.is_selected }.value,
+                    termid,
+                    gradeOptions.SID.value,
+                ).body()?.string() ?: ""
+
+            val gradesList = GradesFromHtml().extractGrades(getGradesRequest)
+
+            grades =
+                gradesList
+                    .filter {
+                        it.avg != null && it.name != "Итого" && it.avg.toString().isNotEmpty()
+                    }
+                    .sortedBy {
+                        when (sortType) {
+                            GradeSortType.BY_GRADE_VALUE, GradeSortType.BY_GRADE_VALUE_DESC -> it.avg
+                            GradeSortType.BY_LESSON_NAME -> it.name
+                            else -> it.name
+                        }
+                    }
+                    .toMutableList()
+
+            if (sortType == GradeSortType.BY_GRADE_VALUE) {
+                grades = grades.asReversed()
+            }
+
+            withContext(Dispatchers.Main) {
+                Singleton.grades = grades
+                notifyListeners()
+            }
+        }
 
 //    suspend fun loadGradesWithWeight(context: Context, gradesCalculator: GradesCalculator) {
 //        diarySource.diaryInit()
@@ -109,16 +110,15 @@ class GradesRepository
 //        )
 //    }
 
-    override fun addListener(listener: GradeActionListener) {
-        listeners.add(listener)
-    }
+        override fun addListener(listener: GradeActionListener) {
+            listeners.add(listener)
+        }
 
-    override fun removeListener(listener: GradeActionListener) {
-        listeners.remove(listener)
-    }
+        override fun removeListener(listener: GradeActionListener) {
+            listeners.remove(listener)
+        }
 
-    private fun notifyListeners() {
-        listeners.forEach { it.invoke(grades) }
+        private fun notifyListeners() {
+            listeners.forEach { it.invoke(grades) }
+        }
     }
-
-}

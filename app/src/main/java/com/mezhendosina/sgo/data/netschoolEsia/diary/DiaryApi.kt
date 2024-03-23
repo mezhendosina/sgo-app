@@ -16,6 +16,7 @@
 
 package com.mezhendosina.sgo.data.netschoolEsia.diary
 
+import com.mezhendosina.sgo.data.netschoolEsia.entities.announcements.AttachmentEntity
 import com.mezhendosina.sgo.data.netschoolEsia.entities.assignments.Assignment
 import com.mezhendosina.sgo.data.netschoolEsia.entities.classmeetings.Classmeetings
 import retrofit2.http.GET
@@ -35,4 +36,8 @@ interface DiaryApi {
         @Query("studentId") studentId: Int,
         @Query("classmeetingId") lessonId: Int,
     ): List<Assignment>
+
+    suspend fun getAttachment(
+        @Query("assignmentId") assignmentId: Int,
+    ): List<AttachmentEntity>
 }

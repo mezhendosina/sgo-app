@@ -1,7 +1,8 @@
 package com.mezhendosina.sgo.data.netschoolEsia.diary
 
-import com.mezhendosina.sgo.data.netschool.base.BaseRetrofitSource
-import com.mezhendosina.sgo.data.netschool.base.RetrofitConfig
+import com.mezhendosina.sgo.data.netschoolEsia.base.BaseRetrofitSource
+import com.mezhendosina.sgo.data.netschoolEsia.base.RetrofitConfig
+import com.mezhendosina.sgo.data.netschoolEsia.entities.announcements.AttachmentEntity
 import com.mezhendosina.sgo.data.netschoolEsia.entities.assignments.Assignment
 import com.mezhendosina.sgo.data.netschoolEsia.entities.classmeetings.Classmeetings
 import javax.inject.Inject
@@ -30,5 +31,10 @@ class RetrofitDiarySource
         ): List<Assignment> =
             wrapRetrofitExceptions {
                 diaryApi.getAssignments(studentId, classmeetingId)
+            }
+
+        override suspend fun getAttachment(assignmentId: Int): List<AttachmentEntity> =
+            wrapRetrofitExceptions {
+                diaryApi.getAttachment(assignmentId)
             }
     }

@@ -28,17 +28,17 @@ class Regions {
         const val REGIONS = "[\n" +
                 "    {\n" +
                 "      \"name\": \"Челябинская область\",\n" +
-                "      \"url\": \"https://sgo.edu-74.ru/\",\n" +
+                "      \"url\": \"https://sgo.edu-74.ru/authorize/sso/choose-role?mobile\",\n" +
                 "      \"emblem_url\": \"https://upload.wikimedia.org/wikipedia/commons/b/b8/Coat_of_arms_of_Chelyabinsk_Oblast.svg\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"name\": \"Алтайский край\",\n" +
-                "      \"url\": \"https://netschool.edu22.info/\",\n" +
+                "      \"url\": \"https://netschool.edu22.info/login?mobile\",\n" +
                 "      \"emblem_url\": \"https://upload.wikimedia.org/wikipedia/commons/3/32/Coat_of_Arms_of_Altai_Krai.svg\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"name\": \"Амурская область\",\n" +
-                "      \"url\": \"https://region.obramur.ru/\",\n" +
+                "      \"url\": \"https://region.obramur.ru/login?mobile\",\n" +
                 "      \"emblem_url\": \"https://upload.wikimedia.org/wikipedia/commons/9/9f/Amurskaja_obl_coa_2008.png\"\n" +
                 "    },\n" +
                 "    {\n" +
@@ -93,7 +93,7 @@ class Regions {
                 "    },\n" +
                 "    {\n" +
                 "        \"name\": \"Республика Коми\",\n" +
-                "        \"url\": \"https://giseo.rkomi.ru/\",\n" +
+                "        \"url\": \"https://giseo.rkomi.ru/authorize/sso/choose-role?mobile\",\n" +
                 "        \"emblem_url\": \"https://upload.wikimedia.org/wikipedia/commons/f/fe/Coat_of_Arms_of_the_Komi_Republic.svg\"\n" +
                 "    },\n" +
                 "    {\n" +

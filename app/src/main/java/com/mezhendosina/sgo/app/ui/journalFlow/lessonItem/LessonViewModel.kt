@@ -26,10 +26,10 @@ import com.mezhendosina.sgo.app.model.attachments.AttachmentDownloadManagerInter
 import com.mezhendosina.sgo.app.uiEntities.AboutLessonUiEntity
 import com.mezhendosina.sgo.app.utils.toLiveData
 import com.mezhendosina.sgo.data.SettingsDataStore
-import com.mezhendosina.sgo.data.netschool.base.PermissionNotGranted
-import com.mezhendosina.sgo.data.netschool.base.toDescription
 import com.mezhendosina.sgo.data.netschool.repo.LessonActionListener
-import com.mezhendosina.sgo.data.netschool.repo.LessonRepositoryInterface
+import com.mezhendosina.sgo.data.netschoolEsia.base.PermissionNotGranted
+import com.mezhendosina.sgo.data.netschoolEsia.base.toDescription
+import com.mezhendosina.sgo.data.netschoolEsia.lesson.LessonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -40,82 +40,80 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LessonViewModel
-@Inject constructor(
-    private val lessonRepository: LessonRepositoryInterface,
-    private val attachmentDownloadManager: AttachmentDownloadManagerInterface,
-    private val settingsDataStore: SettingsDataStore
-) : ViewModel() {
+    @Inject
+    constructor(
+        private val lessonRepository: LessonRepository,
+        private val attachmentDownloadManager: AttachmentDownloadManagerInterface,
+        private val settingsDataStore: SettingsDataStore,
+    ) : ViewModel() {
+        private val _lesson = MutableLiveData<AboutLessonUiEntity>()
+        val lesson = _lesson.toLiveData()
 
-    private val _lesson = MutableLiveData<AboutLessonUiEntity>()
-    val lesson = _lesson.toLiveData()
+        private val _error = MutableLiveData<String>()
+        val error = _error.toLiveData()
 
-    private val _error = MutableLiveData<String>()
-    val error = _error.toLiveData()
-
-    private val lessonListener: LessonActionListener = {
-        _lesson.value = it
-    }
-
-    init {
-        viewModelScope.launch {
-            lessonRepository.lesson.collect {
-                _lesson.value = it
-            }
+        private val lessonListener: LessonActionListener = {
+            _lesson.value = it
         }
-        viewModelScope.launch {
-            loadLesson()
-        }
-    }
 
-    suspend fun changePermissionStatus(status: Boolean?) {
-        attachmentDownloadManager.changePermissionStatus(status)
-    }
-
-    suspend fun loadLesson() {
-        try {
-            withContext(Dispatchers.Main) {
-                _error.value = ""
-            }
-            lessonRepository.getAboutLesson(
-                if (Singleton.lesson != null) Singleton.lesson!! else Singleton.pastMandatoryItem!!.toLessonEntity(),
-                settingsDataStore.getValue(SettingsDataStore.CURRENT_USER_ID).first() ?: -1
-            )
-        } catch (e: Exception) {
-            withContext(Dispatchers.Main) {
-                _error.value = e.toDescription()
-            }
-        }
-    }
-
-    suspend fun downloadAttachment(
-        context: Context,
-        attachment: FileUiEntity,
-    ) {
-        try {
-            attachmentDownloadManager.doAfterGetPermission(context) {
-                withContext(Dispatchers.IO) {
-                    attachmentDownloadManager.downloadFile(
-                        context,
-                        attachment
-                    )
-                    withContext(Dispatchers.Main) {
-                        attachmentDownloadManager.openFile(
-                            context,
-                            attachment
-                        )
-                    }
+        init {
+            viewModelScope.launch {
+                lessonRepository.lesson.collect {
+                    _lesson.value = it
                 }
             }
+            viewModelScope.launch {
+                loadLesson()
+            }
+        }
 
-        } catch (e: Exception) {
-            if (e is PermissionNotGranted) {
-                throw PermissionNotGranted()
-            } else {
+        suspend fun changePermissionStatus(status: Boolean?) {
+            attachmentDownloadManager.changePermissionStatus(status)
+        }
+
+        suspend fun loadLesson() {
+            try {
+                withContext(Dispatchers.Main) {
+                    _error.value = ""
+                }
+                lessonRepository.getAboutLesson(
+                    if (Singleton.lesson != null) Singleton.lesson!! else Singleton.pastMandatoryItem!!.toLessonEntity(),
+                    settingsDataStore.getValue(SettingsDataStore.CURRENT_USER_ID).first() ?: -1,
+                )
+            } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     _error.value = e.toDescription()
                 }
             }
         }
-    }
 
-}
+        suspend fun downloadAttachment(
+            context: Context,
+            attachment: FileUiEntity,
+        ) {
+            try {
+                attachmentDownloadManager.doAfterGetPermission(context) {
+                    withContext(Dispatchers.IO) {
+                        attachmentDownloadManager.downloadFile(
+                            context,
+                            attachment,
+                        )
+                        withContext(Dispatchers.Main) {
+                            attachmentDownloadManager.openFile(
+                                context,
+                                attachment,
+                            )
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                if (e is PermissionNotGranted) {
+                    throw PermissionNotGranted()
+                } else {
+                    withContext(Dispatchers.Main) {
+                        _error.value = e.toDescription()
+                    }
+                }
+            }
+        }
+    }

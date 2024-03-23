@@ -18,7 +18,7 @@ package com.mezhendosina.sgo.data.grades
 
 import androidx.lifecycle.MutableLiveData
 import com.mezhendosina.sgo.app.ui.gradesFlow.gradeItem.GradeItemFragment
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.GradesItem
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.GradesItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,44 +34,52 @@ data class CalculateGradeItem(
     val countTwo: Int,
 ) {
     private fun count(): Int = countFive + countFour + countThree + countTwo
-    fun avg(): Float =
-        (countFive * 5 + countFour * 4 + countThree * 3 + countTwo * 2).toFloat() / count().toFloat()
 
-    fun changeGrade(grade: Int, delta: Int): CalculateGradeItem {
+    fun avg(): Float = (countFive * 5 + countFour * 4 + countThree * 3 + countTwo * 2).toFloat() / count().toFloat()
+
+    fun changeGrade(
+        grade: Int,
+        delta: Int,
+    ): CalculateGradeItem {
         return when (grade) {
-            GradeItemFragment.FIVE_GRADE -> CalculateGradeItem(
-                countFive + delta,
-                countFour,
-                countThree,
-                countTwo
-            )
+            GradeItemFragment.FIVE_GRADE ->
+                CalculateGradeItem(
+                    countFive + delta,
+                    countFour,
+                    countThree,
+                    countTwo,
+                )
 
-            GradeItemFragment.FOUR_GRADE -> CalculateGradeItem(
-                countFive,
-                countFour + delta,
-                countThree,
-                countTwo
-            )
+            GradeItemFragment.FOUR_GRADE ->
+                CalculateGradeItem(
+                    countFive,
+                    countFour + delta,
+                    countThree,
+                    countTwo,
+                )
 
-            GradeItemFragment.THREE_GRADE -> CalculateGradeItem(
-                countFive,
-                countFour,
-                countThree + delta,
-                countTwo
-            )
+            GradeItemFragment.THREE_GRADE ->
+                CalculateGradeItem(
+                    countFive,
+                    countFour,
+                    countThree + delta,
+                    countTwo,
+                )
 
-            GradeItemFragment.TWO_GRADE -> CalculateGradeItem(
-                countFive,
-                countFour,
-                countThree,
-                countTwo + delta
-            )
+            GradeItemFragment.TWO_GRADE ->
+                CalculateGradeItem(
+                    countFive,
+                    countFour,
+                    countThree,
+                    countTwo + delta,
+                )
 
             else -> this
         }
     }
 
     fun toList(): MutableList<Int> = mutableListOf(countFive, countFour, countThree, countTwo)
+
     fun toGradeItem(): GradesItem =
         GradesItem(
             "",
@@ -80,17 +88,16 @@ data class CalculateGradeItem(
             countThree,
             countTwo,
             0,
-            avg().toString().replace(".", ",")
+            avg().toString().replace(".", ","),
         )
 }
 
 data class GradeItem(
     val value: Int,
-    val weight: Int
+    val weight: Int,
 )
 
 class GradesCalculator(initGradesList: List<GradeItem>?) {
-
     val avgGrade = MutableLiveData<Float?>()
     val gradeList = MutableStateFlow(initGradesList ?: emptyList())
 

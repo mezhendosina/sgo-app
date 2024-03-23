@@ -1,7 +1,7 @@
 package com.mezhendosina.sgo.data.netschoolEsia.grades
 
-import com.mezhendosina.sgo.data.netschool.base.BaseRetrofitSource
-import com.mezhendosina.sgo.data.netschool.base.RetrofitConfig
+import com.mezhendosina.sgo.data.netschoolEsia.base.BaseRetrofitSource
+import com.mezhendosina.sgo.data.netschoolEsia.base.RetrofitConfig
 import com.mezhendosina.sgo.data.netschoolEsia.entities.analytics.SubjectPerformance
 import com.mezhendosina.sgo.data.netschoolEsia.entities.totals.SubjectTotal
 import javax.inject.Inject

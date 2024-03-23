@@ -67,7 +67,7 @@ class ChooseRegionFragment : Fragment(R.layout.fragment_choose_region) {
                 val into = arguments?.getString(WelcomeFragment.FROM_WELCOME)
                 findNavController().navigate(
                     when (into) {
-                        WelcomeFragment.TO_ESIA -> R.id.action_chooseRegionFragment_to_gosuslugiFragment
+                        WelcomeFragment.TO_ESIA -> R.id.action_chooseRegionFragment_to_webViewLoginFragment
                         WelcomeFragment.TO_SIGN_IN -> R.id.action_chooseRegionFragment_to_chooseSchoolFragment
                         else -> R.id.action_chooseRegionFragment_to_chooseSchoolFragment
                     }

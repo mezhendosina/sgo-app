@@ -20,7 +20,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mezhendosina.sgo.Singleton
-import com.mezhendosina.sgo.app.model.journal.JournalRepository
 import com.mezhendosina.sgo.app.model.journal.entities.DiaryUiEntity
 import com.mezhendosina.sgo.app.ui.journalFlow.journalItem.adapters.DiaryAdapter
 import com.mezhendosina.sgo.app.ui.journalFlow.journalItem.adapters.OnHomeworkClickListener
@@ -28,8 +27,7 @@ import com.mezhendosina.sgo.app.ui.journalFlow.journalItem.adapters.PastMandator
 import com.mezhendosina.sgo.app.ui.journalFlow.journalItem.adapters.PastMandatoryClickListener
 import com.mezhendosina.sgo.app.utils.toDescription
 import com.mezhendosina.sgo.data.SettingsDataStore
-import com.mezhendosina.sgo.data.WeekStartEndEntity
-import com.mezhendosina.sgo.data.netschool.NetSchoolSingleton
+import com.mezhendosina.sgo.data.netschoolEsia.diary.DiaryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -40,7 +38,7 @@ import javax.inject.Inject
 class JournalItemViewModel
     @Inject
     constructor(
-        private val journalRepository: JournalRepository,
+        private val journalRepository: DiaryRepository,
         private val settingsDataStore: SettingsDataStore,
     ) : ViewModel() {
         private val _week = MutableLiveData<DiaryUiEntity>()
@@ -101,10 +99,9 @@ class JournalItemViewModel
                                 settingsDataStore.getValue(SettingsDataStore.CURRENT_USER_ID).first()
                                     ?: -1
                             val getWeek =
-                                journalRepository.getWeek(
-                                    currentUserId,
-                                    WeekStartEndEntity(weekStart!!, weekEnd!!),
-                                    NetSchoolSingleton.journalYearId.value ?: 0,
+                                journalRepository.getDiary(
+                                    weekStart!!,
+                                    weekEnd!!,
                                 )
                             Singleton.loadedDiaryUiEntity.add(getWeek)
                             getWeek

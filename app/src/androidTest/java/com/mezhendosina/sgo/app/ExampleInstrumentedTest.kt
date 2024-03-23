@@ -19,7 +19,6 @@ package com.mezhendosina.sgo.app
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.mezhendosina.sgo.data.netschool.base.uriFromFile
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
@@ -37,8 +36,7 @@ class ExampleInstrumentedTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
         val f = File("D:/Programming/extractGrades.html")
-        println(uriFromFile(appContext, f))
-
+//        println(uriFromFile(appContext, f))
     }
 
     @Test

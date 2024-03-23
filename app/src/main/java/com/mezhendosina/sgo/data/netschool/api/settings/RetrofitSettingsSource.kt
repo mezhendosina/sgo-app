@@ -21,8 +21,8 @@ import com.mezhendosina.sgo.data.netschool.api.settings.entities.MySettingsReque
 import com.mezhendosina.sgo.data.netschool.api.settings.entities.MySettingsResponseEntity
 import com.mezhendosina.sgo.data.netschool.api.settings.entities.SendPhotoRequestEntity
 import com.mezhendosina.sgo.data.netschool.api.settings.entities.YearListResponseEntity
-import com.mezhendosina.sgo.data.netschool.base.BaseRetrofitSource
-import com.mezhendosina.sgo.data.netschool.base.RetrofitConfig
+import com.mezhendosina.sgo.data.netschoolEsia.base.BaseRetrofitSource
+import com.mezhendosina.sgo.data.netschoolEsia.base.RetrofitConfig
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -34,7 +34,7 @@ class RetrofitSettingsSource
     @Inject
     constructor(config: RetrofitConfig) :
     BaseRetrofitSource(config), SettingsSource {
-        private val settingsApi = retrofit.create(SettingsApi::class.java)
+        private val settingsApi = config.baseRetrofit.create(SettingsApi::class.java)
 
         override suspend fun getYearList(): List<YearListResponseEntity> =
             wrapRetrofitExceptions {

@@ -16,17 +16,14 @@
 
 package com.mezhendosina.sgo.app.model.journal
 
-import com.mezhendosina.sgo.data.netschool.api.diary.entities.DiaryInitResponseEntity
-import com.mezhendosina.sgo.data.netschool.api.diary.entities.DiaryResponseEntity
-import com.mezhendosina.sgo.data.netschool.api.diary.entities.PastMandatoryEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.DiaryInitResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.DiaryResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.PastMandatoryEntity
 
 interface DiarySource {
-
     suspend fun diaryInit(): DiaryInitResponseEntity
 
     suspend fun diary(diaryEntity: DiaryModelRequestEntity): DiaryResponseEntity
 
-
     suspend fun getPastMandatory(diaryEntity: DiaryModelRequestEntity): List<PastMandatoryEntity>
-
 }

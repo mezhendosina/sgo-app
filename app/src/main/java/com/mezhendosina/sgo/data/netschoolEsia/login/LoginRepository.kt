@@ -1,15 +1,16 @@
 package com.mezhendosina.sgo.data.netschoolEsia.login
 
-import kotlinx.coroutines.flow.Flow
+import com.mezhendosina.sgo.app.ui.loginFlow.chooseRegion.entities.ChooseRegionUiEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.users.UserInfo
 
 interface LoginRepository {
-    val users: Flow<List<Int>>
-
     suspend fun login(deviceCode: Int)
 
     suspend fun login()
 
-    suspend fun getUsers()
+    suspend fun getUsers(): List<UserInfo>
+
+    suspend fun getRegions(): ChooseRegionUiEntity
 
     suspend fun logout()
 }

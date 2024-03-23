@@ -2,12 +2,16 @@ package com.mezhendosina.sgo.di
 
 import com.mezhendosina.sgo.app.model.attachments.AttachmentDownloadManager
 import com.mezhendosina.sgo.app.model.attachments.AttachmentDownloadManagerInterface
-import com.mezhendosina.sgo.data.netschool.repo.LessonRepository
-import com.mezhendosina.sgo.data.netschool.repo.LessonRepositoryInterface
-import com.mezhendosina.sgo.data.netschoolEsia.grades.GradesRepository
+import com.mezhendosina.sgo.app.model.grades.GradesRepositoryInterface
+import com.mezhendosina.sgo.data.netschool.repo.LessonRepositoryImpl
+import com.mezhendosina.sgo.data.netschoolEsia.diary.DiaryRepository
+import com.mezhendosina.sgo.data.netschoolEsia.diary.DiaryRepositoryImpl
 import com.mezhendosina.sgo.data.netschoolEsia.grades.GradesRepositoryImpl
+import com.mezhendosina.sgo.data.netschoolEsia.lesson.LessonRepository
 import com.mezhendosina.sgo.data.netschoolEsia.login.LoginRepository
 import com.mezhendosina.sgo.data.netschoolEsia.login.LoginRepositoryImpl
+import com.mezhendosina.sgo.data.netschoolEsia.utils.UtilsRepository
+import com.mezhendosina.sgo.data.netschoolEsia.utils.UtilsRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -23,13 +27,21 @@ abstract class RepoModule {
 
     @Binds
     @Singleton
-    abstract fun bindLessonRepository(lessonRepository: LessonRepository): LessonRepositoryInterface
+    abstract fun bindLessonRepository(lessonRepository: LessonRepositoryImpl): LessonRepository
 
     @Binds
     @Singleton
-    abstract fun bindGradesRepository(gradesRepository: GradesRepository): GradesRepositoryImpl
+    abstract fun bindDiaryRepository(diaryRepositoryImpl: DiaryRepositoryImpl): DiaryRepository
 
     @Binds
     @Singleton
-    abstract fun bindLoginRepository(loginRepository: LoginRepository): LoginRepositoryImpl
+    abstract fun bindGradesRepository(gradesRepository: GradesRepositoryImpl): GradesRepositoryInterface
+
+    @Binds
+    @Singleton
+    abstract fun bindLoginRepository(loginRepository: LoginRepositoryImpl): com.mezhendosina.sgo.data.netschool.repo.LoginRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUtilsRepo(utilsRepositoryImpl: UtilsRepositoryImpl): UtilsRepository
 }

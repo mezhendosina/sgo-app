@@ -16,13 +16,12 @@
 
 package com.mezhendosina.sgo.data.netschool.api.diary
 
-import com.mezhendosina.sgo.data.netschool.api.diary.entities.DiaryInitResponseEntity
-import com.mezhendosina.sgo.data.netschool.api.diary.entities.DiaryResponseEntity
-import com.mezhendosina.sgo.data.netschool.api.diary.entities.PastMandatoryEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.DiaryInitResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.DiaryResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.PastMandatoryEntity
 import retrofit2.http.*
 
 interface DiaryApi {
-
     @GET("webapi/student/diary/init")
     suspend fun diaryInit(): DiaryInitResponseEntity
 
@@ -32,16 +31,14 @@ interface DiaryApi {
         @Query("weekEnd") weekEnd: String,
         @Query("weekStart") weekStart: String,
         @Query("withLaAssigns") withLaAssigns: Boolean,
-        @Query("yearId") yearId: Int
+        @Query("yearId") yearId: Int,
     ): DiaryResponseEntity
-
 
     @GET("webapi/student/diary/pastMandatory")
     suspend fun getPastMandatory(
         @Query("studentID") studentInt: Int,
         @Query("weekEnd") weekEnd: String,
         @Query("weekStart") weekStart: String,
-        @Query("yearId") yearId: Int
+        @Query("yearId") yearId: Int,
     ): List<PastMandatoryEntity>
-
 }

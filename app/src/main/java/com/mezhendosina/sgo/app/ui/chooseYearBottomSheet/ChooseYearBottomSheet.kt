@@ -22,30 +22,33 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.mezhendosina.sgo.app.R
 import com.mezhendosina.sgo.app.databinding.BottomSheetChooseYearBinding
-import com.mezhendosina.sgo.data.netschool.NetSchoolSingleton
 import com.mezhendosina.sgo.data.netschool.api.settings.entities.YearListResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.NetSchoolSingleton
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ChooseYearBottomSheet(
-    private val yearList: List<YearListResponseEntity>
+    private val yearList: List<YearListResponseEntity>,
 ) : BottomSheetDialogFragment(R.layout.bottom_sheet_choose_year) {
-
     private lateinit var binding: BottomSheetChooseYearBinding
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         binding = BottomSheetChooseYearBinding.bind(view)
 
-        val adapter = ChooseYearAdapter(
-            object : OnYearClickListener {
-                override fun invoke(year: YearListResponseEntity) {
-                    NetSchoolSingleton.journalYearId.value = year.id
-                    dismissNow()
-                }
-            }
-        )
+        val adapter =
+            ChooseYearAdapter(
+                object : OnYearClickListener {
+                    override fun invoke(year: YearListResponseEntity) {
+                        NetSchoolSingleton.journalYearId.value = year.id
+                        dismissNow()
+                    }
+                },
+            )
         adapter.years = yearList
         binding.yearsRecyclerview.adapter = adapter
         binding.yearsRecyclerview.layoutManager =

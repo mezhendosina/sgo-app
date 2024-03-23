@@ -64,7 +64,6 @@
         style="@style/Widget.SGOApp.Button.Login"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:enabled="false"
         android:gravity="center"
         android:text="@string/signin_via_gosuslugi"
         android:visibility="invisible"

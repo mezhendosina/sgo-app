@@ -61,10 +61,7 @@ class BaseRetrofit {
 
     @Provides
     @Singleton
-    fun createHeadersInterceptor(
-        myCookieJar: MyCookieJar,
-        settingsDataStore: SettingsDataStore,
-    ): HeadersInterceptor = HeadersInterceptor(myCookieJar, settingsDataStore)
+    fun createHeadersInterceptor(settingsDataStore: SettingsDataStore): HeadersInterceptor = HeadersInterceptor(settingsDataStore)
 
     @Provides
     @Singleton

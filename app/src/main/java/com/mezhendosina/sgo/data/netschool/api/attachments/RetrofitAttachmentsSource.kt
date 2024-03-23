@@ -16,12 +16,12 @@
 
 package com.mezhendosina.sgo.data.netschool.api.attachments
 
-import com.mezhendosina.sgo.data.netschool.api.attachments.entities.AttachmentsRequestEntity
-import com.mezhendosina.sgo.data.netschool.api.attachments.entities.AttachmentsResponseEntity
-import com.mezhendosina.sgo.data.netschool.api.attachments.entities.DeleteAttachmentRequestEntity
-import com.mezhendosina.sgo.data.netschool.api.attachments.entities.SendFileRequestEntity
-import com.mezhendosina.sgo.data.netschool.base.BaseRetrofitSource
-import com.mezhendosina.sgo.data.netschool.base.RetrofitConfig
+import com.mezhendosina.sgo.data.netschoolEsia.base.BaseRetrofitSource
+import com.mezhendosina.sgo.data.netschoolEsia.base.RetrofitConfig
+import com.mezhendosina.sgo.data.netschoolEsia.entities.attachments.AttachmentsRequestEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.attachments.AttachmentsResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.attachments.DeleteAttachmentRequestEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.attachments.SendFileRequestEntity
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -34,7 +34,7 @@ class RetrofitAttachmentsSource
     @Inject
     constructor(config: RetrofitConfig) :
     BaseRetrofitSource(config), AttachmentsSource {
-        private val attachmentsSource = retrofit.create(AttachmentsApi::class.java)
+        private val attachmentsSource = config.baseRetrofit.create(AttachmentsApi::class.java)
 
         override suspend fun getAttachments(
             studentId: Int,

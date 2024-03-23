@@ -16,32 +16,29 @@
 
 package com.mezhendosina.sgo.data.netschool.api.homework
 
-import com.mezhendosina.sgo.data.netschool.api.diary.entities.AssignmentTypesResponseEntity
-import com.mezhendosina.sgo.data.netschool.api.homework.entities.AssignResponseEntity
-import com.mezhendosina.sgo.data.netschool.api.homework.entities.GetAnswerResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.AssignmentTypesResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.homework.AssignResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.homework.GetAnswerResponseEntity
 import retrofit2.http.*
 
 interface HomeworkApi {
-
     @GET("webapi/grade/assignment/types")
     suspend fun assignmentTypes(
-        @Query("all") all: Boolean = true
+        @Query("all") all: Boolean = true,
     ): List<AssignmentTypesResponseEntity>
-
 
     @GET("webapi/student/diary/assigns/{assignID}")
     suspend fun getAboutAssign(
         @Path("assignID") assignId: Int,
-        @Query("studentId") studentId: Int
+        @Query("studentId") studentId: Int,
     ): AssignResponseEntity
 
-
     /**
-    Получение прикрепленных ответов на задание
+     Получение прикрепленных ответов на задание
      */
     @GET("webapi/assignments/{assignmentId}/answers")
     suspend fun getAnswer(
         @Path("assignmentId") assignmentId: Int,
-        @Query("studentID") studentId: Int
+        @Query("studentID") studentId: Int,
     ): List<GetAnswerResponseEntity>
 }

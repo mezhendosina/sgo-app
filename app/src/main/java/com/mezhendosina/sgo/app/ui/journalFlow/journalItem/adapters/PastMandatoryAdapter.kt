@@ -22,18 +22,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.mezhendosina.sgo.app.databinding.ItemPastMandatoryBinding
 import com.mezhendosina.sgo.data.DateManipulation
-import com.mezhendosina.sgo.data.netschool.api.diary.entities.PastMandatoryEntity
-import dagger.Module
+import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.PastMandatoryEntity
 import javax.inject.Singleton
 
 typealias PastMandatoryClickListener = (PastMandatoryEntity) -> Unit
 
 @Singleton
 class PastMandatoryAdapter(
-    private val pastMandatoryClickListener: PastMandatoryClickListener
+    private val pastMandatoryClickListener: PastMandatoryClickListener,
 ) : RecyclerView.Adapter<PastMandatoryAdapter.PastMandatoryViewHolder>(),
     View.OnClickListener {
-
     var items: List<PastMandatoryEntity> = emptyList()
         set(value) {
             field = value
@@ -49,7 +47,10 @@ class PastMandatoryAdapter(
         pastMandatoryClickListener.invoke(pastMandatoryItem)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PastMandatoryViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): PastMandatoryViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemPastMandatoryBinding.inflate(inflater, parent, false)
 
@@ -58,7 +59,10 @@ class PastMandatoryAdapter(
         return PastMandatoryViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: PastMandatoryViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: PastMandatoryViewHolder,
+        position: Int,
+    ) {
         val item = items[position]
         holder.itemView.tag = item
         with(holder.binding) {

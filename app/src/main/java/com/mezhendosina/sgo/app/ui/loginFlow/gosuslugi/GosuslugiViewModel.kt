@@ -18,34 +18,33 @@ package com.mezhendosina.sgo.app.ui.loginFlow.gosuslugi
 
 import androidx.lifecycle.ViewModel
 import com.mezhendosina.sgo.Singleton
-import com.mezhendosina.sgo.data.netschool.NetSchoolSingleton
 import com.mezhendosina.sgo.data.netschool.api.login.entities.accountInfo.toUiEntity
 import com.mezhendosina.sgo.data.netschool.repo.LoginRepository
-import com.mezhendosina.sgo.data.netschool.repo.LoginRepositoryInterface
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-
 @HiltViewModel
 class GosuslugiViewModel
-    @Inject constructor(
-    private val loginRepository: LoginRepositoryInterface
-) : ViewModel() {
-    suspend fun login(
-        loginState: String,
-        onOneUser: (id: String) -> Unit,
-        onMoreUser: () -> Unit
-    ) {
-        val users = loginRepository.getGosuslugiUsers(loginState)
-        withContext(Dispatchers.Main) {
-            Singleton.users = users.toUiEntity()
-            if (users.size > 1) {
-                onMoreUser.invoke()
-            } else {
-                onOneUser.invoke(users.first().id)
+    @Inject
+    constructor(
+        private val loginRepository: LoginRepository,
+    ) : ViewModel() {
+        suspend fun login(
+            loginState: String,
+            onOneUser: (id: String) -> Unit,
+            onMoreUser: () -> Unit,
+        ) {
+            loginRepository.login()
+            val users = loginRepository.getGosuslugiUsers(loginState)
+            withContext(Dispatchers.Main) {
+                Singleton.users = users.toUiEntity()
+                if (users.size > 1) {
+                    onMoreUser.invoke()
+                } else {
+                    onOneUser.invoke(users.first().id)
+                }
             }
         }
     }
-}

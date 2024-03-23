@@ -16,15 +16,13 @@
 
 package com.mezhendosina.sgo.data.grades
 
-import com.mezhendosina.sgo.app.utils.getEmojiLesson
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.GradesItem
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.gradeOptions.GradeOptions
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.gradeOptions.InputTag
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.gradeOptions.SelectTag
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.GradesItem
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.gradeOptions.GradeOptions
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.gradeOptions.InputTag
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.gradeOptions.SelectTag
 import org.jsoup.Jsoup
 
 class GradesFromHtml {
-
     private lateinit var reportType: List<SelectTag>
     private lateinit var PCLID: InputTag
     private lateinit var sid: InputTag
@@ -73,9 +71,10 @@ class GradesFromHtml {
 
         val getTableTag = jsoup.getElementsByClass("table-print").first()
 
-        val trTags = getTableTag?.getElementsByTag("tr")
-            ?.drop(2)
-            ?.dropLast(1)
+        val trTags =
+            getTableTag?.getElementsByTag("tr")
+                ?.drop(2)
+                ?.dropLast(1)
         trTags?.forEach { trTag ->
             val tdTags = trTag.getElementsByTag("td")
 
@@ -95,8 +94,8 @@ class GradesFromHtml {
                     threeGrade,
                     twoGrade,
                     null,
-                    avg
-                )
+                    avg,
+                ),
             )
         }
         return grades

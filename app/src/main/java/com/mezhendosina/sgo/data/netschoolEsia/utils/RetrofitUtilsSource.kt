@@ -1,7 +1,7 @@
 package com.mezhendosina.sgo.data.netschoolEsia.utils
 
-import com.mezhendosina.sgo.data.netschool.base.BaseRetrofitSource
-import com.mezhendosina.sgo.data.netschool.base.RetrofitConfig
+import com.mezhendosina.sgo.data.netschoolEsia.base.BaseRetrofitSource
+import com.mezhendosina.sgo.data.netschoolEsia.base.RetrofitConfig
 import javax.inject.Inject
 import javax.inject.Singleton
 

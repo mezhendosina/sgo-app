@@ -16,11 +16,11 @@
 
 package com.mezhendosina.sgo.data.netschool.api.homework
 
-import com.mezhendosina.sgo.data.netschool.api.diary.entities.AssignmentTypesResponseEntity
-import com.mezhendosina.sgo.data.netschool.api.homework.entities.AssignResponseEntity
-import com.mezhendosina.sgo.data.netschool.api.homework.entities.GetAnswerResponseEntity
-import com.mezhendosina.sgo.data.netschool.base.BaseRetrofitSource
-import com.mezhendosina.sgo.data.netschool.base.RetrofitConfig
+import com.mezhendosina.sgo.data.netschoolEsia.base.BaseRetrofitSource
+import com.mezhendosina.sgo.data.netschoolEsia.base.RetrofitConfig
+import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.AssignmentTypesResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.homework.AssignResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.homework.GetAnswerResponseEntity
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -29,7 +29,7 @@ class RetrofitHomeworkSource
     @Inject
     constructor(config: RetrofitConfig) :
     BaseRetrofitSource(config), HomeworkSource {
-        private val homeworkSource = retrofit.create(HomeworkApi::class.java)
+        private val homeworkSource = config.baseRetrofit.create(HomeworkApi::class.java)
 
         override suspend fun assignmentTypes(all: Boolean): List<AssignmentTypesResponseEntity> =
             wrapRetrofitExceptions {

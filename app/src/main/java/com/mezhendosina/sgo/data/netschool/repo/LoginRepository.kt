@@ -1,137 +1,39 @@
-/*
- * Copyright 2023 Eugene Menshenin
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.mezhendosina.sgo.data.netschool.repo
 
+import com.mezhendosina.sgo.app.ui.loginFlow.chooseRegion.entities.ChooseRegionUiEntity
 import com.mezhendosina.sgo.app.uiEntities.SchoolUiEntity
-import com.mezhendosina.sgo.data.SettingsDataStore
-import com.mezhendosina.sgo.data.netschool.NetSchoolSingleton
-import com.mezhendosina.sgo.data.netschool.api.login.LoginEntity
-import com.mezhendosina.sgo.data.netschool.api.login.LoginSource
 import com.mezhendosina.sgo.data.netschool.api.login.entities.StudentResponseEntity
-import com.mezhendosina.sgo.data.netschool.api.settings.SettingsSource
-import com.mezhendosina.sgo.data.requests.sgo.login.entities.LoginResponseEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.mezhendosina.sgo.data.netschool.api.login.entities.accountInfo.User
+import com.mezhendosina.sgo.data.netschoolEsia.entities.users.UserInfo
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.last
-import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-class LoginRepository
-    @Inject
-    constructor(
-        private val loginSource: LoginSource,
-        private val settingsDataStore: SettingsDataStore,
-        private val settingsSource: SettingsSource,
-    ) : LoginRepositoryInterface {
-        private val _schools = MutableStateFlow<List<SchoolUiEntity>>(emptyList())
+interface LoginRepository {
+    suspend fun findSchool(schoolId: Int): SchoolUiEntity
 
-        override suspend fun findSchool(schoolId: Int): SchoolUiEntity {
-            return _schools.last().first { it.id == schoolId }
-        }
+    fun getSchools(): StateFlow<List<SchoolUiEntity>>
 
-        override fun getSchools(): StateFlow<List<SchoolUiEntity>> {
-            return _schools
-        }
+    suspend fun mapSchools(name: String)
 
-        override suspend fun mapSchools(name: String) {
-            val schoolsList = loginSource.getSchools(name).map { it.toUiEntity() }
+    suspend fun login(
+        login: String? = null,
+        password: String? = null,
+        schoolId: Int? = null,
+        firstLogin: Boolean = true,
+        onOneUser: () -> Unit = {},
+        onMoreUser: (List<StudentResponseEntity>) -> Unit = {},
+    )
 
-            withContext(Dispatchers.Main) {
-                _schools.emit(schoolsList)
-            }
-        }
+    suspend fun gosuslugiLogin(b: Boolean)
 
-        override suspend fun login(
-            login: String?,
-            password: String?,
-            schoolId: Int?,
-            firstLogin: Boolean,
-            onOneUser: () -> Unit,
-            onMoreUser: (List<StudentResponseEntity>) -> Unit,
-        ) {
-            loginSource.loginData()
-            val getData = loginSource.getData()
+    suspend fun getGosuslugiUsers(loginState: String): List<User>
 
-            val loginEntity =
-                if (login.isNullOrEmpty() || password.isNullOrEmpty() || schoolId == null) {
-                    LoginEntity(
-                        settingsDataStore.getValue(SettingsDataStore.SCHOOL_ID).first() ?: -1,
-                        settingsDataStore.getValue(SettingsDataStore.LOGIN).first() ?: "",
-                        settingsDataStore.getValue(SettingsDataStore.PASSWORD).first() ?: "",
-                        getData.lt,
-                        getData.salt,
-                        getData.ver,
-                    )
-                } else {
-                    LoginEntity(
-                        schoolId,
-                        login,
-                        password,
-                        getData.lt,
-                        getData.salt,
-                        getData.ver,
-                    )
-                }
-            val loginRequest = loginSource.login(loginEntity)
+    suspend fun logout()
 
-            postLogin(loginEntity, loginRequest, firstLogin, onOneUser, onMoreUser)
-        }
+    suspend fun login(deviceCode: Int)
 
-        private suspend fun postLogin(
-            loginEntity: LoginEntity,
-            loginRequest: LoginResponseEntity,
-            firstLogin: Boolean,
-            onOneUser: () -> Unit,
-            onMoreUser: (List<StudentResponseEntity>) -> Unit,
-        ) {
-            val studentsRequest = loginSource.getStudents()
-            withContext(Dispatchers.IO) {
-                if (firstLogin) {
-                    withContext(Dispatchers.Main) {
-                        if (studentsRequest != null) {
-                            if (studentsRequest.size <= 1) {
-                                settingsDataStore.setValue(
-                                    SettingsDataStore.CURRENT_USER_ID,
-                                    studentsRequest.first().id,
-                                )
-                                onOneUser.invoke()
-                                settingsDataStore.saveLogin(loginEntity)
-                            } else {
-                                onMoreUser.invoke(studentsRequest)
-                                settingsDataStore.saveLogin(loginEntity, false)
-                            }
-                        } else {
-                            settingsDataStore.setValue(
-                                SettingsDataStore.CURRENT_USER_ID,
-                                loginRequest.accountInfo.user.id,
-                            )
-                            onOneUser.invoke()
-                            settingsDataStore.saveLogin(loginEntity)
-                        }
-                    }
-                }
-                val yearsID = settingsSource.getYearList().first { !it.name.contains("(*)") }
-                withContext(Dispatchers.Main) {
-                    NetSchoolSingleton.journalYearId.value = yearsID.id
-                }
-            }
-        }
+    suspend fun login()
 
-        override suspend fun logout() = loginSource.logout()
-    }
+    suspend fun getUsers(): List<UserInfo>
+
+    suspend fun getRegions(): ChooseRegionUiEntity
+}

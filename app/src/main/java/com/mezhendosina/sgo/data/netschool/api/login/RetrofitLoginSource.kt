@@ -18,9 +18,9 @@ package com.mezhendosina.sgo.data.netschool.api.login
 
 import com.mezhendosina.sgo.app.netschool.api.login.entities.SchoolEntity
 import com.mezhendosina.sgo.data.netschool.api.login.entities.StudentResponseEntity
-import com.mezhendosina.sgo.data.netschool.base.BaseRetrofitSource
-import com.mezhendosina.sgo.data.netschool.base.RetrofitConfig
-import com.mezhendosina.sgo.data.netschool.base.toMD5
+import com.mezhendosina.sgo.data.netschoolEsia.base.BaseRetrofitSource
+import com.mezhendosina.sgo.data.netschoolEsia.base.RetrofitConfig
+import com.mezhendosina.sgo.data.netschoolEsia.base.toMD5
 import com.mezhendosina.sgo.data.requests.sgo.login.entities.GetDataResponseEntity
 import com.mezhendosina.sgo.data.requests.sgo.login.entities.LoginResponseEntity
 import javax.inject.Inject
@@ -32,7 +32,7 @@ class RetrofitLoginSource
     constructor(
         config: RetrofitConfig,
     ) : BaseRetrofitSource(config), LoginSource {
-        private val loginApi = retrofit.create(LoginApi::class.java)
+        private val loginApi = config.baseRetrofit.create(LoginApi::class.java)
 
         override suspend fun loginData() = wrapRetrofitExceptions(false) { loginApi.loginData() }
 

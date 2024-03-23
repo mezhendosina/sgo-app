@@ -30,8 +30,8 @@ import com.mezhendosina.sgo.app.uiEntities.checkItem
 import com.mezhendosina.sgo.app.utils.LoadStates
 import com.mezhendosina.sgo.app.utils.toDescription
 import com.mezhendosina.sgo.data.SettingsDataStore
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.GradesItem
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.gradeOptions.GradeOptions
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.GradesItem
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.gradeOptions.GradeOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first

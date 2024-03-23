@@ -39,14 +39,6 @@ class ChooseUserIdFragment : Fragment(R.layout.fragment_choose_user_id) {
         val loginState = arguments?.getString(GosuslugiResultFragment.LOGIN_STATE)
         if (loginState == null) {
             viewModel.login(requireContext(), it)
-        } else {
-            findNavController().navigate(
-                R.id.action_chooseUserIdFragment_to_gosuslugiResult,
-                bundleOf(
-                    GosuslugiResultFragment.LOGIN_STATE to loginState,
-                    GosuslugiResultFragment.USER_ID to it.userId
-                )
-            )
         }
     }
 

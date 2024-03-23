@@ -21,7 +21,6 @@ import androidx.lifecycle.ViewModel
 import com.mezhendosina.sgo.Singleton
 import com.mezhendosina.sgo.app.utils.toDescription
 import com.mezhendosina.sgo.app.utils.toLiveData
-import com.mezhendosina.sgo.data.netschool.NetSchoolSingleton
 import com.mezhendosina.sgo.data.netschool.api.settings.entities.MySettingsResponseEntity
 import com.mezhendosina.sgo.data.netschool.repo.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,44 +30,43 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-
 @HiltViewModel
 class ChangeEmailViewModel
-    @Inject constructor(
-    private val settingsRepository: SettingsRepository
-) : ViewModel() {
+    @Inject
+    constructor(
+        private val settingsRepository: SettingsRepository,
+    ) : ViewModel() {
+        private val _errorDescription = MutableLiveData<String>()
+        val errorDescription = _errorDescription.toLiveData()
 
-    private val _errorDescription = MutableLiveData<String>()
-    val errorDescription = _errorDescription.toLiveData()
+        private val _mySettings = MutableLiveData<MySettingsResponseEntity>()
 
-    private val _mySettings = MutableLiveData<MySettingsResponseEntity>()
-
-    fun changeEmail(changedEmail: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                if (_mySettings.value != null) {
-                    settingsRepository.sendSettings(
-                        _mySettings.value!!.toRequestEntity().changeEmail(changedEmail)
-                    )
-
+        fun changeEmail(changedEmail: String) {
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    if (_mySettings.value != null) {
+                        settingsRepository.sendSettings(
+                            _mySettings.value!!.toRequestEntity().changeEmail(changedEmail),
+                        )
+                    }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        _errorDescription.value = e.toDescription()
+                    }
                 }
-            } catch (e: Exception) {
+            }
+        }
+
+        suspend fun getSettings() {
+            if (Singleton.mySettings.value == null) {
+                val mySettings = settingsRepository.getMySettings()
                 withContext(Dispatchers.Main) {
-                    _errorDescription.value = e.toDescription()
+                    _mySettings.value = mySettings
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    _mySettings.value = Singleton.mySettings.value
                 }
             }
         }
     }
-
-    suspend fun getSettings() {
-        if (Singleton.mySettings.value == null) {
-            val mySettings = settingsRepository.getMySettings()
-            withContext(Dispatchers.Main) {
-                _mySettings.value = mySettings
-            }
-        } else withContext(Dispatchers.Main) {
-            _mySettings.value = Singleton.mySettings.value
-        }
-    }
-
-}

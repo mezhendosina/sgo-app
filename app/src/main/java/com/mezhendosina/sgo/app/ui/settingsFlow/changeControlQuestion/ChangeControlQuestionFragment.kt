@@ -29,12 +29,11 @@ import com.google.android.material.transition.platform.MaterialSharedAxis
 import com.mezhendosina.sgo.app.R
 import com.mezhendosina.sgo.app.databinding.FragmentChangeControlQuestionBinding
 import com.mezhendosina.sgo.app.ui.settingsFlow.SettingsViewModel
-import com.mezhendosina.sgo.data.netschool.base.toMD5
+import com.mezhendosina.sgo.data.netschoolEsia.base.toMD5
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ChangeControlQuestionFragment : Fragment(R.layout.fragment_change_control_question) {
-
     private lateinit var binding: FragmentChangeControlQuestionBinding
 
     private val viewModel by viewModels<ChangeControlQuestionViewModel>()
@@ -46,7 +45,10 @@ class ChangeControlQuestionFragment : Fragment(R.layout.fragment_change_control_
         returnTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         binding = FragmentChangeControlQuestionBinding.bind(view)
@@ -80,7 +82,6 @@ class ChangeControlQuestionFragment : Fragment(R.layout.fragment_change_control_
                         } else {
                             View.VISIBLE
                         }
-
                 }.show()
         }
 
@@ -95,9 +96,10 @@ class ChangeControlQuestionFragment : Fragment(R.layout.fragment_change_control_
                 R.id.action_changeControlQuestionFragment_to_settingsFragment,
                 bundleOf(
                     SettingsViewModel.CONTROL_QUESTION to binding.selectedQuestionText.text,
-                    SettingsViewModel.CONTROL_ANSWER to binding.answerTextLayout.editText?.text.toString()
-                        .toMD5()
-                )
+                    SettingsViewModel.CONTROL_ANSWER to
+                        binding.answerTextLayout.editText?.text.toString()
+                            .toMD5(),
+                ),
             )
         }
     }

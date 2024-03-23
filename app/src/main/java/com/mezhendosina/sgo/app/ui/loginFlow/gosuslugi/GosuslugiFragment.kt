@@ -26,46 +26,50 @@ import com.mezhendosina.sgo.app.R
 import com.mezhendosina.sgo.app.databinding.FragmentGosuslugiBinding
 import com.mezhendosina.sgo.app.ui.loginFlow.gosuslugiResult.GosuslugiResultFragment
 import com.mezhendosina.sgo.data.SettingsDataStore
-import com.mezhendosina.sgo.data.netschool.NetSchoolSingleton
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 @AndroidEntryPoint
 class GosuslugiFragment : Fragment(R.layout.fragment_gosuslugi) {
-
     private val viewModel by viewModels<GosuslugiViewModel>()
 
     @Inject
     lateinit var settingsDataStore: SettingsDataStore
 
-    private val webView = GosuslugiWebView { loginState ->
-        CoroutineScope(Dispatchers.IO).launch {
-            viewModel.login(
-                loginState,
-                onOneUser = { userId ->
-                    findNavController().navigate(
-                        R.id.action_gosuslugiFragment_to_gosuslugiResult,
-                        bundleOf(
-                            GosuslugiResultFragment.LOGIN_STATE to loginState,
-                            GosuslugiResultFragment.USER_ID to userId
-                        )
-                    )
-                },
-                onMoreUser = {
-                    findNavController().navigate(
-                        R.id.action_gosuslugiFragment_to_chooseUserIdFragment,
-                        bundleOf(GosuslugiResultFragment.LOGIN_STATE to loginState)
-                    )
-                }
-            )
+    private val webView =
+        GosuslugiWebView { loginState ->
+            CoroutineScope(Dispatchers.IO).launch {
+                viewModel.login(
+                    loginState,
+                    onOneUser = { userId ->
+//                        findNavController().navigate(
+//                            R.id.action_gosuslugiFragment_to_gosuslugiResult,
+//                            bundleOf(
+//                                GosuslugiResultFragment.LOGIN_STATE to loginState,
+//                                GosuslugiResultFragment.USER_ID to userId,
+//                            ),
+//                        )
+                    },
+                    onMoreUser = {
+//                        findNavController().navigate(
+//                            R.id.action_gosuslugiFragment_to_chooseUserIdFragment,
+//                            bundleOf(GosuslugiResultFragment.LOGIN_STATE to loginState),
+//                        )
+                    },
+                )
+            }
         }
-    }
 
     private var binding: FragmentGosuslugiBinding? = null
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentGosuslugiBinding.bind(view)
 
@@ -74,7 +78,7 @@ class GosuslugiFragment : Fragment(R.layout.fragment_gosuslugi) {
                 loadUrl(
                     "${
                         settingsDataStore.getValue(SettingsDataStore.REGION_URL).first()
-                    }/webapi/sso/esia/crosslogin?esia_permissions=1&esia_role=1"
+                    }/webapi/sso/esia/crosslogin?esia_permissions=1&esia_role=1",
                 )
             }
             settings.apply {
@@ -85,6 +89,4 @@ class GosuslugiFragment : Fragment(R.layout.fragment_gosuslugi) {
             scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
         }
     }
-
-
 }

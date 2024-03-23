@@ -23,7 +23,7 @@ import androidx.lifecycle.viewModelScope
 import com.mezhendosina.sgo.app.uiEntities.SchoolUiEntity
 import com.mezhendosina.sgo.app.utils.toDescription
 import com.mezhendosina.sgo.app.utils.toLiveData
-import com.mezhendosina.sgo.data.netschool.repo.LoginRepositoryInterface
+import com.mezhendosina.sgo.data.netschool.repo.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -33,53 +33,53 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChooseSchoolViewModel
-@Inject constructor(
-    private val loginRepository: LoginRepositoryInterface
-) : ViewModel() {
-    private val _schools = MutableLiveData<List<SchoolUiEntity>>()
-    val schools: LiveData<List<SchoolUiEntity>> = _schools
+    @Inject
+    constructor(
+        private val loginRepository: LoginRepository,
+    ) : ViewModel() {
+        private val _schools = MutableLiveData<List<SchoolUiEntity>>()
+        val schools: LiveData<List<SchoolUiEntity>> = _schools
 
-    private val _selectedItem = MutableLiveData<SchoolUiEntity>()
-    val selectedItem = _selectedItem.toLiveData()
+        private val _selectedItem = MutableLiveData<SchoolUiEntity>()
+        val selectedItem = _selectedItem.toLiveData()
 
+        private val _isLoading = MutableLiveData(false)
+        val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _isLoading = MutableLiveData(false)
-    val isLoading: LiveData<Boolean> = _isLoading
+        private val _isError = MutableLiveData(false)
+        val isError: LiveData<Boolean> = _isError
 
-    private val _isError = MutableLiveData(false)
-    val isError: LiveData<Boolean> = _isError
+        private val _errorMessage = MutableLiveData<String>()
+        val errorMessage: LiveData<String> = _errorMessage
 
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> = _errorMessage
-
-    init {
-        viewModelScope.launch {
-            loginRepository.getSchools().collectLatest {
-                _schools.value = it
+        init {
+            viewModelScope.launch {
+                loginRepository.getSchools().collectLatest {
+                    _schools.value = it
+                }
             }
         }
-    }
 
-    suspend fun findSchool(string: String) {
-        withContext(Dispatchers.Main) {
-            _isError.value = false
-            _isLoading.value = true
-        }
-        try {
-            loginRepository.mapSchools(string)
-        } catch (e: Exception) {
+        suspend fun findSchool(string: String) {
             withContext(Dispatchers.Main) {
-                _errorMessage.value = e.toDescription()
-                _isError.value = true
+                _isError.value = false
+                _isLoading.value = true
             }
-        } finally {
-            withContext(Dispatchers.Main) {
-                _isLoading.value = false
+            try {
+                loginRepository.mapSchools(string)
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    _errorMessage.value = e.toDescription()
+                    _isError.value = true
+                }
+            } finally {
+                withContext(Dispatchers.Main) {
+                    _isLoading.value = false
+                }
             }
         }
-    }
 
-    fun editSelectedItem(newValueId: SchoolUiEntity) {
-        _selectedItem.value = newValueId
+        fun editSelectedItem(newValueId: SchoolUiEntity) {
+            _selectedItem.value = newValueId
+        }
     }
-}

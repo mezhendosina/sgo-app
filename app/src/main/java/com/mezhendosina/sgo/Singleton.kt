@@ -16,7 +16,6 @@
 
 package com.mezhendosina.sgo
 
-
 import androidx.lifecycle.MutableLiveData
 import com.google.android.material.tabs.TabLayout
 import com.mezhendosina.sgo.app.BuildConfig
@@ -29,9 +28,9 @@ import com.mezhendosina.sgo.app.uiEntities.UserUIEntity
 import com.mezhendosina.sgo.app.utils.LoadStates
 import com.mezhendosina.sgo.data.WeekStartEndEntity
 import com.mezhendosina.sgo.data.netschool.api.announcements.AnnouncementsResponseEntity
-import com.mezhendosina.sgo.data.netschool.api.diary.entities.PastMandatoryEntity
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.GradesItem
 import com.mezhendosina.sgo.data.netschool.api.settings.entities.MySettingsResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.PastMandatoryEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.GradesItem
 import okhttp3.internal.http2.Header
 
 object Singleton {
@@ -63,23 +62,22 @@ object Singleton {
 
     val answerUpdated = MutableLiveData<Boolean>(false)
 
-
     var gradesWithWeight = false
 
     val updateGradeState = MutableLiveData<LoadStates>()
 
     val mainContainerScreen = MutableLiveData<String>(ContainerFragment.JOURNAL)
 
-    val STATIC_HEADERS = mutableListOf(
-        Header("UserAgent", "che-zadali-app v${BuildConfig.VERSION_NAME}"),
-        Header("X-Requested-With", "XMLHttpRequest"),
-        Header("Sec-Fetch-Site", "same-origin"),
-        Header("Sec-Fetch-Mode", "cors"),
-        Header("Sec-Fetch-Dest", "empty"),
-        Header(
-            "sec-ch-ua",
-            "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"105\", \"Microsoft Edge\";v=\"105\""
+    val STATIC_HEADERS =
+        mutableListOf(
+            Header("UserAgent", "che-zadali-app v${BuildConfig.VERSION_NAME}"),
+            Header("X-Requested-With", "XMLHttpRequest"),
+            Header("Sec-Fetch-Site", "same-origin"),
+            Header("Sec-Fetch-Mode", "cors"),
+            Header("Sec-Fetch-Dest", "empty"),
+            Header(
+                "sec-ch-ua",
+                "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"105\", \"Microsoft Edge\";v=\"105\"",
+            ),
         )
-    )
 }
-

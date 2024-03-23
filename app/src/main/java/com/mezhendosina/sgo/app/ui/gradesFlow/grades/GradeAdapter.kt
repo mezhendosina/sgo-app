@@ -26,7 +26,7 @@ import com.mezhendosina.sgo.app.databinding.ItemGradeBinding
 import com.mezhendosina.sgo.app.utils.setupAsLessonEmoji
 import com.mezhendosina.sgo.app.utils.setupGrade
 import com.mezhendosina.sgo.app.utils.toGradeType
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.GradesItem
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.GradesItem
 import com.mezhendosina.sgo.domain.LessonEmojiUseCase
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -19,11 +19,11 @@ package com.mezhendosina.sgo.data.netschool.api.diary
 import com.mezhendosina.sgo.Singleton
 import com.mezhendosina.sgo.app.model.journal.DiaryModelRequestEntity
 import com.mezhendosina.sgo.app.model.journal.DiarySource
-import com.mezhendosina.sgo.data.netschool.api.diary.entities.DiaryInitResponseEntity
-import com.mezhendosina.sgo.data.netschool.api.diary.entities.DiaryResponseEntity
-import com.mezhendosina.sgo.data.netschool.api.diary.entities.PastMandatoryEntity
-import com.mezhendosina.sgo.data.netschool.base.BaseRetrofitSource
-import com.mezhendosina.sgo.data.netschool.base.RetrofitConfig
+import com.mezhendosina.sgo.data.netschoolEsia.base.BaseRetrofitSource
+import com.mezhendosina.sgo.data.netschoolEsia.base.RetrofitConfig
+import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.DiaryInitResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.DiaryResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.PastMandatoryEntity
 import javax.inject.Inject
 
 @javax.inject.Singleton
@@ -32,7 +32,7 @@ class RetrofitDiarySource
     constructor(config: RetrofitConfig) :
     BaseRetrofitSource(config),
         DiarySource {
-        private val diaryApi = retrofit.create(DiaryApi::class.java)
+        private val diaryApi = config.baseRetrofit.create(DiaryApi::class.java)
 
         override suspend fun diaryInit(): DiaryInitResponseEntity =
             wrapRetrofitExceptions {

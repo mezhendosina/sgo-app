@@ -17,10 +17,10 @@
 package com.mezhendosina.sgo.app.model
 
 import com.google.gson.Gson
-import com.mezhendosina.sgo.data.netschool.base.RetrofitConfig
-import com.mezhendosina.sgo.data.netschool.base.BaseRetrofitSource
-import com.mezhendosina.sgo.data.netschool.base.Download
-import com.mezhendosina.sgo.data.netschool.base.downloadToFileWithProgress
+import com.mezhendosina.sgo.data.netschoolEsia.base.BaseRetrofitSource
+import com.mezhendosina.sgo.data.netschoolEsia.base.Download
+import com.mezhendosina.sgo.data.netschoolEsia.base.RetrofitConfig
+import com.mezhendosina.sgo.data.netschoolEsia.base.downloadToFileWithProgress
 import com.mezhendosina.sgo.data.requests.github.checkUpdates.CheckUpdates
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -72,13 +72,14 @@ class ContainerRepository
 
         private val retrofitConfig =
             RetrofitConfig(
-                retrofit,,,
-                gson
+                retrofit,
+                retrofit,
+                gson,
             )
 
         private val baseRetrofitSource = BaseRetrofitSource(retrofitConfig)
 
-        private val updateApi = baseRetrofitSource.retrofit.create(UpdateApi::class.java)
+        private val updateApi = retrofit.create(UpdateApi::class.java)
 
         suspend fun checkUpdates(): CheckUpdates {
             return baseRetrofitSource.wrapRetrofitExceptions {

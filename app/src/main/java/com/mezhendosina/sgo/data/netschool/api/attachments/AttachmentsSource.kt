@@ -16,9 +16,9 @@
 
 package com.mezhendosina.sgo.data.netschool.api.attachments
 
-import com.mezhendosina.sgo.data.netschool.api.attachments.entities.AttachmentsRequestEntity
-import com.mezhendosina.sgo.data.netschool.api.attachments.entities.AttachmentsResponseEntity
-import com.mezhendosina.sgo.data.netschool.api.attachments.entities.SendFileRequestEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.attachments.AttachmentsRequestEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.attachments.AttachmentsResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.attachments.SendFileRequestEntity
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -27,20 +27,32 @@ import java.io.File
 interface AttachmentsSource {
     suspend fun getAttachments(
         studentId: Int,
-        attachmentsRequestEntity: AttachmentsRequestEntity
+        attachmentsRequestEntity: AttachmentsRequestEntity,
     ): List<AttachmentsResponseEntity>
 
-    suspend fun downloadAttachment(attachmentId: Int, file: File): String?
+    suspend fun downloadAttachment(
+        attachmentId: Int,
+        file: File,
+    ): String?
 
-    suspend fun deleteAttachment(assignmentId: Int, attachmentId: Int)
+    suspend fun deleteAttachment(
+        assignmentId: Int,
+        attachmentId: Int,
+    )
 
-    suspend fun editAttachmentDescription(attachmentId: Int, description: String): String
+    suspend fun editAttachmentDescription(
+        attachmentId: Int,
+        description: String,
+    ): String
 
     suspend fun sendTextAnswer(
         assignmentId: Int,
         studentId: Int,
-        answer: String
+        answer: String,
     ): Response<ResponseBody>
 
-    suspend fun sendFileAttachment(file: MultipartBody.Part, data: SendFileRequestEntity): Int
+    suspend fun sendFileAttachment(
+        file: MultipartBody.Part,
+        data: SendFileRequestEntity,
+    ): Int
 }

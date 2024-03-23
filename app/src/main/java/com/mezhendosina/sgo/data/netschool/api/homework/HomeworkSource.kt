@@ -16,15 +16,20 @@
 
 package com.mezhendosina.sgo.data.netschool.api.homework
 
-import com.mezhendosina.sgo.data.netschool.api.diary.entities.AssignmentTypesResponseEntity
-import com.mezhendosina.sgo.data.netschool.api.homework.entities.AssignResponseEntity
-import com.mezhendosina.sgo.data.netschool.api.homework.entities.GetAnswerResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.AssignmentTypesResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.homework.AssignResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.entities.homework.GetAnswerResponseEntity
 
 interface HomeworkSource {
     suspend fun assignmentTypes(all: Boolean = true): List<AssignmentTypesResponseEntity>
 
-    suspend fun getAnswer(assignmentId: Int, studentId: Int): List<GetAnswerResponseEntity>
+    suspend fun getAnswer(
+        assignmentId: Int,
+        studentId: Int,
+    ): List<GetAnswerResponseEntity>
 
-    suspend fun getAboutAssign(assignId: Int, studentId: Int): AssignResponseEntity
-
+    suspend fun getAboutAssign(
+        assignId: Int,
+        studentId: Int,
+    ): AssignResponseEntity
 }

@@ -20,8 +20,8 @@ import android.content.Context
 import android.net.Uri
 import com.mezhendosina.sgo.app.utils.getFileNameFromUri
 import com.mezhendosina.sgo.data.netschool.api.attachments.AttachmentsSource
-import com.mezhendosina.sgo.data.netschool.api.attachments.entities.SendFileRequestEntity
-import com.mezhendosina.sgo.data.netschool.repo.LessonRepositoryInterface
+import com.mezhendosina.sgo.data.netschoolEsia.entities.attachments.SendFileRequestEntity
+import com.mezhendosina.sgo.data.netschoolEsia.lesson.LessonRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -29,14 +29,19 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
-class AnswerRepository @Inject constructor(
-    private val attachmentsSource: AttachmentsSource,
-    private val lessonRepository: LessonRepositoryInterface
-) {
-
-    suspend fun sendTextAnswer(assignId: Int, text: String, studentId: Int) {
-        attachmentsSource.sendTextAnswer(assignId, studentId, text)
-    }
+class AnswerRepository
+    @Inject
+    constructor(
+        private val attachmentsSource: AttachmentsSource,
+        private val lessonRepository: LessonRepository,
+    ) {
+        suspend fun sendTextAnswer(
+            assignId: Int,
+            text: String,
+            studentId: Int,
+        ) {
+            attachmentsSource.sendTextAnswer(assignId, studentId, text)
+        }
 //
 //    suspend fun sendFiles(
 //        context: Context,
@@ -60,30 +65,33 @@ class AnswerRepository @Inject constructor(
 //    }
 //
 
-    private suspend fun sendFile(
-        context: Context,
-        assignmentID: Int,
-        filePath: Uri,
-        description: String?
-    ): Int? {
-        val contentResolver = context.contentResolver
-        val a = contentResolver.openInputStream(filePath)
+        private suspend fun sendFile(
+            context: Context,
+            assignmentID: Int,
+            filePath: Uri,
+            description: String?,
+        ): Int? {
+            val contentResolver = context.contentResolver
+            val a = contentResolver.openInputStream(filePath)
 
-        val body = a?.readBytes()?.toRequestBody("*/*".toMediaTypeOrNull())
-        val fileName = getFileNameFromUri(context, filePath)
-        val out = if (body != null) {
-            val part = MultipartBody.Part.createFormData("file", fileName, body)
-            attachmentsSource.sendFileAttachment(
-                part,
-                SendFileRequestEntity(
-                    true,
-                    assignmentID,
-                    description,
-                    fileName ?: ""
-                )
-            )
-        } else null
-        withContext(Dispatchers.IO) { a?.close() }
-        return out
+            val body = a?.readBytes()?.toRequestBody("*/*".toMediaTypeOrNull())
+            val fileName = getFileNameFromUri(context, filePath)
+            val out =
+                if (body != null) {
+                    val part = MultipartBody.Part.createFormData("file", fileName, body)
+                    attachmentsSource.sendFileAttachment(
+                        part,
+                        SendFileRequestEntity(
+                            true,
+                            assignmentID,
+                            description,
+                            fileName ?: "",
+                        ),
+                    )
+                } else {
+                    null
+                }
+            withContext(Dispatchers.IO) { a?.close() }
+            return out
+        }
     }
-}

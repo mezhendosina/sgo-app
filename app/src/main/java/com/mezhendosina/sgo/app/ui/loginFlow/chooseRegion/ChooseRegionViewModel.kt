@@ -25,7 +25,6 @@ import com.mezhendosina.sgo.app.ui.loginFlow.chooseRegion.entities.ChooseRegionU
 import com.mezhendosina.sgo.app.utils.toDescription
 import com.mezhendosina.sgo.app.utils.toLiveData
 import com.mezhendosina.sgo.data.SettingsDataStore
-import com.mezhendosina.sgo.data.netschool.NetSchoolSingleton
 import com.mezhendosina.sgo.data.netschool.repo.RegionsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -35,53 +34,54 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-
 @HiltViewModel
 class ChooseRegionViewModel
-@Inject constructor(
-    private val regionsRepository: RegionsRepository,
-    private val settingsDataStore: SettingsDataStore
-) : ViewModel() {
+    @Inject
+    constructor(
+        private val regionsRepository: RegionsRepository,
+        private val settingsDataStore: SettingsDataStore,
+    ) : ViewModel() {
+        private val _regions = MutableLiveData<ChooseRegionUiEntity>()
+        val regions: LiveData<ChooseRegionUiEntity> = _regions
 
-    private val _regions = MutableLiveData<ChooseRegionUiEntity>()
-    val regions: LiveData<ChooseRegionUiEntity> = _regions
+        private val _selectedRegion: MutableLiveData<ChooseRegionUiEntityItem> = MutableLiveData()
+        val selectedRegion = _selectedRegion.toLiveData()
 
-    private val _selectedRegion: MutableLiveData<ChooseRegionUiEntityItem> = MutableLiveData()
-    val selectedRegion = _selectedRegion.toLiveData()
+        private val _isLoading = MutableLiveData(false)
+        val isLoading: LiveData<Boolean> = _isLoading
 
+        private val _errorMessage = MutableLiveData<String>()
+        val errorMessage: LiveData<String> = _errorMessage
 
-    private val _isLoading = MutableLiveData(false)
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> = _errorMessage
-
-    init {
-        getRegions()
-    }
-
-    private fun getRegions() {
-        try {
-            _errorMessage.value = ""
-            _isLoading.value = true
-            _regions.value = regionsRepository.getRegions()
-            _isLoading.value = false
-        } catch (e: Exception) {
-            _errorMessage.value = e.toDescription()
+        init {
+            getRegions()
         }
-    }
 
-    fun editSelectedRegion(newValue: String) {
-        _selectedRegion.value = _regions.value?.first { it.name == newValue }!!
-    }
+        private fun getRegions() {
+            try {
+                _errorMessage.value = ""
+                _isLoading.value = true
+                _regions.value = regionsRepository.getRegions()
+                _isLoading.value = false
+            } catch (e: Exception) {
+                _errorMessage.value = e.toDescription()
+            }
+        }
 
-    fun setRegion(@ApplicationContext context: Context, onComplete: () -> Unit) {
-        val regionUrl = _selectedRegion.value!!.url
-        CoroutineScope(Dispatchers.IO).launch {
-            settingsDataStore.setValue(SettingsDataStore.REGION_URL, regionUrl)
-            withContext(Dispatchers.Main) {
-                onComplete.invoke()
+        fun editSelectedRegion(newValue: String) {
+            _selectedRegion.value = _regions.value?.first { it.name == newValue }!!
+        }
+
+        fun setRegion(
+            @ApplicationContext context: Context,
+            onComplete: () -> Unit,
+        ) {
+            val regionUrl = _selectedRegion.value!!.url
+            CoroutineScope(Dispatchers.IO).launch {
+                settingsDataStore.setValue(SettingsDataStore.REGION_URL, regionUrl)
+                withContext(Dispatchers.Main) {
+                    onComplete.invoke()
+                }
             }
         }
     }
-}

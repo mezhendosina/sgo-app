@@ -14,6 +14,8 @@ import com.mezhendosina.sgo.data.netschoolEsia.grades.GradesSource
 import com.mezhendosina.sgo.data.netschoolEsia.grades.RetrofitGradesSource
 import com.mezhendosina.sgo.data.netschoolEsia.login.LoginSource
 import com.mezhendosina.sgo.data.netschoolEsia.login.RetrofitLoginSource
+import com.mezhendosina.sgo.data.netschoolEsia.utils.RetrofitUtilsSource
+import com.mezhendosina.sgo.data.netschoolEsia.utils.UtilsSource
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -42,4 +44,7 @@ abstract class SourcesModule {
 
     @Binds
     abstract fun bindLoginSource(retrofitLoginSource: RetrofitLoginSource): LoginSource
+
+    @Binds
+    abstract fun bindUtilsSource(retrofitUtilsSource: RetrofitUtilsSource): UtilsSource
 }

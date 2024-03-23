@@ -29,80 +29,75 @@ import com.mezhendosina.sgo.app.activities.MainActivity
 import com.mezhendosina.sgo.app.uiEntities.SchoolUiEntity
 import com.mezhendosina.sgo.app.utils.toDescription
 import com.mezhendosina.sgo.data.netschool.api.login.entities.toUiEntity
-import com.mezhendosina.sgo.data.netschool.base.toMD5
-import com.mezhendosina.sgo.data.netschool.repo.LoginRepositoryInterface
+import com.mezhendosina.sgo.data.netschool.repo.LoginRepository
+import com.mezhendosina.sgo.data.netschoolEsia.base.toMD5
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-
 @HiltViewModel
 class LoginViewModel
-@Inject constructor(
-    private val loginRepository: LoginRepositoryInterface
-) : ViewModel() {
+    @Inject
+    constructor(
+        private val loginRepository: LoginRepository,
+    ) : ViewModel() {
+        private val _isLoading = MutableLiveData(false)
+        val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _isLoading = MutableLiveData(false)
-    val isLoading: LiveData<Boolean> = _isLoading
+        private val _errorMessage = MutableLiveData<String>()
+        val errorMessage: LiveData<String> = _errorMessage
 
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> = _errorMessage
+        private val _foundSchool = MutableLiveData<SchoolUiEntity?>()
+        val foundSchool: LiveData<SchoolUiEntity?> = _foundSchool
 
-    private val _foundSchool = MutableLiveData<SchoolUiEntity?>()
-    val foundSchool: LiveData<SchoolUiEntity?> = _foundSchool
-
-    fun login(
-        context: Context,
-        schoolId: Int,
-        login: String,
-        password: String,
-        navController: NavController
-    ) {
-        _isLoading.value = true
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val passwordHash = password.toMD5()
-                loginRepository.login(
-                    login,
-                    passwordHash,
-                    _foundSchool.value?.id,
-                    onOneUser = {
-                        val intent = Intent(context, MainActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(context, intent, null)
-                    },
-                    onMoreUser = {
-                        Singleton.users = it.toUiEntity()
-                        navController.navigate(R.id.action_loginFragment_to_chooseUserIdFragment)
+        fun login(
+            context: Context,
+            schoolId: Int,
+            login: String,
+            password: String,
+            navController: NavController,
+        ) {
+            _isLoading.value = true
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val passwordHash = password.toMD5()
+                    loginRepository.login(
+                        login,
+                        passwordHash,
+                        _foundSchool.value?.id,
+                        onOneUser = {
+                            val intent = Intent(context, MainActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(context, intent, null)
+                        },
+                        onMoreUser = {
+                            Singleton.users = it.toUiEntity()
+                            navController.navigate(R.id.action_loginFragment_to_chooseUserIdFragment)
+                        },
+                    )
+                    loginRepository.logout()
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        _errorMessage.value = e.toDescription()
                     }
-                )
-                loginRepository.logout()
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    _errorMessage.value = e.toDescription()
+                } finally {
+                    withContext(Dispatchers.Main) {
+                        _isLoading.value = false
+                    }
                 }
-            } finally {
+            }
+        }
+
+        suspend fun findSchool(schoolId: Int) {
+            loginRepository.getSchools().collectLatest { schoolUiEntities ->
+                val findSchool = schoolUiEntities.firstOrNull { it.id == schoolId }
                 withContext(Dispatchers.Main) {
-                    _isLoading.value = false
+                    _foundSchool.value = findSchool
                 }
             }
         }
     }
-
-
-    suspend fun findSchool(schoolId: Int) {
-        loginRepository.getSchools().collectLatest { schoolUiEntities ->
-            val findSchool = schoolUiEntities.firstOrNull { it.id == schoolId}
-            withContext(Dispatchers.Main) {
-                _foundSchool.value = findSchool
-            }
-        }
-
-    }
-}
-

@@ -54,7 +54,7 @@ import com.mezhendosina.sgo.app.utils.slideDownAnimation
 import com.mezhendosina.sgo.app.utils.slideUpAnimation
 import com.mezhendosina.sgo.data.SettingsDataStore
 import com.mezhendosina.sgo.data.currentWeekStart
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.GradesItem
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.GradesItem
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

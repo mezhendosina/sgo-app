@@ -2,6 +2,7 @@ package com.mezhendosina.sgo.data.netschoolEsia.utils
 
 import com.mezhendosina.sgo.data.AppSettings
 import com.mezhendosina.sgo.data.netschoolEsia.entities.common.Subject
+import com.mezhendosina.sgo.data.netschoolEsia.entities.common.Term
 import com.mezhendosina.sgo.data.netschoolEsia.entities.education.SchoolYear
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,11 +29,23 @@ class UtilsRepositoryImpl
             _years.emit(response)
         }
 
-        override suspend fun getSubjects() {
-            if (_years.value.isEmpty()) getYears()
+        override suspend fun getSubjects(yearId: Int): List<Subject> {
+            if (_subjects.value.isEmpty()) {
+                val studentId = appSettings.getStudentId()
+                _subjects.value =
+                    utilsSource.getSubjects(
+                        studentId,
+                        yearId,
+                    )
+            }
+            return _subjects.value
         }
 
         override suspend fun getCurrentYear(): SchoolYear {
+            TODO("Not yet implemented")
+        }
+
+        override suspend fun getSelectedTrimId(): Term {
             TODO("Not yet implemented")
         }
 

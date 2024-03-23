@@ -17,7 +17,7 @@
 package com.mezhendosina.sgo.data.netschool.api.announcements
 
 import com.google.gson.annotations.SerializedName
-import com.mezhendosina.sgo.data.netschool.api.attachments.entities.Attachment
+import com.mezhendosina.sgo.data.netschoolEsia.entities.attachments.Attachment
 
 data class AnnouncementsResponseEntity(
     @SerializedName("attachments")

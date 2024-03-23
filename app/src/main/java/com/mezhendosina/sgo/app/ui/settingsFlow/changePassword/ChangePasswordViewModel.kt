@@ -22,10 +22,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mezhendosina.sgo.app.utils.toDescription
 import com.mezhendosina.sgo.data.SettingsDataStore
-import com.mezhendosina.sgo.data.netschool.NetSchoolSingleton
 import com.mezhendosina.sgo.data.netschool.api.settings.entities.ChangePasswordEntity
-import com.mezhendosina.sgo.data.netschool.base.toMD5
 import com.mezhendosina.sgo.data.netschool.repo.SettingsRepository
+import com.mezhendosina.sgo.data.netschoolEsia.base.toMD5
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -35,35 +34,34 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-
 @HiltViewModel
 class ChangePasswordViewModel
-@Inject constructor(
-    private val settingsRepository: SettingsRepository,
-    private val settingsDataStore: SettingsDataStore
-) : ViewModel() {
+    @Inject
+    constructor(
+        private val settingsRepository: SettingsRepository,
+        private val settingsDataStore: SettingsDataStore,
+    ) : ViewModel() {
+        private val _errorMessage = MutableLiveData<String>()
+        val errorMessage: LiveData<String> = _errorMessage
 
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> = _errorMessage
-
-    fun changePassword(
-        oldPassword: String,
-        newPassword: String,
-        @ApplicationContext context: Context
-    ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val password = newPassword.toMD5()
-                settingsRepository.changePassword(
-                    settingsDataStore.getValue(SettingsDataStore.CURRENT_USER_ID).first() ?: -1,
-                    ChangePasswordEntity(oldPassword, password)
-                )
-                settingsDataStore.setValue(SettingsDataStore.PASSWORD, password)
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    _errorMessage.value = e.toDescription()
+        fun changePassword(
+            oldPassword: String,
+            newPassword: String,
+            @ApplicationContext context: Context,
+        ) {
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val password = newPassword.toMD5()
+                    settingsRepository.changePassword(
+                        settingsDataStore.getValue(SettingsDataStore.CURRENT_USER_ID).first() ?: -1,
+                        ChangePasswordEntity(oldPassword, password),
+                    )
+                    settingsDataStore.setValue(SettingsDataStore.PASSWORD, password)
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        _errorMessage.value = e.toDescription()
+                    }
                 }
             }
         }
     }
-}

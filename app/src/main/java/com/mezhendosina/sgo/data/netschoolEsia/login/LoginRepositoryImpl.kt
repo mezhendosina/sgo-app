@@ -1,9 +1,20 @@
 package com.mezhendosina.sgo.data.netschoolEsia.login
 
+import com.google.gson.Gson
+import com.mezhendosina.sgo.app.ui.loginFlow.chooseRegion.entities.ChooseRegionUiEntity
+import com.mezhendosina.sgo.app.uiEntities.SchoolUiEntity
 import com.mezhendosina.sgo.data.SettingsDataStore
+import com.mezhendosina.sgo.data.netschool.api.login.LoginEntity
+import com.mezhendosina.sgo.data.netschool.api.login.entities.StudentResponseEntity
+import com.mezhendosina.sgo.data.netschool.api.login.entities.accountInfo.User
+import com.mezhendosina.sgo.data.netschool.api.regions.Regions
+import com.mezhendosina.sgo.data.netschool.repo.LoginRepository
+import com.mezhendosina.sgo.data.netschoolEsia.entities.users.UserInfo
+import com.mezhendosina.sgo.data.requests.sgo.login.entities.LoginResponseEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.last
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,9 +25,6 @@ class LoginRepositoryImpl
         val settingsDataStore: SettingsDataStore,
         val loginSource: LoginSource,
     ) : LoginRepository {
-        private val _users = MutableStateFlow<List<Int>>(emptyList())
-        override val users: StateFlow<List<Int>> = _users
-
         override suspend fun login(deviceCode: Int) {
             val loginResponse = loginSource.getToken(deviceCode)
             settingsDataStore.saveToken(
@@ -30,12 +38,52 @@ class LoginRepositoryImpl
             token.first()?.let { loginSource.getToken(it) }
         }
 
-        override suspend fun getUsers() {
-            val response = loginSource.getUsers().map { it.userId }
-            _users.emit(response)
+        override suspend fun getUsers(): List<UserInfo> {
+            return loginSource.getUsers()
         }
 
-        override suspend fun logout() {
-//            TODO("Not yet implemented")
+        override suspend fun getRegions(): ChooseRegionUiEntity {
+            return Gson().fromJson(
+                Regions.REGIONS,
+                ChooseRegionUiEntity::class.java,
+            )
         }
+
+        private val _schools = MutableStateFlow<List<SchoolUiEntity>>(emptyList())
+
+        override suspend fun findSchool(schoolId: Int): SchoolUiEntity {
+            return _schools.last().first { it.id == schoolId }
+        }
+
+        override fun getSchools(): StateFlow<List<SchoolUiEntity>> {
+            return _schools
+        }
+
+        override suspend fun mapSchools(name: String) {
+        }
+
+        override suspend fun login(
+            login: String?,
+            password: String?,
+            schoolId: Int?,
+            firstLogin: Boolean,
+            onOneUser: () -> Unit,
+            onMoreUser: (List<StudentResponseEntity>) -> Unit,
+        ) {
+        }
+
+        override suspend fun gosuslugiLogin(b: Boolean) = Unit
+
+        override suspend fun getGosuslugiUsers(loginState: String): List<User> = emptyList()
+
+        private suspend fun postLogin(
+            loginEntity: LoginEntity,
+            loginRequest: LoginResponseEntity,
+            firstLogin: Boolean,
+            onOneUser: () -> Unit,
+            onMoreUser: (List<StudentResponseEntity>) -> Unit,
+        ) {
+        }
+
+        override suspend fun logout() = Unit
     }

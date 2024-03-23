@@ -21,8 +21,8 @@ import com.google.gson.reflect.TypeToken
 import com.mezhendosina.sgo.app.BuildConfig
 import com.mezhendosina.sgo.app.model.announcements.AnnouncementsSource
 import com.mezhendosina.sgo.data.netschool.NetSchoolExpectedResults
-import com.mezhendosina.sgo.data.netschool.base.BaseRetrofitSource
-import com.mezhendosina.sgo.data.netschool.base.RetrofitConfig
+import com.mezhendosina.sgo.data.netschoolEsia.base.BaseRetrofitSource
+import com.mezhendosina.sgo.data.netschoolEsia.base.RetrofitConfig
 import java.lang.reflect.Type
 import javax.inject.Inject
 import javax.inject.Singleton

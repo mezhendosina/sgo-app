@@ -20,45 +20,47 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mezhendosina.sgo.app.model.grades.GradesRepository
 import com.mezhendosina.sgo.app.model.grades.GradesRepositoryInterface
 import com.mezhendosina.sgo.app.utils.toLiveData
 import com.mezhendosina.sgo.data.grades.CalculateGradeItem
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.GradesItem
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.GradesItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GradeItemViewModel @Inject constructor(
-    val gradesRepository: GradesRepositoryInterface
-) : ViewModel() {
+class GradeItemViewModel
+    @Inject
+    constructor(
+        val gradesRepository: GradesRepositoryInterface,
+    ) : ViewModel() {
+        private val _calculatedGrade = MutableLiveData<CalculateGradeItem>()
+        val calculatedGrade: LiveData<CalculateGradeItem> = _calculatedGrade
 
-    private val _calculatedGrade = MutableLiveData<CalculateGradeItem>()
-    val calculatedGrade: LiveData<CalculateGradeItem> = _calculatedGrade
+        private val _grade = MutableLiveData<CalculateGradeItem>()
+        val grade: LiveData<CalculateGradeItem> = _grade
 
-    private val _grade = MutableLiveData<CalculateGradeItem>()
-    val grade: LiveData<CalculateGradeItem> = _grade
+        private val _lesson = MutableLiveData<GradesItem>()
+        val lesson = _lesson.toLiveData()
 
-    private val _lesson = MutableLiveData<GradesItem>()
-    val lesson = _lesson.toLiveData()
-
-    init {
-        viewModelScope.launch {
-            gradesRepository.selectedGradesItem.collect {
-                _lesson.value = it
-                initCalculator()
+        init {
+            viewModelScope.launch {
+                gradesRepository.selectedGradesItem.collect {
+                    _lesson.value = it
+                    initCalculator()
+                }
             }
         }
-    }
 
-    private fun initCalculator() {
-        _calculatedGrade.value = _lesson.value?.toCalculateItem()
-        _grade.value = _calculatedGrade.value
-    }
+        private fun initCalculator() {
+            _calculatedGrade.value = _lesson.value?.toCalculateItem()
+            _grade.value = _calculatedGrade.value
+        }
 
-    fun editGrade(grade: Int, delta: Int) {
-        _calculatedGrade.value = _calculatedGrade.value?.changeGrade(grade, delta)
+        fun editGrade(
+            grade: Int,
+            delta: Int,
+        ) {
+            _calculatedGrade.value = _calculatedGrade.value?.changeGrade(grade, delta)
+        }
     }
-
-}
