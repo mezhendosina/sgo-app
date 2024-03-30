@@ -5,12 +5,14 @@ import com.mezhendosina.sgo.data.netschoolEsia.entities.announcements.Attachment
 import com.mezhendosina.sgo.data.netschoolEsia.entities.assignments.Assignment
 
 interface DiaryRepository {
+
     suspend fun getDiary(
         startDate: String,
         endDate: String,
     ): DiaryUiEntity
 
-    suspend fun getAssignment(classmeetingId: Int): List<Assignment>
+
+    suspend fun getAssignment(classmeetingsId: List<Int>): List<Assignment>
 
     suspend fun getAttachments(assignmentId: Int): List<AttachmentEntity>
 }

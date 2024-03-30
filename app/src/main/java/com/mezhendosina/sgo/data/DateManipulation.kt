@@ -45,6 +45,12 @@ class DateManipulation(val date: String) {
 }
 
 @SuppressLint("SimpleDateFormat")
+fun dateToTime(s: String): String {
+    val a = SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse(s)
+    return SimpleDateFormat("hh:mm").format(a!!)
+}
+
+@SuppressLint("SimpleDateFormat")
 fun dateToRussian(date: String): String {
     val a = SimpleDateFormat("yyyy-MM-dd'T'00:00:00").parse(date)
     val locale = Locale("ru", "RU")

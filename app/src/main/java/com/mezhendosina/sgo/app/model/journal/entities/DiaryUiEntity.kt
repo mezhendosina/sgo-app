@@ -17,21 +17,68 @@
 package com.mezhendosina.sgo.app.model.journal.entities
 
 import com.mezhendosina.sgo.app.uiEntities.MarkUiEntity
+import com.mezhendosina.sgo.data.dateToRussian
 import com.mezhendosina.sgo.data.netschoolEsia.entities.attachments.AttachmentsResponseEntity
 import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.PastMandatoryEntity
 import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.TextAnswer
 
 data class DiaryUiEntity(
     val weekDays: List<WeekDayUiEntity>,
-    val weekEnd: String,
-    val weekStart: String,
     val pastMandatory: List<PastMandatoryEntity>,
-)
+) {
+    fun getClassmeetingsId(): List<Int> {
+        val out = mutableListOf<Int>()
+        weekDays.forEach {
+            it.lessons.forEach { lesson ->
+                out.add(
+                    lesson.classmeetingId
+                )
+            }
+        }
+        return out
+    }
+
+    fun formatDates(): DiaryUiEntity {
+        return DiaryUiEntity(
+            weekDays.map {
+                it.formatDate()
+            },
+            pastMandatory
+        )
+    }
+
+    fun addAssignments(assignments: List<AssignmentUiEntity>): DiaryUiEntity {
+        val newWeekDays = weekDays.map { weekDay ->
+            val weekDaysWithAssignments = weekDay.lessons.map { lesson ->
+                val lessonAssignments = assignments.filter {
+                    it.classMeetingId == lesson.classmeetingId
+                }
+
+                val lessonWithAssignments = lesson.addAssignments(lessonAssignments)
+                val lessonWithHomework =
+                    lessonAssignments.firstOrNull { it.typeId == 3 }?.let { lesson.addHomework(it) }
+                return@map lessonWithHomework ?: lessonWithAssignments
+            }
+            return@map WeekDayUiEntity(
+                weekDay.date,
+                weekDaysWithAssignments.toMutableList()
+            )
+        }
+
+        return DiaryUiEntity(
+            newWeekDays, pastMandatory
+        )
+    }
+}
 
 data class WeekDayUiEntity(
     val date: String,
     val lessons: MutableList<LessonUiEntity>,
-)
+) {
+    fun formatDate(): WeekDayUiEntity = WeekDayUiEntity(
+        dateToRussian(date), lessons
+    )
+}
 
 data class LessonUiEntity(
     val assignments: List<AssignmentUiEntity>?,
@@ -45,6 +92,20 @@ data class LessonUiEntity(
     val startTime: String,
     val subjectName: String,
 ) {
+    fun addAssignments(assignments: List<AssignmentUiEntity>): LessonUiEntity =
+        LessonUiEntity(
+            assignments,
+            homework,
+            classmeetingId,
+            day,
+            endTime,
+            isEaLesson,
+            number,
+            relay,
+            startTime,
+            subjectName,
+        )
+
     fun addHomework(homework: AssignmentUiEntity) =
         LessonUiEntity(
             assignments,
@@ -108,6 +169,7 @@ data class AssignmentUiEntity(
     val weight: Int,
     val attachments: List<AttachmentsResponseEntity>,
 )
+
 //
 // data class MarkUiEntity(
 //    val assignId: Int,

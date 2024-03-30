@@ -37,7 +37,7 @@ class LessonRepositoryImpl
             lessonUiEntity: LessonUiEntity,
             studentId: Int,
         ) {
-            val assignmentResp = diaryRepository.getAssignment(lessonUiEntity.classmeetingId)
+            val assignmentResp = diaryRepository.getAssignment(listOf(lessonUiEntity.classmeetingId))
             val homework = assignmentResp.first { it.assignmentTypeId == 3 }
 
             val attachments = mutableListOf<AttachmentEntity>()
@@ -69,9 +69,6 @@ class LessonRepositoryImpl
                 }
             }
 
-//            attachments.forEach {
-//
-//            }
             _lesson.value =
                 AboutLessonUiEntity(
                     lessonUiEntity.classmeetingId,

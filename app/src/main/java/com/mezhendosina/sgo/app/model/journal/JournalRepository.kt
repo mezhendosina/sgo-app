@@ -20,7 +20,6 @@ import com.mezhendosina.sgo.app.model.journal.entities.AssignmentUiEntity
 import com.mezhendosina.sgo.app.model.journal.entities.DiaryUiEntity
 import com.mezhendosina.sgo.app.model.journal.entities.LessonUiEntity
 import com.mezhendosina.sgo.app.model.journal.entities.WeekDayUiEntity
-import com.mezhendosina.sgo.data.DateManipulation
 import com.mezhendosina.sgo.data.WeekStartEndEntity
 import com.mezhendosina.sgo.data.dateToRussian
 import com.mezhendosina.sgo.data.netschool.api.attachments.AttachmentsSource
@@ -87,8 +86,6 @@ class JournalRepository
                         mapLessons(it.lessons, attachments).toMutableList(),
                     )
                 },
-                DateManipulation(diary.weekEnd).journalDate(),
-                DateManipulation(diary.weekStart).journalDate(),
                 pastMandatory,
             )
 

@@ -26,100 +26,96 @@ import com.mezhendosina.sgo.app.ui.journalFlow.journalItem.adapters.OnHomeworkCl
 import com.mezhendosina.sgo.app.ui.journalFlow.journalItem.adapters.PastMandatoryAdapter
 import com.mezhendosina.sgo.app.ui.journalFlow.journalItem.adapters.PastMandatoryClickListener
 import com.mezhendosina.sgo.app.utils.toDescription
-import com.mezhendosina.sgo.data.SettingsDataStore
 import com.mezhendosina.sgo.data.netschoolEsia.diary.DiaryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class JournalItemViewModel
-    @Inject
-    constructor(
-        private val journalRepository: DiaryRepository,
-        private val settingsDataStore: SettingsDataStore,
-    ) : ViewModel() {
-        private val _week = MutableLiveData<DiaryUiEntity>()
-        val week: LiveData<DiaryUiEntity> = _week
+@Inject
+constructor(
+    private val journalRepository: DiaryRepository,
+) : ViewModel() {
+    private val _week = MutableLiveData<DiaryUiEntity>()
+    val week: LiveData<DiaryUiEntity> = _week
 
-        private val _isLoading = MutableLiveData(false)
-        val isLoading: LiveData<Boolean> = _isLoading
 
-        private val _errorMessage = MutableLiveData<String>()
-        val errorMessage: LiveData<String> = _errorMessage
+    private val _isLoading = MutableLiveData<JournalLoadStates?>(null)
+    val isLoading: LiveData<JournalLoadStates?> = _isLoading
 
-        var pastMandatoryAdapter: PastMandatoryAdapter? = null
-        var diaryAdapter: DiaryAdapter? = null
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> = _errorMessage
 
-        fun setupAdapters(
-            onPastMandatoryClickListener: PastMandatoryClickListener,
-            onHomeworkClickListener: OnHomeworkClickListener,
-        ) {
-            setupPastMandatoryAdapter(onPastMandatoryClickListener)
-            setupDiaryAdapter(onHomeworkClickListener)
+    var pastMandatoryAdapter: PastMandatoryAdapter? = null
+    var diaryAdapter: DiaryAdapter? = null
+
+    fun setupAdapters(
+        onPastMandatoryClickListener: PastMandatoryClickListener,
+        onHomeworkClickListener: OnHomeworkClickListener,
+    ) {
+        setupPastMandatoryAdapter(onPastMandatoryClickListener)
+        setupDiaryAdapter(onHomeworkClickListener)
+    }
+
+    private fun setupPastMandatoryAdapter(onClick: PastMandatoryClickListener) {
+        if (pastMandatoryAdapter == null) {
+            pastMandatoryAdapter = PastMandatoryAdapter(onClick)
+            pastMandatoryAdapter?.items = _week.value?.pastMandatory ?: listOf()
         }
+    }
 
-        private fun setupPastMandatoryAdapter(onClick: PastMandatoryClickListener) {
-            if (pastMandatoryAdapter == null) {
-                pastMandatoryAdapter = PastMandatoryAdapter(onClick)
-                pastMandatoryAdapter?.items = _week.value?.pastMandatory ?: listOf()
-            }
+    private fun setupDiaryAdapter(onClick: OnHomeworkClickListener) {
+        if (diaryAdapter == null) {
+            diaryAdapter = DiaryAdapter(onClick)
+
+            diaryAdapter?.weekDays = _week.value?.weekDays ?: listOf()
         }
+    }
 
-        private fun setupDiaryAdapter(onClick: OnHomeworkClickListener) {
-            if (diaryAdapter == null) {
-                diaryAdapter = DiaryAdapter(onClick)
-                diaryAdapter?.weekDays = _week.value?.weekDays ?: listOf()
-            }
-        }
-
-        suspend fun getWeek(
-            weekStart: String?,
-            weekEnd: String?,
-        ) {
-            if (Singleton.gradesRecyclerViewLoaded.value == false) {
-                withContext(Dispatchers.Main) {
-                    _week.value = Singleton.currentDiaryUiEntity.value
-                }
-                return
-            }
+    suspend fun getWeek(
+        weekStart: String?,
+        weekEnd: String?,
+    ) {
+        if (Singleton.gradesRecyclerViewLoaded.value == false) {
             withContext(Dispatchers.Main) {
-                _isLoading.value = true
-                _errorMessage.value = ""
+                _week.value = Singleton.currentDiaryUiEntity.value
             }
-            withContext(Dispatchers.IO) {
-                try {
-                    val a =
-                        if (Singleton.currentDiaryUiEntity.value?.weekStart == weekStart) {
-                            Singleton.currentDiaryUiEntity.value!!
-                        } else {
-                            val currentUserId =
-                                settingsDataStore.getValue(SettingsDataStore.CURRENT_USER_ID).first()
-                                    ?: -1
-                            val getWeek =
-                                journalRepository.getDiary(
-                                    weekStart!!,
-                                    weekEnd!!,
-                                )
-                            Singleton.loadedDiaryUiEntity.add(getWeek)
-                            getWeek
-                        }
+            return
+        }
+        withContext(Dispatchers.Main) {
+            _isLoading.value = null
+            _errorMessage.value = ""
+        }
+        withContext(Dispatchers.IO) {
+            try {
+                val diary = journalRepository.getDiary(weekStart!!, weekEnd!!)
+                withContext(Dispatchers.Main) {
+                    _week.value = diary
+                    _isLoading.value = JournalLoadStates.BASE_LOADED
+                }
+                val ids = diary.getClassmeetingsId()
+                val getAssignments = journalRepository.getAssignment(ids)
+                val assignmentsToUi = getAssignments.map {
+                    it.toUiEntity()
+                }
+                val diaryWithAssignments = diary.addAssignments(assignmentsToUi)
 
-                    withContext(Dispatchers.Main) {
-                        _week.value = a
-                    }
-                } catch (e: Exception) {
-                    val errorDescription = e.toDescription()
-                    withContext(Dispatchers.Main) {
-                        _errorMessage.value = errorDescription
-                    }
-                } finally {
-                    withContext(Dispatchers.Main) {
-                        _isLoading.value = false
-                    }
+                withContext(Dispatchers.Main) {
+                    _week.value = diaryWithAssignments
+                    _isLoading.value = JournalLoadStates.LOADED
+                }
+            } catch (e: Exception) {
+                val errorDescription = e.toDescription()
+                withContext(Dispatchers.Main) {
+                    _errorMessage.value = errorDescription
+                }
+            } finally {
+                withContext(Dispatchers.Main) {
+                    _isLoading.value = JournalLoadStates.LOADED
                 }
             }
         }
     }
+}

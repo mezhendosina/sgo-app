@@ -1,5 +1,8 @@
 package com.mezhendosina.sgo.data.netschoolEsia.entities.assignments
 
+import com.mezhendosina.sgo.app.model.journal.entities.AssignmentUiEntity
+import com.mezhendosina.sgo.app.uiEntities.MarkUiEntity
+
 data class Assignment(
     val classmeetingId: Int,
     val assignmentId: Int,
@@ -24,4 +27,16 @@ data class Assignment(
     val resultDate: String,
     val assignmentDate: String,
     val canAnswer: Boolean,
-)
+) {
+    fun toUiEntity(): AssignmentUiEntity = AssignmentUiEntity(
+        assignmentName,
+        classmeetingId,
+        dueDate,
+        assignmentId,
+        null,
+        null,
+        assignmentTypeId,
+        weight,
+        emptyList()
+    )
+}

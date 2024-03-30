@@ -16,5 +16,10 @@ interface DiarySource {
         classmeetingId: Int,
     ): List<Assignment>
 
+    suspend fun getAssignments(
+        studentId: Int,
+        classmeetingId: List<Int>,
+    ): List<Assignment>
+
     suspend fun getAttachment(assignmentId: Int): List<AttachmentEntity>
 }

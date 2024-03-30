@@ -34,7 +34,7 @@ interface DiaryApi {
     @GET("api/mobile/assignments")
     suspend fun getAssignments(
         @Query("studentId") studentId: Int,
-        @Query("classmeetingId") lessonId: Int,
+        @Query("classmeetingId") lessonId: List<Int>,
     ): List<Assignment>
 
     suspend fun getAttachment(
