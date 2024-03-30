@@ -84,7 +84,7 @@ class JournalRepository
                 diary.weekDays.map {
                     WeekDayUiEntity(
                         dateToRussian(it.date),
-                        mapLessons(it.lessons, attachments),
+                        mapLessons(it.lessons, attachments).toMutableList(),
                     )
                 },
                 DateManipulation(diary.weekEnd).journalDate(),

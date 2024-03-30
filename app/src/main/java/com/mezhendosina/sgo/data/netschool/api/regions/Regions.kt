@@ -28,12 +28,12 @@ class Regions {
         const val REGIONS = "[\n" +
                 "    {\n" +
                 "      \"name\": \"Челябинская область\",\n" +
-                "      \"url\": \"https://sgo.edu-74.ru/authorize/sso/choose-role?mobile\",\n" +
+                "      \"url\": \"https://sgo.edu-74.ru/\",\n" +
                 "      \"emblem_url\": \"https://upload.wikimedia.org/wikipedia/commons/b/b8/Coat_of_arms_of_Chelyabinsk_Oblast.svg\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"name\": \"Алтайский край\",\n" +
-                "      \"url\": \"https://netschool.edu22.info/login?mobile\",\n" +
+                "      \"url\": \"https://netschool.edu22.info/\",\n" +
                 "      \"emblem_url\": \"https://upload.wikimedia.org/wikipedia/commons/3/32/Coat_of_Arms_of_Altai_Krai.svg\"\n" +
                 "    },\n" +
                 "    {\n" +
@@ -63,6 +63,7 @@ class Regions {
                 "    },\n" +
                 "    {\n" +
                 "      \"name\": \"Забайкальский край\",\n" +
+                "      \"login_url\": \"https://region.zabedu.ru/\",\n" +
                 "      \"url\": \"https://region.zabedu.ru/\",\n" +
                 "      \"emblem_url\": \"https://upload.wikimedia.org/wikipedia/commons/6/6a/Coat_of_arms_of_Zabaykalsky_Krai.svg\"\n" +
                 "    },\n" +
@@ -93,7 +94,7 @@ class Regions {
                 "    },\n" +
                 "    {\n" +
                 "        \"name\": \"Республика Коми\",\n" +
-                "        \"url\": \"https://giseo.rkomi.ru/authorize/sso/choose-role?mobile\",\n" +
+                "        \"url\": \"https://giseo.rkomi.ru/\",\n" +
                 "        \"emblem_url\": \"https://upload.wikimedia.org/wikipedia/commons/f/fe/Coat_of_Arms_of_the_Komi_Republic.svg\"\n" +
                 "    },\n" +
                 "    {\n" +

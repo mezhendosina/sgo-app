@@ -24,24 +24,35 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mezhendosina.sgo.Singleton
 import com.mezhendosina.sgo.app.activities.MainActivity
 import com.mezhendosina.sgo.app.uiEntities.UserUIEntity
 import com.mezhendosina.sgo.data.SettingsDataStore
+import com.mezhendosina.sgo.data.netschoolEsia.utils.UtilsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ChooseUserIdViewModel @Inject constructor(
-    private val settingsDataStore: SettingsDataStore
+    private val settingsDataStore: SettingsDataStore,
+    private val utilsRepository: UtilsRepository
 ) : ViewModel() {
 
     private val _usersId = MutableLiveData<List<UserUIEntity>>()
     val usersId: LiveData<List<UserUIEntity>> = _usersId
 
     init {
-        _usersId.value = Singleton.users
+        viewModelScope.launch {
+            _usersId.value = utilsRepository.getUsers().map {
+                UserUIEntity(
+                    it.id,
+                    null,
+                    null,
+                    it.nickName,
+                    it.loginName
+                )
+            }
+        }
     }
 
 
@@ -49,7 +60,6 @@ class ChooseUserIdViewModel @Inject constructor(
         try {
             viewModelScope.launch {
                 settingsDataStore.setValue(SettingsDataStore.CURRENT_USER_ID, userUIEntity.userId!!)
-                settingsDataStore.setValue(SettingsDataStore.LOGGED_IN, true)
             }
             val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)

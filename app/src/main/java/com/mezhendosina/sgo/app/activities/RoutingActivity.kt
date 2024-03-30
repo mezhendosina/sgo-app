@@ -40,7 +40,9 @@ class RoutingActivity : AppCompatActivity() {
 //            FirebaseApp.initializeApp(this@RoutingActivity)
 
             val intent =
-                if (settingsDataStore.getValue(SettingsDataStore.LOGGED_IN).first() == true) {
+                if (!settingsDataStore.getValue(SettingsDataStore.REFRESH_TOKEN).first()
+                        .isNullOrEmpty()
+                ) {
                     Intent(this@RoutingActivity, MainActivity::class.java)
                 } else {
                     Intent(this@RoutingActivity, LoginActivity::class.java)

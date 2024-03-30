@@ -22,6 +22,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.mezhendosina.sgo.app.R
 import com.mezhendosina.sgo.app.activities.MainActivity
 import com.mezhendosina.sgo.app.databinding.FragmentGosuslugiResultBinding
@@ -42,11 +43,9 @@ class GosuslugiResultFragment : Fragment(R.layout.fragment_gosuslugi_result) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val code = arguments?.getInt("code")
         CoroutineScope(Dispatchers.IO).launch {
-//            viewModel.auth(
-//                arguments?.getString(LOGIN_STATE)!!,
-//                arguments?.getString(USER_ID)!!
-//            )
+            code?.let { viewModel.login(it) }
         }
     }
 
@@ -59,15 +58,21 @@ class GosuslugiResultFragment : Fragment(R.layout.fragment_gosuslugi_result) {
 
     private fun observeLoggedIn() {
         viewModel.loggedIn.observe(viewLifecycleOwner) {
-            if (it == true) {
+            if (it == true && !viewModel.users.value.isNullOrEmpty()) {
                 binding!!.result.setImageResource(R.drawable.ic_done_flat)
                 binding!!.resultText.text = getString(R.string.logged_in_via_esia)
                 CoroutineScope(Dispatchers.IO).launch {
                     delay(3000)
-                    withContext(Dispatchers.Main) {
-                        val intent = Intent(context, MainActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-                        ContextCompat.startActivity(requireContext(), intent, null)
+                    if (viewModel.users.value!!.size > 1) {
+                        findNavController().navigate(
+                            R.id.action_gosuslugiResultFragment_to_chooseUserIdFragment
+                        )
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            val intent = Intent(context, MainActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                            ContextCompat.startActivity(requireContext(), intent, null)
+                        }
                     }
                 }
             } else if (it == false) {

@@ -3,6 +3,7 @@ package com.mezhendosina.sgo.data.netschoolEsia.utils
 import com.mezhendosina.sgo.data.netschoolEsia.entities.common.Subject
 import com.mezhendosina.sgo.data.netschoolEsia.entities.common.Term
 import com.mezhendosina.sgo.data.netschoolEsia.entities.education.SchoolYear
+import com.mezhendosina.sgo.data.netschoolEsia.entities.users.UserInfo
 import kotlinx.coroutines.flow.StateFlow
 
 interface UtilsRepository {
@@ -18,4 +19,6 @@ interface UtilsRepository {
     suspend fun getSelectedTrimId(): Term
 
     suspend fun setCurrentYear(yearId: Int)
+
+    suspend fun getUsers(): List<UserInfo>
 }

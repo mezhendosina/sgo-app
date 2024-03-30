@@ -30,7 +30,7 @@ data class DiaryUiEntity(
 
 data class WeekDayUiEntity(
     val date: String,
-    val lessons: List<LessonUiEntity>,
+    val lessons: MutableList<LessonUiEntity>,
 )
 
 data class LessonUiEntity(

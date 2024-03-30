@@ -79,16 +79,25 @@
         android:name="com.mezhendosina.sgo.app.ui.loginFlow.webViewLogin.WebViewLoginFragment"
         android:label="WebViewLoginFragment" >
         <action
-            android:id="@+id/action_webViewLoginFragment_to_chooseUserIdFragment2"
-            app:destination="@id/chooseUserIdFragment" />
-        <action
-            android:id="@+id/action_webViewLoginFragment_to_mainActivity"
-            app:destination="@id/mainActivity" />
+            android:id="@+id/action_webViewLoginFragment_to_gosuslugiResultFragment"
+            app:destination="@id/gosuslugiResultFragment" />
     </fragment>
     <activity
         android:id="@+id/mainActivity"
         android:name="com.mezhendosina.sgo.app.activities.MainActivity"
         android:label="container_main_activity"
         tools:layout="@layout/container_main_activity" />
+    <fragment
+        android:id="@+id/gosuslugiResultFragment"
+        android:name="com.mezhendosina.sgo.app.ui.loginFlow.gosuslugiResult.GosuslugiResultFragment"
+        android:label="fragment_gosuslugi_result"
+        tools:layout="@layout/fragment_gosuslugi_result" >
+        <action
+            android:id="@+id/action_gosuslugiResultFragment_to_chooseUserIdFragment"
+            app:destination="@id/chooseUserIdFragment" />
+        <action
+            android:id="@+id/action_gosuslugiResultFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
 
 </navigation>
