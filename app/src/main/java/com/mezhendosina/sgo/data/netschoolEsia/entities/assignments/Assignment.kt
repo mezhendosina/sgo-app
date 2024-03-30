@@ -33,7 +33,13 @@ data class Assignment(
         classmeetingId,
         dueDate,
         assignmentId,
-        null,
+        if (result != null) MarkUiEntity(
+            assignmentId,
+            result.toInt(),
+            comment,
+            duty,
+            null
+        ) else null,
         null,
         assignmentTypeId,
         weight,

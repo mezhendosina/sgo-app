@@ -53,10 +53,9 @@ data class DiaryUiEntity(
                 val lessonAssignments = assignments.filter {
                     it.classMeetingId == lesson.classmeetingId
                 }
-
                 val lessonWithAssignments = lesson.addAssignments(lessonAssignments)
                 val lessonWithHomework =
-                    lessonAssignments.firstOrNull { it.typeId == 3 }?.let { lesson.addHomework(it) }
+                    lessonAssignments.firstOrNull { it.typeId == 3 }?.let { lessonWithAssignments.addHomework(it) }
                 return@map lessonWithHomework ?: lessonWithAssignments
             }
             return@map WeekDayUiEntity(

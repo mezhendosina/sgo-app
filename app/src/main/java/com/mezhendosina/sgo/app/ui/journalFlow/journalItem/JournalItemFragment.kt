@@ -196,7 +196,6 @@ class JournalItemFragment : Fragment(R.layout.fragment_item_journal) {
                             pastMandatoryAdapter.items = diaryItem.pastMandatory
                         }
                         if (diaryItem.weekDays.isNotEmpty()) {
-                            diaryAdapter.weekDays = diaryItem.weekDays
                             diary.visibility = View.VISIBLE
                             emptyState.root.visibility = View.GONE
                         } else {

@@ -93,10 +93,12 @@ constructor(
                 val diary = journalRepository.getDiary(weekStart!!, weekEnd!!)
                 withContext(Dispatchers.Main) {
                     _week.value = diary
+                    diaryAdapter?.weekDays = diary.weekDays
                     _isLoading.value = JournalLoadStates.BASE_LOADED
                 }
                 val ids = diary.getClassmeetingsId()
                 val getAssignments = journalRepository.getAssignment(ids)
+
                 val assignmentsToUi = getAssignments.map {
                     it.toUiEntity()
                 }
@@ -104,6 +106,7 @@ constructor(
 
                 withContext(Dispatchers.Main) {
                     _week.value = diaryWithAssignments
+                    diaryAdapter?.weekDays = diaryWithAssignments.weekDays
                     _isLoading.value = JournalLoadStates.LOADED
                 }
             } catch (e: Exception) {

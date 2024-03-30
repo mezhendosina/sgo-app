@@ -27,7 +27,7 @@ abstract class RepoModule {
 
     @Binds
     @Singleton
-    abstract fun bindLessonRepository(lessonRepository: LessonRepositoryImpl): LessonRepository
+    abstract fun bindLessonRepository(lessonRepository: com.mezhendosina.sgo.data.netschoolEsia.lesson.LessonRepositoryImpl): LessonRepository
 
     @Binds
     @Singleton
