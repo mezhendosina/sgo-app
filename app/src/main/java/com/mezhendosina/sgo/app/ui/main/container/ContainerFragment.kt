@@ -355,17 +355,18 @@ class ContainerFragment :
     }
 
     override fun observeGradesYear() {
-        gradesFilterViewModel.yearList.observe(viewLifecycleOwner) { yearList ->
-
-            binding?.let { containerMainBinding ->
-                val checkedItem = yearList.find { it.checked }
-                if (!yearList.isNullOrEmpty() && checkedItem != null) {
-                    containerMainBinding.gradesTopBar.year.visibility = View.VISIBLE
-                    containerMainBinding.gradesTopBar.year.isChecked =
-                        checkedItem.id != gradesFilterViewModel.currentYearId.value
-                    containerMainBinding.gradesTopBar.year.text = checkedItem.name
-                } else {
-                    containerMainBinding.gradesTopBar.year.visibility = View.GONE
+        CoroutineScope(Dispatchers.Main).launch {
+            gradesFilterViewModel.yearList.collect { yearList ->
+                binding?.let { containerMainBinding ->
+                    val checkedItem = yearList.find { it.checked }
+                    if (yearList.isNotEmpty() && checkedItem != null) {
+                        containerMainBinding.gradesTopBar.year.visibility = View.VISIBLE
+                        containerMainBinding.gradesTopBar.year.isChecked =
+                            checkedItem.id != gradesFilterViewModel.currentYearId.value
+                        containerMainBinding.gradesTopBar.year.text = checkedItem.name
+                    } else {
+                        containerMainBinding.gradesTopBar.year.visibility = View.GONE
+                    }
                 }
             }
         }

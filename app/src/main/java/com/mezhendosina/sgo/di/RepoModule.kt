@@ -3,6 +3,8 @@ package com.mezhendosina.sgo.di
 import com.mezhendosina.sgo.app.model.attachments.AttachmentDownloadManager
 import com.mezhendosina.sgo.app.model.attachments.AttachmentDownloadManagerInterface
 import com.mezhendosina.sgo.app.model.grades.GradesRepositoryInterface
+import com.mezhendosina.sgo.data.calendar.CalendarRepository
+import com.mezhendosina.sgo.data.calendar.CalendarRepositoryImpl
 import com.mezhendosina.sgo.data.netschool.repo.LessonRepositoryImpl
 import com.mezhendosina.sgo.data.netschoolEsia.diary.DiaryRepository
 import com.mezhendosina.sgo.data.netschoolEsia.diary.DiaryRepositoryImpl
@@ -44,4 +46,8 @@ abstract class RepoModule {
     @Binds
     @Singleton
     abstract fun bindUtilsRepo(utilsRepositoryImpl: UtilsRepositoryImpl): UtilsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCalendarRepo(calendarRepositoryImpl: CalendarRepositoryImpl): CalendarRepository
 }
