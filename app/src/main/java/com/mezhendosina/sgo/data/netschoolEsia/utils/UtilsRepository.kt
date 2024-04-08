@@ -8,20 +8,23 @@ import com.mezhendosina.sgo.data.netschoolEsia.entities.users.UserInfo
 import kotlinx.coroutines.flow.StateFlow
 
 interface UtilsRepository {
-    val years: StateFlow<List<FilterUiEntity>>
     val subjects: StateFlow<List<Subject>>
 
-    suspend fun getYears()
+    /**
+     * Получает все года, которые существуют у пользователя
+     */
+    suspend fun getYears(): List<SchoolYear>
 
-    suspend fun getSubjects(yearId: Int): List<Subject>
+    /**
+     * Получает предметы в учебном году
+     */
+    suspend fun getSubjects(yearId: Int)
 
-    suspend fun getTerms(): List<Term>?
-
-    suspend fun getSelectedTrimId(): Term
-
-    suspend fun getSelectedYear(): FilterUiEntity?
-
-    suspend fun setCurrentYear(yearId: Int)
+    /**
+     *
+     */
+    suspend fun getSubjectById(id: Int, yearId: Int): Subject?
 
     suspend fun getUsers(): List<UserInfo>
+    suspend fun getTerms(yearId: Int): List<Term>
 }

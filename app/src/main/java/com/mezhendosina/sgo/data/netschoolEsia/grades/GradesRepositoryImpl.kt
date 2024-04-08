@@ -1,131 +1,149 @@
 package com.mezhendosina.sgo.data.netschoolEsia.grades
 
-import com.mezhendosina.sgo.app.model.grades.GradeActionListener
-import com.mezhendosina.sgo.app.model.grades.GradesRepositoryInterface
+import com.mezhendosina.sgo.app.model.grades.GradeSortType
+import com.mezhendosina.sgo.app.uiEntities.GradesUiEntity
+import com.mezhendosina.sgo.data.AppSettings
 import com.mezhendosina.sgo.data.SettingsDataStore
-import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.GradesItem
-import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.gradeOptions.GradeOptions
-import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.gradeOptions.InputTag
-import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.gradeOptions.SelectTag
+import com.mezhendosina.sgo.data.calendar.CalendarRepository
+import com.mezhendosina.sgo.data.netschoolEsia.entities.analytics.SubjectPerformance
+import com.mezhendosina.sgo.data.netschoolEsia.entities.common.Term
+import com.mezhendosina.sgo.data.netschoolEsia.entities.education.SchoolYear
+import com.mezhendosina.sgo.data.netschoolEsia.entities.totals.SubjectTotal
 import com.mezhendosina.sgo.data.netschoolEsia.utils.UtilsRepository
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GradesRepositoryImpl
-@Inject
-constructor(
-    val gradesSource: GradesSource,
-    val settingsDataStore: SettingsDataStore,
-    val utilsSource: UtilsRepository,
-) : GradesRepositoryInterface {
-    private var grades = mutableListOf<GradesItem>()
-    private val listeners = mutableSetOf<GradeActionListener>()
+class GradesRepositoryImpl @Inject constructor(
+    private val utilsRepository: UtilsRepository,
+    private val gradesSource: GradesSource,
+    private val appSettings: AppSettings,
+    private val calendarRepository: CalendarRepository
+) : GradesRepository {
+    private val _allGrades = MutableStateFlow<List<SubjectTotal>>(emptyList())
 
-    private val _selectedGradesItem: MutableStateFlow<GradesItem?> = MutableStateFlow(null)
+    private val _grades = MutableStateFlow<List<GradesUiEntity>>(emptyList())
+    override val grades: StateFlow<List<GradesUiEntity>> = _grades
 
-    override val selectedGradesItem: StateFlow<GradesItem?> = _selectedGradesItem
-    private val mutex = Mutex()
+    private val _years = MutableStateFlow<List<SchoolYear>>(emptyList())
+    override val years: StateFlow<List<SchoolYear>> = _years
 
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            utilsSource.getYears()
-        }
+    private val _terms = MutableStateFlow<List<Term>>(emptyList())
+    override val terms: StateFlow<List<Term>> = _terms
 
+    private val _selectedYearId = MutableStateFlow(-1)
+    override val selectedYearId: StateFlow<Int> = _selectedYearId
+
+    private val _selectedTrimId = MutableStateFlow(-1)
+    override val selectedTrimId: StateFlow<Int> = _selectedTrimId
+
+    override suspend fun initFilters() {
+        getYears()
+        getTerms()
     }
 
-    override suspend fun loadGrades(
-        gradeOptions: GradeOptions,
-        termid: String,
-        sortType: Int,
-    ) {
-        grades.clear()
 
-        val studentId = settingsDataStore.getStudentId()
-        val yearId = utilsSource.getSelectedYear() ?: return
+    override fun getAboutGrade(subjectId: Int): SubjectPerformance {
+        TODO("Not yet implemented")
+    }
 
-        val lessons = utilsSource.getSubjects(yearId.id)
-        val resp = gradesSource.getGrades(studentId, yearId.id)
+    override suspend fun getSelectedYear(): Int? {
+        if (_years.value.isEmpty()) return null
+        return if (_selectedYearId.value == -1) {
+            val yearId = getCurrentYear(_years.value) ?: _years.value[0].id
+            _selectedYearId.emit(
+                yearId
+            )
+            yearId
+        } else _selectedYearId.value
+    }
 
-        resp.forEach { subjectTotal ->
-            val findLesson = lessons.firstOrNull { subject -> subject.id == subjectTotal.subjectId }
-            withContext(Dispatchers.IO) {
-//                val getAboutGrade =
-//                    gradesSource.getWhyTotalGrade(
-//                        studentId,
-//                        subjectTotal.subjectId,
-//                        termid.toInt(),
-//                    )
-//                val getFives = getAboutGrade.markStats.firstOrNull { it.mark == 5.toDouble() }
-//                val getFourths = getAboutGrade.markStats.firstOrNull { it.mark == 4.toDouble() }
-//                val getThrees = getAboutGrade.markStats.firstOrNull { it.mark == 3.toDouble() }
-//                val getTwos = getAboutGrade.markStats.firstOrNull { it.mark == 2.toDouble() }
-//                val getOne = getAboutGrade.markStats.firstOrNull { it.mark == 1.toDouble() }
-                val termTotal = subjectTotal.termTotals.find { it.term.id == termid.toInt() }
-                if (termTotal != null) {
-                    val avgMark = termTotal.mark?.toFloatOrNull() ?: termTotal.avgMark
-                    if (avgMark != null) {
-                        withContext(Dispatchers.Main) {
-                            synchronized(mutex) {
-                                grades.add(
-                                    GradesItem(
-                                        findLesson?.name ?: "",
-                                        null,
-                                        null,
-                                        null,
-                                        null,
-                                        null,
-//                            getFives?.count,
-//                            getFourths?.count,
-//                            getThrees?.count,
-//                            getTwos?.count,
-//                            getOne?.count,
-                                        avgMark.toString(),
-                                    ),
-                                )
-                                notifyListeners()
-                            }
-                        }
-                    }
-                }
+
+    private fun getCurrentYear(years: List<SchoolYear>): Int? {
+        years.forEach {
+            if (calendarRepository.isNowBetween(it.startDate, it.endDate)) {
+                return it.id
             }
         }
+        return null
     }
 
-    override suspend fun loadGradesOptions(): GradeOptions {
-        val terms = utilsSource.getTerms()?.map {
-            SelectTag(
-                it.current,
-                it.name,
-                it.id.toString()
-            )
+
+    override suspend fun getGrades() {
+        withContext(Dispatchers.Main) {
+            _allGrades.emit(emptyList())
         }
-        return GradeOptions(
-            InputTag("", ""), emptyList(), InputTag("", ""),
-            terms ?: emptyList()
+        val studentId = appSettings.getStudentId()
+        val yearId = getSelectedYear() ?: return
+        val subjectTotals = gradesSource.getGrades(studentId, yearId)
+        _allGrades.emit(
+            subjectTotals
         )
+        filterGrades()
     }
 
-    override fun setSelectedGradesItem(gradesItem: GradesItem) {
-        _selectedGradesItem.value = gradesItem
+    override suspend fun setYearId(id: Int) {
+        _selectedYearId.emit(id)
+        utilsRepository.getSubjects(_selectedYearId.value)
+        getTerms()
+        getGrades()
     }
 
-    override fun addListener(listener: GradeActionListener) {
-        listeners.add(listener)
+    private suspend fun getYears() {
+        val getYears = utilsRepository.getYears()
+        _years.emit(getYears)
     }
 
-    override fun removeListener(listener: GradeActionListener) {
-        listeners.remove(listener)
+    override suspend fun setTrimId(id: Int) {
+        _selectedTrimId.emit(id)
+        filterGrades()
     }
 
-    private fun notifyListeners() {
-        listeners.forEach { it.invoke(grades) }
+    override suspend fun sortGrades() = filterGrades()
+
+
+    private suspend fun getTerms() {
+        val getYearId = getSelectedYear()
+        val getTerms = utilsRepository.getTerms(getYearId ?: return)
+        _selectedTrimId.emit(
+            getTerms.firstOrNull { it.current }?.id ?: getTerms.getOrNull(0)?.id ?: -1
+        )
+        _terms.emit(getTerms)
+    }
+
+    private suspend fun filterGrades() {
+        _grades.emit(emptyList())
+        val yearId = getSelectedYear()
+        val sortType = appSettings.getValue(SettingsDataStore.SORT_GRADES_BY).first()
+        val filteredGrades = _allGrades.value.mapNotNull { subjectTotal ->
+            val subject =
+                utilsRepository.getSubjectById(subjectTotal.subjectId, yearId ?: return)
+            val findTermTotal = subjectTotal.termTotals.find {
+                it.term.id == _selectedTrimId.value
+            }
+            val grade = findTermTotal?.avgMark ?: findTermTotal?.mark?.toFloatOrNull()
+            return@mapNotNull grade?.let {
+                GradesUiEntity(
+                    subjectTotal.subjectId,
+                    subject?.name ?: "",
+                    it.toDouble()
+                )
+            }
+        }.sortedBy {
+            when (sortType) {
+                GradeSortType.BY_GRADE_VALUE, GradeSortType.BY_GRADE_VALUE_DESC -> it.grade.toString()
+                GradeSortType.BY_LESSON_NAME -> it.name
+                else -> it.name
+            }
+        }
+
+        _grades.emit(
+            if (sortType == GradeSortType.BY_GRADE_VALUE) filteredGrades.reversed() else filteredGrades
+        )
     }
 }

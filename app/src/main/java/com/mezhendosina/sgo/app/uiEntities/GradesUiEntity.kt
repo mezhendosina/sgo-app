@@ -17,6 +17,7 @@
 package com.mezhendosina.sgo.app.uiEntities
 
 data class GradesUiEntity(
+    val id: Int,
     val name: String,
     val grade: Double
 )

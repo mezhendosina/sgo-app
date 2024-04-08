@@ -21,16 +21,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mezhendosina.sgo.Singleton
 import com.mezhendosina.sgo.app.model.grades.GradeSortType
+import com.mezhendosina.sgo.app.uiEntities.FilterUiEntity
 import com.mezhendosina.sgo.app.uiEntities.checkItem
+import com.mezhendosina.sgo.app.utils.BaseViewModel
 import com.mezhendosina.sgo.app.utils.LoadStates
-import com.mezhendosina.sgo.app.utils.toDescription
 import com.mezhendosina.sgo.app.utils.toLiveData
 import com.mezhendosina.sgo.data.SettingsDataStore
-import com.mezhendosina.sgo.data.netschool.repo.SettingsRepository
+import com.mezhendosina.sgo.data.calendar.CalendarRepository
+import com.mezhendosina.sgo.data.netschoolEsia.base.toDescription
+import com.mezhendosina.sgo.data.netschoolEsia.grades.GradesRepository
 import com.mezhendosina.sgo.data.netschoolEsia.utils.UtilsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -40,16 +44,25 @@ import javax.inject.Inject
 class GradesFilterViewModel
 @Inject
 constructor(
-    private val utilsRepository: UtilsRepository,
     private val settingsDataStore: SettingsDataStore,
-) : ViewModel() {
+    private val gradesRepository: GradesRepository,
+) : BaseViewModel() {
     private val _gradesSortType: MutableLiveData<Int> = MutableLiveData()
     val gradesSortType = _gradesSortType.toLiveData()
 
-    val yearList = utilsRepository.years
+    private val _years = MutableLiveData<List<FilterUiEntity>>()
+    val years = _years.toLiveData()
+
+    private val _trim = MutableLiveData<List<FilterUiEntity>>()
+    val trim = _trim.toLiveData()
+
 
     private val _currentYearId = MutableLiveData<Int>()
     val currentYearId = _currentYearId.toLiveData()
+
+    private val _currentTrimId = MutableLiveData<Int>()
+    val currentTrimID = _currentTrimId.toLiveData()
+
 
     private val _errorDescription = MutableLiveData<String>()
     val errorDescription = _errorDescription.toLiveData()
@@ -57,36 +70,55 @@ constructor(
     private val _isLoading = MutableLiveData<Boolean>(false)
     val isLoading = _isLoading.toLiveData()
 
+    init {
+        viewModelScope.launch {
+            gradesRepository.years.collect { schoolYears ->
+                val selectedYear = gradesRepository.getSelectedYear() ?: return@collect
+                val filters = schoolYears.map {
+                    FilterUiEntity(
+                        it.id,
+                        it.name,
+                        selectedYear == it.id
+                    )
+                }
+                _years.value = filters
+                _currentYearId.value = selectedYear
+            }
+        }
+        viewModelScope.launch {
+            gradesRepository.terms.collect { terms ->
+                if (terms.isEmpty()) return@collect
+
+                val selectedTrim = gradesRepository.selectedTrimId.value
+                val filters = terms.map {
+                    FilterUiEntity(
+                        it.id,
+                        it.name,
+                        it.id == selectedTrim
+                    )
+                }
+                _currentTrimId.value = selectedTrim
+                _trim.value = filters
+            }
+        }
+    }
+
     fun setGradeSort(sortBy: Int) {
         viewModelScope.launch {
             settingsDataStore.setValue(SettingsDataStore.SORT_GRADES_BY, sortBy)
+            gradesRepository.sortGrades()
             _gradesSortType.value = sortBy
-            Singleton.updateGradeState.value = LoadStates.UPDATE
         }
     }
 
-    suspend fun getYearsList() {
-        try {
-            val currYear = utilsRepository.years.value.first { it.checked }
-            withContext(Dispatchers.Main) {
-                _currentYearId.value = currYear.id
-            }
-        } catch (e: Exception) {
-            withContext(Dispatchers.Main) {
-                _errorDescription.value = e.toDescription()
-            }
-        } finally {
-            withContext(Dispatchers.Main) {
-                _isLoading.value = false
-            }
-        }
-    }
 
     suspend fun updateYear(yearId: Int) {
         try {
-            utilsRepository.setCurrentYear(yearId)
+            gradesRepository.setYearId(yearId)
             withContext(Dispatchers.Main) {
-                Singleton.updateGradeState.value = LoadStates.UPDATE
+                _currentYearId.value = yearId
+                _years.value = _years.value?.checkItem(yearId)
+                _states.value = LoadStates.UPDATE
             }
 
         } catch (e: Exception) {
@@ -106,10 +138,19 @@ constructor(
 
     fun changeTrimId(id: Int) {
         viewModelScope.launch {
-            settingsDataStore.setValue(SettingsDataStore.TRIM_ID, id)
-            val checkItem = Singleton.gradesTerms.value?.checkItem(id)
-            Singleton.gradesTerms.value = checkItem
-            Singleton.updateGradeState.value = LoadStates.UPDATE
+            withContext(Dispatchers.IO) {
+                gradesRepository.setTrimId(id)
+            }
+            _currentTrimId.value = id
+            _trim.value = _trim.value?.checkItem(id)
+            _states.value = LoadStates.UPDATE
         }
+    }
+
+    suspend fun getSelectedGradeSort(): Int {
+        return settingsDataStore.getValue(
+            SettingsDataStore.SORT_GRADES_BY
+        ).first() ?: GradeSortType.BY_LESSON_NAME
+
     }
 }

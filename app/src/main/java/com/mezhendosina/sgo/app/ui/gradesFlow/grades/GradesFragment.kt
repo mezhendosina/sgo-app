@@ -40,157 +40,157 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class GradesFragment : Fragment(R.layout.fragment_grades) {
-    private var binding: FragmentGradesBinding? = null
-
-    internal val viewModel: GradesViewModel by viewModels()
-
-    private val gradeAdapter =
-        GradeAdapter(
-            object : OnGradeClickListener {
-                override fun invoke(
-                    p1: GradesItem,
-                    p2: View,
-                ) {
-                    val a = viewModel.grades.value?.indexOf(p1)
-
-                    val navigationExtras =
-                        FragmentNavigatorExtras(
-                            p2 to getString(R.string.grade_item_details_transition_name),
-                        )
-
-                    findTopNavController().navigate(
-                        R.id.action_containerFragment_to_gradeItemFragment,
-                        bundleOf("LESSON_INDEX" to a),
-                        null,
-                        navigationExtras,
-                    )
-                    Singleton.gradesRecyclerViewLoaded.value = false
-                }
-            },
-        )
-
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?,
-    ) {
-        super.onViewCreated(view, savedInstanceState)
-        binding = FragmentGradesBinding.bind(view)
-
-        binding!!.gradesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding!!.gradesRecyclerView.adapter = gradeAdapter
-
-        binding!!.errorMessage.retryButton.setOnClickListener {
-            Singleton.updateGradeState.value = LoadStates.UPDATE
-        }
-
-        observeGrades()
-        observeErrors()
-        observeGradeState()
-    }
-
-    override fun onDestroyView() {
-        if (binding != null) {
-            TransitionManager.endTransitions(binding!!.mainLayout)
-            binding!!.gradesRecyclerView.invalidate()
-            binding!!.gradesRecyclerView.adapter = null
-        }
-        binding = null
-        super.onDestroyView()
-    }
-
-    private fun observeGrades() {
-        viewModel.grades.observe(viewLifecycleOwner) { list ->
-            gradeAdapter.grades = list
-        }
-    }
-
-    private fun observeErrors() {
-        viewModel.errorMessage.observe(viewLifecycleOwner) {
-            binding!!.errorMessage.errorDescription.text = it
-        }
-    }
-
-    private fun observeGradeState() {
-        val fadeThrough = MaterialFadeThrough()
-
-        Singleton.updateGradeState.observe(viewLifecycleOwner) {
-            when (it) {
-                LoadStates.UPDATE -> {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        viewModel.load()
-                    }
-                    if (binding != null) {
-                        TransitionManager.beginDelayedTransition(
-                            binding!!.loading.root,
-                            fadeThrough,
-                        )
-                        TransitionManager.beginDelayedTransition(
-                            binding!!.gradesRecyclerView,
-                            fadeThrough,
-                        )
-
-                        binding!!.loading.root.startShimmer()
-                        binding!!.showLoading()
-                    }
-                }
-
-                LoadStates.ERROR -> {
-                    if (binding != null) {
-                        binding!!.loading.root.stopShimmer()
-                        binding!!.showError()
-                    }
-                }
-
-                LoadStates.FINISHED -> {
-                    if (binding != null) {
-                        binding!!.loading.root.stopShimmer()
-                        if (viewModel.grades.value.isNullOrEmpty()) {
-                            binding!!.emptyState.noHomeworkIcon.setImageDrawable(
-                                AppCompatResources.getDrawable(
-                                    requireContext(),
-                                    R.drawable.ic_emty_grade,
-                                ),
-                            )
-                            binding!!.emptyState.emptyText.text = "Оценок нет"
-                            binding!!.showEmptyState()
-                        } else {
-                            binding!!.gradesRecyclerView.doOnPreDraw {
-                                binding!!.showGrades()
-                            }
-                        }
-                    }
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    private fun FragmentGradesBinding.showGrades() {
-        gradesRecyclerView.visibility = View.VISIBLE
-        emptyState.root.visibility = View.GONE
-        loading.root.visibility = View.GONE
-        errorMessage.root.visibility = View.GONE
-    }
-
-    private fun FragmentGradesBinding.showEmptyState() {
-        emptyState.root.visibility = View.VISIBLE
-        gradesRecyclerView.visibility = View.INVISIBLE
-        loading.root.visibility = View.INVISIBLE
-        errorMessage.root.visibility = View.INVISIBLE
-    }
-
-    private fun FragmentGradesBinding.showLoading() {
-        loading.root.visibility = View.VISIBLE
-        gradesRecyclerView.visibility = View.INVISIBLE
-        emptyState.root.visibility = View.GONE
-        errorMessage.root.visibility = View.GONE
-    }
-
-    private fun FragmentGradesBinding.showError() {
-        errorMessage.root.visibility = View.VISIBLE
-        gradesRecyclerView.visibility = View.INVISIBLE
-        emptyState.root.visibility = View.GONE
-        loading.root.visibility = View.GONE
-    }
+//    private var binding: FragmentGradesBinding? = null
+//
+//    internal val viewModel: GradesViewModel by viewModels()
+//
+//    private val gradeAdapter =
+//        GradeAdapter(
+//            object : OnGradeClickListener {
+//                override fun invoke(
+//                    p1: GradesItem,
+//                    p2: View,
+//                ) {
+//                    val a = viewModel.grades.value?.indexOf(p1)
+//
+//                    val navigationExtras =
+//                        FragmentNavigatorExtras(
+//                            p2 to getString(R.string.grade_item_details_transition_name),
+//                        )
+//
+//                    findTopNavController().navigate(
+//                        R.id.action_containerFragment_to_gradeItemFragment,
+//                        bundleOf("LESSON_INDEX" to a),
+//                        null,
+//                        navigationExtras,
+//                    )
+//                    Singleton.gradesRecyclerViewLoaded.value = false
+//                }
+//            },
+//        )
+//
+//    override fun onViewCreated(
+//        view: View,
+//        savedInstanceState: Bundle?,
+//    ) {
+//        super.onViewCreated(view, savedInstanceState)
+//        binding = FragmentGradesBinding.bind(view)
+//
+//        binding!!.gradesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+//        binding!!.gradesRecyclerView.adapter = gradeAdapter
+//
+//        binding!!.errorMessage.retryButton.setOnClickListener {
+//            Singleton.updateGradeState.value = LoadStates.UPDATE
+//        }
+//
+//        observeGrades()
+//        observeErrors()
+//        observeGradeState()
+//    }
+//
+//    override fun onDestroyView() {
+//        if (binding != null) {
+//            TransitionManager.endTransitions(binding!!.mainLayout)
+//            binding!!.gradesRecyclerView.invalidate()
+//            binding!!.gradesRecyclerView.adapter = null
+//        }
+//        binding = null
+//        super.onDestroyView()
+//    }
+//
+//    private fun observeGrades() {
+//        viewModel.grades.observe(viewLifecycleOwner) { list ->
+//            gradeAdapter.grades = list
+//        }
+//    }
+//
+//    private fun observeErrors() {
+//        viewModel.errorMessage.observe(viewLifecycleOwner) {
+//            binding!!.errorMessage.errorDescription.text = it
+//        }
+//    }
+//
+//    private fun observeGradeState() {
+//        val fadeThrough = MaterialFadeThrough()
+//
+//        Singleton.updateGradeState.observe(viewLifecycleOwner) {
+//            when (it) {
+//                LoadStates.UPDATE -> {
+//                    CoroutineScope(Dispatchers.IO).launch {
+//                        viewModel.load()
+//                    }
+//                    if (binding != null) {
+//                        TransitionManager.beginDelayedTransition(
+//                            binding!!.loading.root,
+//                            fadeThrough,
+//                        )
+//                        TransitionManager.beginDelayedTransition(
+//                            binding!!.gradesRecyclerView,
+//                            fadeThrough,
+//                        )
+//
+//                        binding!!.loading.root.startShimmer()
+//                        binding!!.showLoading()
+//                    }
+//                }
+//
+//                LoadStates.ERROR -> {
+//                    if (binding != null) {
+//                        binding!!.loading.root.stopShimmer()
+//                        binding!!.showError()
+//                    }
+//                }
+//
+//                LoadStates.FINISHED -> {
+//                    if (binding != null) {
+//                        binding!!.loading.root.stopShimmer()
+//                        if (viewModel.grades.value.isNullOrEmpty()) {
+//                            binding!!.emptyState.noHomeworkIcon.setImageDrawable(
+//                                AppCompatResources.getDrawable(
+//                                    requireContext(),
+//                                    R.drawable.ic_emty_grade,
+//                                ),
+//                            )
+//                            binding!!.emptyState.emptyText.text = "Оценок нет"
+//                            binding!!.showEmptyState()
+//                        } else {
+//                            binding!!.gradesRecyclerView.doOnPreDraw {
+//                                binding!!.showGrades()
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                else -> {}
+//            }
+//        }
+//    }
+//
+//    private fun FragmentGradesBinding.showGrades() {
+//        gradesRecyclerView.visibility = View.VISIBLE
+//        emptyState.root.visibility = View.GONE
+//        loading.root.visibility = View.GONE
+//        errorMessage.root.visibility = View.GONE
+//    }
+//
+//    private fun FragmentGradesBinding.showEmptyState() {
+//        emptyState.root.visibility = View.VISIBLE
+//        gradesRecyclerView.visibility = View.INVISIBLE
+//        loading.root.visibility = View.INVISIBLE
+//        errorMessage.root.visibility = View.INVISIBLE
+//    }
+//
+//    private fun FragmentGradesBinding.showLoading() {
+//        loading.root.visibility = View.VISIBLE
+//        gradesRecyclerView.visibility = View.INVISIBLE
+//        emptyState.root.visibility = View.GONE
+//        errorMessage.root.visibility = View.GONE
+//    }
+//
+//    private fun FragmentGradesBinding.showError() {
+//        errorMessage.root.visibility = View.VISIBLE
+//        gradesRecyclerView.visibility = View.INVISIBLE
+//        emptyState.root.visibility = View.GONE
+//        loading.root.visibility = View.GONE
+//    }
 }

@@ -24,7 +24,6 @@ import com.mezhendosina.sgo.app.databinding.ItemGradeValueBinding
 import com.mezhendosina.sgo.app.model.journal.entities.AssignmentUiEntity
 import com.mezhendosina.sgo.app.utils.setupGrade
 import com.mezhendosina.sgo.app.utils.toGradeType
-import dagger.Module
 import javax.inject.Singleton
 
 @Singleton
@@ -56,7 +55,7 @@ class HomeworkGradeAdapter : RecyclerView.Adapter<HomeworkGradeAdapter.HomeworkG
                 } else {
                     this.setupGrade(
                         holder.itemView.context,
-                        grade.mark.toFloat().toGradeType(),
+                        grade.mark.toDouble().toGradeType(),
                         grade.mark.toString()
                     )
                     dutyMark.visibility = View.INVISIBLE

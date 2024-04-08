@@ -21,7 +21,6 @@ data class FilterUiEntity(
     val name: String,
     val checked: Boolean
 )
-
 fun List<FilterUiEntity>.checkItem(id: Int): List<FilterUiEntity> = this.map {
     FilterUiEntity(
         it.id, it.name,

@@ -127,7 +127,7 @@ class GradeItemFragment : Fragment(R.layout.fragment_grade_item) {
     }
 
     private fun setupAvgGrade(lesson: GradesItem) {
-        val avgGradeType = lesson.avgGrade().toGradeType()
+        val avgGradeType = lesson.avgGrade().toDouble().toGradeType()
         binding!!.avgGrade.root.setBackgroundResource(
             when (avgGradeType) {
                 GradesType.GOOD_GRADE -> R.drawable.shape_good_grade
@@ -154,7 +154,7 @@ class GradeItemFragment : Fragment(R.layout.fragment_grade_item) {
             val avgGrade = it.avg()
             binding!!.gradeCalculator.calculatedGrade.setupGrade(
                 requireContext(),
-                avgGrade.toGradeType(),
+                avgGrade.toDouble().toGradeType(),
                 avgGrade.toString(),
             )
         }

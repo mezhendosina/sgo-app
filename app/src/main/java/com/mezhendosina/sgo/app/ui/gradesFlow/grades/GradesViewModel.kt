@@ -42,7 +42,7 @@ import javax.inject.Inject
 class GradesViewModel
 @Inject
 constructor(
-    private val gradeServices: GradesRepositoryInterface,
+//    private val gradeServices: GradesRepositoryInterface,
     private val settingsDataStore: SettingsDataStore,
 ) : ViewModel() {
     private val _grades = MutableLiveData<List<GradesItem>>()
@@ -60,27 +60,29 @@ constructor(
     var gradeAdapter: GradeAdapter? = null
 
     init {
-        gradeServices.addListener(gradeActionListener)
+//        gradeServices.addListener(gradeActionListener)
     }
 
     fun setAdapter(onClickListener: OnGradeClickListener) {
         gradeAdapter = GradeAdapter(onClickListener)
     }
 
-    fun setLesson(lesson: GradesItem) = gradeServices.setSelectedGradesItem(lesson)
+//    fun setLesson(lesson: GradesItem) = {
+////        gradeServices.setSelectedGradesItem(lesson)
+//    }
 
     suspend fun load() {
-//        if (Singleton.grades.isNotEmpty() && Singleton.gradesRecyclerViewLoaded.value == false) {
-//            withContext(Dispatchers.Main) {
-//                _grades.value = Singleton.grades
-//                Singleton.updateGradeState.value = LoadStates.FINISHED
-//            }
-//            return
-//        } else {
+        if (Singleton.grades.isNotEmpty() && Singleton.gradesRecyclerViewLoaded.value == false) {
+            withContext(Dispatchers.Main) {
+                _grades.value = Singleton.grades
+                Singleton.updateGradeState.value = LoadStates.FINISHED
+            }
+            return
+        } else {
         withContext(Dispatchers.Main) {
             _grades.value = emptyList()
         }
-//        }
+        }
 
         // start firebase performance trace
         val trace = Firebase.performance.newTrace("load_grades_trace")
@@ -88,9 +90,9 @@ constructor(
 
         try {
             // gradesOption request
-            val gradeOptions = gradeServices.loadGradesOptions()
+//            val gradeOptions = gradeServices.loadGradesOptions()
             withContext(Dispatchers.Main) {
-                _gradeOptions.value = gradeOptions
+//                _gradeOptions.value = gradeOptions
             }
 
             // find saved termId in response
@@ -143,12 +145,12 @@ constructor(
         termID: String,
         sortType: Int,
     ) = withContext(Dispatchers.IO) {
-        gradeServices.loadGrades(gradesOptions, termID, sortType)
+//        gradeServices.loadGrades(gradesOptions, termID, sortType)
     }
 
     override fun onCleared() {
         super.onCleared()
 
-        gradeServices.removeListener(gradeActionListener)
+//        gradeServices.removeListener(gradeActionListener)
     }
 }

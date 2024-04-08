@@ -8,6 +8,7 @@ import com.mezhendosina.sgo.data.calendar.CalendarRepositoryImpl
 import com.mezhendosina.sgo.data.netschool.repo.LessonRepositoryImpl
 import com.mezhendosina.sgo.data.netschoolEsia.diary.DiaryRepository
 import com.mezhendosina.sgo.data.netschoolEsia.diary.DiaryRepositoryImpl
+import com.mezhendosina.sgo.data.netschoolEsia.grades.GradesRepository
 import com.mezhendosina.sgo.data.netschoolEsia.grades.GradesRepositoryImpl
 import com.mezhendosina.sgo.data.netschoolEsia.lesson.LessonRepository
 import com.mezhendosina.sgo.data.netschoolEsia.login.LoginRepository
@@ -37,7 +38,7 @@ abstract class RepoModule {
 
     @Binds
     @Singleton
-    abstract fun bindGradesRepository(gradesRepository: GradesRepositoryImpl): GradesRepositoryInterface
+    abstract fun bindGradesRepository(gradesRepository: GradesRepositoryImpl): GradesRepository
 
     @Binds
     @Singleton

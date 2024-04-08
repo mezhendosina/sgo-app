@@ -64,20 +64,7 @@ object Singleton {
 
     var gradesWithWeight = false
 
-    val updateGradeState = MutableLiveData<LoadStates>()
+    val updateGradeState = MutableLiveData<LoadStates>(LoadStates.UPDATE)
 
     val mainContainerScreen = MutableLiveData<String>(ContainerFragment.JOURNAL)
-
-    val STATIC_HEADERS =
-        mutableListOf(
-            Header("UserAgent", "che-zadali-app v${BuildConfig.VERSION_NAME}"),
-            Header("X-Requested-With", "XMLHttpRequest"),
-            Header("Sec-Fetch-Site", "same-origin"),
-            Header("Sec-Fetch-Mode", "cors"),
-            Header("Sec-Fetch-Dest", "empty"),
-            Header(
-                "sec-ch-ua",
-                "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"105\", \"Microsoft Edge\";v=\"105\"",
-            ),
-        )
 }

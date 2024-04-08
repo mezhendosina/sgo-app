@@ -32,7 +32,7 @@ import javax.inject.Inject
 class GradeItemViewModel
     @Inject
     constructor(
-        val gradesRepository: GradesRepositoryInterface,
+//        val gradesRepository: GradesRepositoryInterface,
     ) : ViewModel() {
         private val _calculatedGrade = MutableLiveData<CalculateGradeItem>()
         val calculatedGrade: LiveData<CalculateGradeItem> = _calculatedGrade
@@ -45,10 +45,10 @@ class GradeItemViewModel
 
         init {
             viewModelScope.launch {
-                gradesRepository.selectedGradesItem.collect {
-                    _lesson.value = it
-                    initCalculator()
-                }
+//                gradesRepository.selectedGradesItem.collect {
+//                    _lesson.value = it
+//                    initCalculator()
+//                }
             }
         }
 

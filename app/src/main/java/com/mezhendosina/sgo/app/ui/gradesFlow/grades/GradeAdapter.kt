@@ -23,15 +23,15 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.mezhendosina.sgo.app.R
 import com.mezhendosina.sgo.app.databinding.ItemGradeBinding
+import com.mezhendosina.sgo.app.uiEntities.GradesUiEntity
 import com.mezhendosina.sgo.app.utils.setupAsLessonEmoji
 import com.mezhendosina.sgo.app.utils.setupGrade
 import com.mezhendosina.sgo.app.utils.toGradeType
-import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.GradesItem
 import com.mezhendosina.sgo.domain.LessonEmojiUseCase
 import javax.inject.Inject
 import javax.inject.Singleton
 
-typealias OnGradeClickListener = (GradesItem, View) -> Unit
+typealias OnGradeClickListener = (Int, View) -> Unit
 
 @Singleton
 class GradeAdapter(private val onGradeClickListener: OnGradeClickListener) :
@@ -39,7 +39,7 @@ class GradeAdapter(private val onGradeClickListener: OnGradeClickListener) :
     @Inject
     lateinit var lessonEmojiUseCase: LessonEmojiUseCase
 
-    var grades: List<GradesItem> = emptyList()
+    var grades: List<GradesUiEntity> = emptyList()
         set(newValue) {
             field = newValue
             notifyDataSetChanged()
@@ -48,14 +48,14 @@ class GradeAdapter(private val onGradeClickListener: OnGradeClickListener) :
     class GradeViewHolder(val binding: ItemGradeBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onClick(p0: View) {
-        val gradeItem = p0.tag as GradesItem
+        val gradeItem = p0.tag as Int
         val view = p0.rootView
 
         ViewCompat.setTransitionName(
             view,
             p0.context.getString(
                 R.string.grade_item_transition_name,
-                gradeItem.name,
+                gradeItem.toString(),
             ),
         )
 
@@ -88,15 +88,15 @@ class GradeAdapter(private val onGradeClickListener: OnGradeClickListener) :
                 ),
             )
 
-            holder.itemView.tag = grade
+            holder.itemView.tag = grade.id
             lessonEmoji.setupAsLessonEmoji(holder.itemView.context, grade.name)
             lessonName.text = grade.name
 
-            val gradeType = grade.avgGrade().toGradeType()
+            val gradeType = grade.grade.toGradeType()
             this.grade.setupGrade(
                 holder.itemView.context,
                 gradeType,
-                grade.avg ?: "",
+                grade.grade.toString(),
             )
         }
     }

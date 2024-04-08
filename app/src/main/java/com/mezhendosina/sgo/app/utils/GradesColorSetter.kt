@@ -37,7 +37,7 @@ object GradeNames {
     const val ONE = 1
 }
 
-fun Float.toGradeType(): Int {
+fun Double.toGradeType(): Int {
     return if (this <= 2.5f) {
         GradesType.BAD_GRADE
     } else if (2.5f <= this && this < 3.5f) {

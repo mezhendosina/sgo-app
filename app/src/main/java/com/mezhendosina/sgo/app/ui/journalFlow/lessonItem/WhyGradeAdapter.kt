@@ -24,7 +24,6 @@ import com.mezhendosina.sgo.app.databinding.ItemWhyGradeBinding
 import com.mezhendosina.sgo.app.uiEntities.WhyGradeEntity
 import com.mezhendosina.sgo.app.utils.setupGrade
 import com.mezhendosina.sgo.app.utils.toGradeType
-import dagger.Module
 import javax.inject.Singleton
 
 @Singleton
@@ -59,7 +58,7 @@ class WhyGradeAdapter : RecyclerView.Adapter<WhyGradeAdapter.WhyGradeViewHolder>
 
                     this.setupGrade(
                         holder.itemView.context,
-                        grade.mark.mark.toFloat().toGradeType(),
+                        grade.mark.mark.toDouble().toGradeType(),
                         grade.mark.mark.toString()
                     )
                 }
