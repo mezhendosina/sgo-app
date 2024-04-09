@@ -50,9 +50,9 @@ constructor(
             weekDays[classmeeting.day] = weekDay
         }
 
-        val out = weekDays.map {
+        val out = weekDays.map { entry ->
             WeekDayUiEntity(
-                it.key, it.value
+                entry.key, entry.value.sortedBy { it.number }.toMutableList()
             )
         }
         val sortedOut = out.sortedBy { it.date }
