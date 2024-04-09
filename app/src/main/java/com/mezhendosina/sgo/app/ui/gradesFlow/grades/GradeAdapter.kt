@@ -49,17 +49,8 @@ class GradeAdapter(private val onGradeClickListener: OnGradeClickListener) :
 
     override fun onClick(p0: View) {
         val gradeItem = p0.tag as Int
-        val view = p0.rootView
 
-        ViewCompat.setTransitionName(
-            view,
-            p0.context.getString(
-                R.string.grade_item_transition_name,
-                gradeItem.toString(),
-            ),
-        )
-
-        onGradeClickListener(gradeItem, view)
+        onGradeClickListener(gradeItem, p0)
     }
 
     override fun onCreateViewHolder(
@@ -80,14 +71,7 @@ class GradeAdapter(private val onGradeClickListener: OnGradeClickListener) :
     ) {
         val grade = grades[position]
         with(holder.binding) {
-            ViewCompat.setTransitionName(
-                root,
-                holder.itemView.context.getString(
-                    R.string.grade_item_transition_name,
-                    grade.name,
-                ),
-            )
-
+            root.transitionName = grade.id.toString()
             holder.itemView.tag = grade.id
             lessonEmoji.setupAsLessonEmoji(holder.itemView.context, grade.name)
             lessonName.text = grade.name

@@ -18,7 +18,7 @@ interface GradesRepository {
 
     suspend fun initFilters()
 
-    fun getAboutGrade(subjectId: Int): SubjectPerformance
+    suspend fun getAboutGrade(subjectId: Int): SubjectPerformance
 
     suspend fun getGrades()
 

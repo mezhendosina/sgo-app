@@ -19,12 +19,15 @@ package com.mezhendosina.sgo.app.ui.gradesFlow.gradeItem
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.ViewCompat
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.mezhendosina.sgo.Singleton
+import com.mezhendosina.sgo.app.GRADE_ID
 import com.mezhendosina.sgo.app.R
 import com.mezhendosina.sgo.app.databinding.FragmentGradeItemBinding
 import com.mezhendosina.sgo.app.utils.GradesType
@@ -34,8 +37,13 @@ import com.mezhendosina.sgo.app.utils.setLessonEmoji
 import com.mezhendosina.sgo.app.utils.setupColorWithGrade
 import com.mezhendosina.sgo.app.utils.setupGrade
 import com.mezhendosina.sgo.app.utils.toGradeType
+import com.mezhendosina.sgo.data.netschoolEsia.entities.analytics.SubjectPerformance
 import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.GradesItem
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class GradeItemFragment : Fragment(R.layout.fragment_grade_item) {
@@ -75,6 +83,7 @@ class GradeItemFragment : Fragment(R.layout.fragment_grade_item) {
             MaterialContainerTransform().apply {
                 scrimColor = Color.TRANSPARENT
             }
+//        postponeEnterTransition()
     }
 
     override fun onViewCreated(
@@ -83,17 +92,31 @@ class GradeItemFragment : Fragment(R.layout.fragment_grade_item) {
     ) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentGradeItemBinding.bind(view)
+        val s = arguments?.getInt(GRADE_ID).toString()
+        ViewCompat.setTransitionName(binding!!.root, s)
+//        binding!!.root.doOnPreDraw {
+//            startPostponedEnterTransition()
+//        }
         observeLesson()
         observeCalculatedGrade()
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.getSubject(
+                arguments?.getInt(GRADE_ID) ?: return@launch
+            )
+            withContext(Dispatchers.Main){
+                viewModel.initCalculator()
+            }
+
+        }
     }
 
     private fun observeLesson() {
         viewModel.lesson.observe(viewLifecycleOwner) { lesson ->
             if (lesson != null) {
                 with(binding!!.gradeToolbar) {
-                    collapsingtoolbarlayout.title = lesson.name
+                    collapsingtoolbarlayout.title = lesson.subject.name
                     itemToolbar.setNavigationOnClickListener { findTopNavController().popBackStack() }
-                    setLessonEmoji(requireContext(), lesson.name)
+                    setLessonEmoji(requireContext(), lesson.subject.name)
                 }
 
                 binding!!.gradeCalculator.calculateGrade.adapter = calculateGradeAdapter
@@ -106,7 +129,8 @@ class GradeItemFragment : Fragment(R.layout.fragment_grade_item) {
                         View.GONE
                 }
 
-                countGradeAdapter.countGrades = lesson.countGradesToList()
+                countGradeAdapter.countGrades =
+                    lesson.markStats.mapNotNull { it.toCountGradeItem() }
                 val itemOffsetDecoration = ItemOffsetDecoration(36)
                 with(binding!!.countGrade) {
                     adapter = countGradeAdapter
@@ -126,8 +150,8 @@ class GradeItemFragment : Fragment(R.layout.fragment_grade_item) {
         super.onDestroyView()
     }
 
-    private fun setupAvgGrade(lesson: GradesItem) {
-        val avgGradeType = lesson.avgGrade().toDouble().toGradeType()
+    private fun setupAvgGrade(lesson: SubjectPerformance) {
+        val avgGradeType = lesson.averageMark.toGradeType()
         binding!!.avgGrade.root.setBackgroundResource(
             when (avgGradeType) {
                 GradesType.GOOD_GRADE -> R.drawable.shape_good_grade
@@ -140,7 +164,7 @@ class GradeItemFragment : Fragment(R.layout.fragment_grade_item) {
         binding!!.avgGrade.avgGrade.setupGrade(
             requireContext(),
             avgGradeType,
-            lesson.avg ?: "",
+            lesson.averageMark.toString(),
             true,
         )
         binding!!.avgGrade.root.background.setBounds(41, 41, 41, 41)
@@ -148,6 +172,7 @@ class GradeItemFragment : Fragment(R.layout.fragment_grade_item) {
 
     private fun observeCalculatedGrade() {
         viewModel.calculatedGrade.observe(viewLifecycleOwner) {
+            if (it == null) return@observe
             calculateGradeAdapter.grades = it.toList()
             calculateGradeAdapter.initGrades =
                 viewModel.grade.value?.toList() ?: listOf(0, 0, 0, 0, 0)

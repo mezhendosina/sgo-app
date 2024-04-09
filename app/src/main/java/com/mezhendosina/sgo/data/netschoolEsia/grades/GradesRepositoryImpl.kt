@@ -48,8 +48,9 @@ class GradesRepositoryImpl @Inject constructor(
     }
 
 
-    override fun getAboutGrade(subjectId: Int): SubjectPerformance {
-        TODO("Not yet implemented")
+    override suspend fun getAboutGrade(subjectId: Int): SubjectPerformance {
+        val currentUser = appSettings.getStudentId()
+        return gradesSource.getWhyTotalGrade(currentUser, subjectId, selectedTrimId.value)
     }
 
     override suspend fun getSelectedYear(): Int? {

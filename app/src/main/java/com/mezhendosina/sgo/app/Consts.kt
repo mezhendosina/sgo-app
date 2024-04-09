@@ -6,6 +6,7 @@ import com.mezhendosina.sgo.app.uiEntities.FilterUiEntity
 
 const val CLASSMEETING_ID = "classmeeting_id"
 const val TERM_ID = "term_id"
+const val GRADE_ID = "grade_id"
 const val DIARY_RECYCLERVIEW_INITIAL_ITEMS_COUNT = 6
 
 fun sortGradesList(context: Context, selectedItem: Int): List<FilterUiEntity> = listOf(
