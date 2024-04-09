@@ -99,6 +99,7 @@ class ContainerFragment :
         sharedElementEnterTransition = MaterialContainerTransform()
         sharedElementReturnTransition = MaterialContainerTransform()
         setupGrades()
+        Singleton.updateGradeState.value = LoadStates.UPDATE
         CoroutineScope(Dispatchers.IO).launch {
             containerViewModel.checkUpdates()
             containerViewModel.loadWeeks()
