@@ -20,7 +20,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -29,11 +28,7 @@ import com.google.android.material.transition.platform.MaterialSharedAxis
 import com.mezhendosina.sgo.app.R
 import com.mezhendosina.sgo.app.activities.LoginActivity
 import com.mezhendosina.sgo.app.databinding.FragmentSettingsBinding
-import com.mezhendosina.sgo.app.ui.settingsFlow.changeControlQuestion.ChangeControlQuestionFragment
-import com.mezhendosina.sgo.app.ui.settingsFlow.changeEmail.ChangeEmailFragment
-import com.mezhendosina.sgo.app.ui.settingsFlow.changePhone.ChangePhoneFragment
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -46,22 +41,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private val viewModel: SettingsViewModel by viewModels()
     private lateinit var binding: FragmentSettingsBinding
 
-//    private val checkNotificationsPermission =
-//        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-//            if (it && viewModel.enableGradeNotifications.value == false) {
-//                CoroutineScope(Dispatchers.IO).launch {
-////                    viewModel.changeGradeNotifications(requireContext())
-//                }
-//            } else if (!it) {
-//                Snackbar.make(
-//                    binding.root,
-//                    "Нет разрешения на отправку уведомлений уведомления",
-//                    Snackbar.LENGTH_LONG
-//                ).show()
-//            }
-//        }
-
-    val file: File = File.createTempFile("profile_photo", "tmp")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -73,7 +52,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     override fun onResume() {
         super.onResume()
         CoroutineScope(Dispatchers.IO).launch {
-            viewModel.getMySettings(arguments)
+            viewModel.getMySettings()
         }
     }
 
@@ -87,44 +66,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             binding.profileCard.userPhoto
         )
 
-        binding.phoneNumber.setOnClickListener {
-            val phoneBundle =
-                bundleOf(
-                    ChangePhoneFragment.PHONE_NUMBER to viewModel.phoneNumber.value,
-                    ChangePhoneFragment.PHONE_VISIBILITY to viewModel.phoneNumberVisibility.value
-                )
-            findNavController().navigate(
-                R.id.action_settingsFragment_to_changePhoneFragment,
-                phoneBundle
-            )
-        }
-
-        binding.email.setOnClickListener {
-            val emailBundle = bundleOf(
-                ChangeEmailFragment.EMAIL to viewModel.email.value
-            )
-            findNavController().navigate(
-                R.id.action_settingsFragment_to_changeEmailFragment,
-                emailBundle
-            )
-        }
-
-        binding.changePassword.setOnClickListener {
-            findNavController().navigate(R.id.action_settingsFragment4_to_changePasswordFragment)
-        }
-        binding.changeControlQuestion.setOnClickListener {
-            val userSettings = viewModel.mySettingsResponseEntity.value?.userSettings
-            findNavController().navigate(
-                R.id.action_settingsFragment4_to_changeControlQuestionFragment,
-                bundleOf(
-                    ChangeControlQuestionFragment.SELECTED_QUEStION to userSettings?.recoveryQuestion,
-                    ChangeControlQuestionFragment.ANSWER to userSettings?.recoveryAnswer
-                )
-            )
-        }
 
         binding.changeTheme.setOnClickListener {
-            findNavController().navigate(R.id.action_settingsFragment_to_changeDiaryStyleFragment)
+            findNavController().navigate(R.id.action_settingsFragment_to_themeFragment)
         }
 
 
@@ -133,42 +77,20 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         }
 
         binding.logoutButton.setOnClickListener {
-        CoroutineScope(Dispatchers.IO).launch {
-            viewModel.logout()
-            withContext(Dispatchers.Main) {
-                val intent = Intent(requireContext(), LoginActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-                ContextCompat.startActivity(requireContext(), intent, null)
+            CoroutineScope(Dispatchers.IO).launch {
+                viewModel.logout()
+                withContext(Dispatchers.Main) {
+                    val intent = Intent(requireContext(), LoginActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    ContextCompat.startActivity(requireContext(), intent, null)
+                }
             }
-        }
         }
 
         observeMySettings()
-//        observeGradesNotifications()
         observeErrors()
         observeLoading()
     }
-
-//    private fun observeGradesNotifications() {
-//        binding.newGradeNotification.root.setOnClickListener {
-//            CoroutineScope(Dispatchers.IO).launch {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && viewModel.enableGradeNotifications.value == false) {
-//                    checkNotificationsPermission.launch(android.Manifest.permission.POST_NOTIFICATIONS)
-//                } else {
-//                    viewModel.changeGradeNotifications(requireContext())
-//                }
-//            }
-//        }
-//
-//        viewModel.enableGradeNotifications.observe(viewLifecycleOwner) {
-//            binding.newGradeNotification.newGradeNotificationSwitch.isChecked = it
-//        }
-//
-//        viewModel.gradesNotificationsLoading.observe(viewLifecycleOwner) {
-//            binding.newGradeNotification.newGradeNotificationSwitch.isEnabled = !it
-//            binding.newGradeNotification.root.isClickable = !it
-//        }
-//    }
 
     private fun observeLoading() {
         viewModel.loading.observe(viewLifecycleOwner) {
@@ -196,22 +118,12 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     private fun observeMySettings() {
-        val regex = """(\d)(\d{3})(\d{3})(\d{2})(\d{2})""".toRegex()
-        viewModel.mySettingsResponseEntity.observe(viewLifecycleOwner) {
+        viewModel.userInfo.observe(viewLifecycleOwner) {
             binding.profileCard.userName.text = requireContext().getString(
                 R.string.user_name,
-                it.lastName,
-                it.firstName,
-                it.middleName
+                it.nickName,
             )
             binding.profileCard.userLogin.text = it.loginName
-
-            binding.phoneNumberValue.text = if (!it.mobilePhone.isNullOrEmpty())
-                regex.replace(it.mobilePhone, "+$1 ($2) $3-$4$5")
-            else getString(R.string.empty)
-
-            binding.emailValue.text = if (!it.email.isNullOrEmpty()) it.email
-            else getString(R.string.empty)
         }
     }
 }

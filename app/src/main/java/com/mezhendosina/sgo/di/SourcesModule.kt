@@ -6,8 +6,6 @@ import com.mezhendosina.sgo.data.netschool.api.attachments.AttachmentsSource
 import com.mezhendosina.sgo.data.netschool.api.attachments.RetrofitAttachmentsSource
 import com.mezhendosina.sgo.data.netschool.api.homework.HomeworkSource
 import com.mezhendosina.sgo.data.netschool.api.homework.RetrofitHomeworkSource
-import com.mezhendosina.sgo.data.netschool.api.settings.RetrofitSettingsSource
-import com.mezhendosina.sgo.data.netschool.api.settings.SettingsSource
 import com.mezhendosina.sgo.data.netschoolEsia.diary.DiarySource
 import com.mezhendosina.sgo.data.netschoolEsia.diary.RetrofitDiarySource
 import com.mezhendosina.sgo.data.netschoolEsia.grades.GradesSource
@@ -32,9 +30,6 @@ abstract class SourcesModule {
 
     @Binds
     abstract fun bindHomeworkSource(retrofitHomeworkSource: RetrofitHomeworkSource): HomeworkSource
-
-    @Binds
-    abstract fun bindSettingsSource(retrofitSettingsSource: RetrofitSettingsSource): SettingsSource
 
     @Binds
     abstract fun bindDiarySource(retrofitDiarySource: RetrofitDiarySource): DiarySource

@@ -64,6 +64,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/phone_number"
             style="@style/settingsButton.withCaption"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -103,6 +104,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/email"
             style="@style/settingsButton.withCaption"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -143,6 +145,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="0dp"
+            android:visibility="gone"
             android:paddingVertical="16dp"
             android:text="@string/change_password"
             app:iconGravity="start"
@@ -153,6 +156,7 @@
             style="@style/Widget.SGOApp.Button.Settings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:paddingVertical="16dp"
             android:text="@string/change_control_question"
             app:layout_constraintTop_toBottomOf="@id/change_password" />
