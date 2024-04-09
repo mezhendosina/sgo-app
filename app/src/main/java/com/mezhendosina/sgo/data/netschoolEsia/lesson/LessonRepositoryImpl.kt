@@ -17,72 +17,80 @@ import javax.inject.Singleton
 
 @Singleton
 class LessonRepositoryImpl
-    @Inject
-    constructor(
-        val diaryRepository: DiaryRepository,
-        val appSettings: AppSettings,
-    ) : LessonRepository {
-        private val _lesson = MutableStateFlow<AboutLessonUiEntity?>(null)
-        override val lesson: StateFlow<AboutLessonUiEntity?> = _lesson
+@Inject
+constructor(
+    val diaryRepository: DiaryRepository,
+    val appSettings: AppSettings,
+) : LessonRepository {
+    private val _lesson = MutableStateFlow<AboutLessonUiEntity?>(null)
+    override val lesson: StateFlow<AboutLessonUiEntity?> = _lesson
 
-        override fun getAnswerText(): String {
-            return "TODO"
-        }
+    override fun getAnswerText(): String {
+        return "TODO"
+    }
 
-        override fun editAnswerText(text: String) {
-            TODO("Not yet implemented")
-        }
+    override fun editAnswerText(text: String) {
+        TODO("Not yet implemented")
+    }
 
-        override suspend fun getAboutLesson(
-            lessonUiEntity: LessonUiEntity,
-            studentId: Int,
-        ) {
-            val assignmentResp = diaryRepository.getAssignment(listOf(lessonUiEntity.classmeetingId))
-            val homework = assignmentResp.first { it.assignmentTypeId == 3 }
+    override suspend fun getAboutLesson(
+        lessonUiEntity: LessonUiEntity,
+        studentId: Int,
+    ) {
+        val assignmentResp = diaryRepository.getAssignment(listOf(lessonUiEntity.classmeetingId))
+        val homework = assignmentResp.first { it.assignmentTypeId == 3 }
 
-            val attachments = mutableListOf<AttachmentEntity>()
-            val whyGradeEntity = mutableListOf<WhyGradeEntity>()
+        val attachments = mutableListOf<AttachmentEntity>()
+        val whyGradeEntity = mutableListOf<WhyGradeEntity>()
 
-            assignmentResp.forEach {
-                withContext(Dispatchers.IO) {
-                    if (it.attachmentsExists) {
-                        val getAttachments = diaryRepository.getAttachments(it.assignmentId)
-                        synchronized(attachments) {
-                            attachments.addAll(getAttachments)
-                        }
+        assignmentResp.forEach {
+            withContext(Dispatchers.IO) {
+                if (it.attachmentsExists) {
+                    val getAttachments = diaryRepository.getAttachments(it.assignmentId)
+                    synchronized(attachments) {
+                        attachments.addAll(getAttachments)
                     }
                 }
-                if (it.result != null || it.duty) {
-                    whyGradeEntity.add(
-                        WhyGradeEntity(
-                            it.assignmentName,
-                            MarkUiEntity(
-                                it.assignmentId,
-                                it.result!!.toInt(),
-                                it.comment,
-                                it.duty,
-                                null,
-                            ),
-                            it.assignmentTypeName,
-                        ),
-                    )
-                }
             }
-
-            _lesson.value =
-                AboutLessonUiEntity(
-                    lessonUiEntity.classmeetingId,
-                    lessonUiEntity.subjectName,
-                    lessonUiEntity.homework!!.assignmentName,
-                    homework.comment,
-                    emptyList(),
-                    whyGradeEntity,
-                    null,
-                    emptyList(),
+            if (it.result != null || it.duty) {
+                whyGradeEntity.add(
+                    WhyGradeEntity(
+                        it.assignmentName,
+                        MarkUiEntity(
+                            it.assignmentId,
+                            it.result!!.toInt(),
+                            it.comment,
+                            it.duty,
+                            null,
+                        ),
+                        it.assignmentTypeName,
+                    ),
                 )
+            }
         }
 
-        override fun editAnswers(files: List<FileUiEntity>?) {
-            TODO("Not yet implemented")
-        }
+        _lesson.value =
+            AboutLessonUiEntity(
+                lessonUiEntity.classmeetingId,
+                lessonUiEntity.subjectName,
+                lessonUiEntity.homework!!.assignmentName,
+                homework.comment,
+                attachments.map {
+                    FileUiEntity(
+                        it.attachmentId,
+                        it.attachmentId.toString(),
+                        it.attachmentId,
+                        it.fileName,
+                        it.description?.toString()
+                    )
+                },
+                whyGradeEntity,
+                null,
+                emptyList(),
+            )
     }
+
+    override fun editAnswers(files: List<FileUiEntity>?) {
+        TODO("Not yet implemented")
+    }
+}

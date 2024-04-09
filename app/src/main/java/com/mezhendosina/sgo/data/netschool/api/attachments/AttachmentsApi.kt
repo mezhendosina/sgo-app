@@ -47,13 +47,13 @@ interface AttachmentsApi {
     ): Response<ResponseBody>
 
     @Multipart
-    @POST("webapi/attachments")
+    @POST("api/mobile/attachments")
     suspend fun sendFileAttachment(
         @Part file: MultipartBody.Part,
         @Part("data") data: SendFileRequestEntity,
     ): Int
 
-    @GET("webapi/attachments/{attachmentId}")
+    @GET("api/mobile/attachments/{attachmentId}")
     @Streaming
     suspend fun downloadAttachment(
         @Path("attachmentId") attachmentId: Int,
