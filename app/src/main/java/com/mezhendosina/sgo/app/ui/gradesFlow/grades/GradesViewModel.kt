@@ -40,6 +40,7 @@ class GradesViewModel @Inject constructor(
     init {
         CoroutineScope(Dispatchers.IO).launch {
             gradesRepository.initFilters()
+            gradesRepository.getGrades()
         }
         viewModelScope.launch {
             gradesRepository.grades.collect { subjectTotals ->
