@@ -26,7 +26,6 @@ import com.mezhendosina.sgo.app.model.attachments.AttachmentDownloadManagerInter
 import com.mezhendosina.sgo.app.uiEntities.AboutLessonUiEntity
 import com.mezhendosina.sgo.app.utils.toLiveData
 import com.mezhendosina.sgo.data.SettingsDataStore
-import com.mezhendosina.sgo.data.netschool.repo.LessonActionListener
 import com.mezhendosina.sgo.data.netschoolEsia.base.PermissionNotGranted
 import com.mezhendosina.sgo.data.netschoolEsia.base.toDescription
 import com.mezhendosina.sgo.data.netschoolEsia.lesson.LessonRepository
@@ -51,10 +50,6 @@ class LessonViewModel
 
         private val _error = MutableLiveData<String>()
         val error = _error.toLiveData()
-
-        private val lessonListener: LessonActionListener = {
-            _lesson.value = it
-        }
 
         init {
             viewModelScope.launch {

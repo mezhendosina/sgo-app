@@ -54,7 +54,7 @@ class Regions {
                 "    },\n" +
                 "    {\n" +
                 "      \"name\": \"Амурская область\",\n" +
-                "      \"url\": \"https://region.obramur.ru/login?mobile\",\n" +
+                "      \"url\": \"https://region.obramur.ru/\",\n" +
                 "      \"emblem_url\": \"https://upload.wikimedia.org/wikipedia/commons/9/9f/Amurskaja_obl_coa_2008.png\"\n" +
                 "    },\n" +
                 "    {\n" +
