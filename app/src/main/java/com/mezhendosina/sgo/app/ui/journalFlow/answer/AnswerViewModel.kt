@@ -1,17 +1,17 @@
 /*
- * Copyright 2023 Eugene Menshenin
+ * Copyright 2024 Eugene Menshenin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package com.mezhendosina.sgo.app.ui.journalFlow.answer
@@ -25,7 +25,7 @@ import com.mezhendosina.sgo.app.model.attachments.AttachmentDownloadManager
 import com.mezhendosina.sgo.app.utils.LessonNotFoundException
 import com.mezhendosina.sgo.app.utils.toLiveData
 import com.mezhendosina.sgo.data.SettingsDataStore
-import com.mezhendosina.sgo.data.netschool.repo.LessonRepositoryInterface
+import com.mezhendosina.sgo.data.netschoolEsia.lesson.LessonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -34,21 +34,22 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class AnswerViewModel @Inject constructor(
-    private val lessonRepository: LessonRepositoryInterface,
+class AnswerViewModel
+@Inject
+constructor(
+    private val lessonRepository: LessonRepository,
     private val attachmentDownloadManager: AttachmentDownloadManager,
-    private val settingsDataStore: SettingsDataStore
+    private val settingsDataStore: SettingsDataStore,
 ) : ViewModel(), AnswerViewModelInterface {
-
     private val _files = MutableLiveData<MutableList<FileUiEntity>>(mutableListOf())
     val files = _files.toLiveData()
 
+    private val _answerText = MutableLiveData<String>()
 
     override fun getHomework(): String {
         val lesson = lessonRepository.lesson.value ?: throw LessonNotFoundException()
         return lesson.homework
     }
-
 
     override fun getAnswer(): String? {
         val lesson = lessonRepository.lesson.value ?: throw LessonNotFoundException()
@@ -57,18 +58,20 @@ class AnswerViewModel @Inject constructor(
     }
 
     fun editAnswerText(answerText: String) {
-        lessonRepository.editAnswerText(answerText)
+        _answerText.value = answerText
     }
 
-    override suspend fun sendAnswer(answerText: String?) {
-        TODO()
+    override suspend fun sendAnswer() {
+        lessonRepository.editAnswerText(_answerText.value ?: "",)
     }
 
     override suspend fun uploadFiles(context: Context) {
-        if (_files.value != null) attachmentDownloadManager.uploadFiles(
-            context,
-            _files.value!!
-        )
+        if (_files.value != null) {
+            attachmentDownloadManager.uploadFiles(
+                context,
+                _files.value!!,
+            )
+        }
     }
 
     override suspend fun downloadFiles(context: Context) {
@@ -83,11 +86,17 @@ class AnswerViewModel @Inject constructor(
         }
     }
 
-    override suspend fun downloadFile(context: Context, fileUiEntity: FileUiEntity) {
+    override suspend fun downloadFile(
+        context: Context,
+        fileUiEntity: FileUiEntity,
+    ) {
         attachmentDownloadManager.downloadFile(context, fileUiEntity)
     }
 
-    override fun openFile(context: Context, fileUiEntity: FileUiEntity) {
+    override fun openFile(
+        context: Context,
+        fileUiEntity: FileUiEntity,
+    ) {
         attachmentDownloadManager.openFile(context, fileUiEntity)
     }
 
@@ -102,5 +111,4 @@ class AnswerViewModel @Inject constructor(
             TODO()
         }
     }
-
 }

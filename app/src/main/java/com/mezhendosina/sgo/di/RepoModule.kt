@@ -18,6 +18,7 @@ package com.mezhendosina.sgo.di
 
 import com.mezhendosina.sgo.app.model.attachments.AttachmentDownloadManager
 import com.mezhendosina.sgo.app.model.attachments.AttachmentDownloadManagerInterface
+import com.mezhendosina.sgo.data.calendar.CalendarRepository
 import com.mezhendosina.sgo.data.calendar.CalendarRepositoryImpl
 import com.mezhendosina.sgo.data.netschoolEsia.diary.DiaryRepository
 import com.mezhendosina.sgo.data.netschoolEsia.diary.DiaryRepositoryImpl
