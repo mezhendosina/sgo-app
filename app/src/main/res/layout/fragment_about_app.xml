@@ -30,7 +30,7 @@
         android:background="@drawable/main_icon_shape"
         android:contentDescription="@string/sgo_app_logo"
         android:padding="12dp"
-        android:src="@drawable/main_icon"
+        android:src="@drawable/ic_about_app"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
