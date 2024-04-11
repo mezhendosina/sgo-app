@@ -141,7 +141,6 @@ class ContainerFragment :
             startPostponedEnterTransition()
             Singleton.gradesRecyclerViewLoaded.value = true
         }
-        observeDiaryStyle()
         observeUserId()
         observeWeeks(journalPagerAdapter)
 
@@ -199,15 +198,6 @@ class ContainerFragment :
                 } else {
                     containerMainBinding.journal.setCurrentItem(Singleton.currentWeek!!, false)
                 }
-            }
-        }
-    }
-
-    private fun observeDiaryStyle() {
-        val firebaseAnalytics = FirebaseAnalytics.getInstance(requireContext())
-        CoroutineScope(Dispatchers.Main).launch {
-            settingsDataStore.getValue(SettingsDataStore.DIARY_STYLE).collect {
-                firebaseAnalytics.setUserProperty("diary_style", it)
             }
         }
     }
