@@ -77,7 +77,7 @@
     <fragment
         android:id="@+id/webViewLoginFragment"
         android:name="com.mezhendosina.sgo.app.ui.loginFlow.webViewLogin.WebViewLoginFragment"
-        android:label="WebViewLoginFragment" >
+        android:label="@string/auth" >
         <action
             android:id="@+id/action_webViewLoginFragment_to_gosuslugiResultFragment"
             app:destination="@id/gosuslugiResultFragment" />
@@ -90,7 +90,7 @@
     <fragment
         android:id="@+id/gosuslugiResultFragment"
         android:name="com.mezhendosina.sgo.app.ui.loginFlow.gosuslugiResult.GosuslugiResultFragment"
-        android:label="fragment_gosuslugi_result"
+        android:label=""
         tools:layout="@layout/fragment_gosuslugi_result" >
         <action
             android:id="@+id/action_gosuslugiResultFragment_to_chooseUserIdFragment"

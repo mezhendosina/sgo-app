@@ -25,9 +25,9 @@
         android:name="com.mezhendosina.sgo.app.ui.journalFlow.journal.JournalFragment"
         android:label="@string/che_zadali"
         tools:layout="@layout/fragment_journal" />
-    <fragment
-        android:id="@+id/gradesFragment"
-        android:name="com.mezhendosina.sgo.app.ui.gradesFlow.newGrades.gradesItem.GradesFragment"
-        android:label="@string/grades"
-        tools:layout="@layout/fragment_grades" />
+<!--    <fragment-->
+<!--        android:id="@+id/gradesFragment"-->
+<!--        android:name="com.mezhendosina.sgo.app.ui.gradesFlow.grades.GradesFragment"-->
+<!--        android:label="@string/grades"-->
+<!--        tools:layout="@layout/fragment_grades" />-->
 </navigation>
