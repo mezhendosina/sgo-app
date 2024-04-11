@@ -110,23 +110,23 @@ jobs:
         id: check-release-tag
         run: echo is_update=${{ steps.get-release-tag.outputs.last_tag }} != ${{ needs.get-apk-version.outputs.apk-version-name }} << $GITHUB_OUTPUT
 
-  send-to-rustore:
-    needs: [ prepare-release-notes, get-apk-version ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get APK
-        uses: actions/download-artifact@v3
-        with:
-          name: SGO app.apk
-          path: ./
-
-      - name: rename APK
-        run: mv /home/runner/work/che-zadali-app/che-zadali-app/app-release.apk /home/runner/work/che-zadali-app/che-zadali-app/che-zadali-app-v${{ needs.get-apk-version.outputs.apk-version-name }}.apk
-
-      - name: Create RuStore update
-        run: curl -o ./output -H "Public-Token:${{ secrets.RUSTORE_API_KEY }}" -H "Content-Type:application/json" --data-raw "{"whatsNew":${{ needs.prepare-release-notes.outputs.release-notes }}" https://public-api.rustore.ru/public/v1/application/com.mezhendosina.sgo.app/version
-      - name: Upload File
-        run: curl -H "Public-Token:${{ secrets.RUSTORE_API_KEY }}" -F file=@"/home/runner/work/che-zadali-app/che-zadali-app/che-zadali-app-v${{ needs.get-apk-version.outputs.apk-version-name }}.apk" https://public-api.rustore.ru/public/v1/application/com.mezhendosina.sgo.app/version/$(cat ./output)/apk?isMainAPK=true
+#  send-to-rustore:
+#    needs: [ prepare-release-notes, get-apk-version ]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Get APK
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: SGO app.apk
+#          path: ./
+#
+#      - name: rename APK
+#        run: mv /home/runner/work/che-zadali-app/che-zadali-app/app-release.apk /home/runner/work/che-zadali-app/che-zadali-app/che-zadali-app-v${{ needs.get-apk-version.outputs.apk-version-name }}.apk
+#
+#      - name: Create RuStore update
+#        run: curl -o ./output -H "Public-Token:${{ secrets.RUSTORE_API_KEY }}" -H "Content-Type:application/json" --data-raw "{"whatsNew":${{ needs.prepare-release-notes.outputs.release-notes }}" https://public-api.rustore.ru/public/v1/application/com.mezhendosina.sgo.app/version
+#      - name: Upload File
+#        run: curl -H "Public-Token:${{ secrets.RUSTORE_API_KEY }}" -F file=@"/home/runner/work/che-zadali-app/che-zadali-app/che-zadali-app-v${{ needs.get-apk-version.outputs.apk-version-name }}.apk" https://public-api.rustore.ru/public/v1/application/com.mezhendosina.sgo.app/version/$(cat ./output)/apk?isMainAPK=true
 
   send-to-channel:
     needs: [ prepare-release-notes, get-apk-version ]
