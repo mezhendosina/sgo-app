@@ -21,6 +21,7 @@ import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.Insets.max
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -36,6 +37,7 @@ fun AppCompatActivity.setupInsets(fragmentContainer: View) {
         ViewCompat.setOnApplyWindowInsetsListener(fragmentContainer) { view, windowInsets ->
             val insetsNavigation =
                 windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            val ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
             val topBarInset = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
             val insets =
                 windowInsets.getInsets(WindowInsetsCompat.Type.mandatorySystemGestures())
@@ -50,7 +52,7 @@ fun AppCompatActivity.setupInsets(fragmentContainer: View) {
                     insets.left,
                     topBarInset.top,
                     insets.right,
-                    insetsNavigation.bottom
+                    max(ime, insetsNavigation).bottom
                 )
             }
             WindowInsetsCompat.CONSUMED
