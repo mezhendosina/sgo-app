@@ -74,7 +74,7 @@ android {
         }
         rustore_release {
             signingConfig signingConfigs.release
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             manifestPlaceholders = [crashlyticsCollectionEnabled: "true"]
             resValue("bool", "FIREBASE_ANALYTICS_DEACTIVATED", "false")
@@ -82,7 +82,7 @@ android {
         }
         release {
             signingConfig signingConfigs.release
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             manifestPlaceholders = [crashlyticsCollectionEnabled: "true"]
             resValue("bool", "FIREBASE_ANALYTICS_DEACTIVATED", "false")
