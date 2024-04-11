@@ -125,7 +125,7 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.fragment:fragment-ktx:1.6.2'
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-debug:1.6.4'
+    testImplementation  'org.jetbrains.kotlinx:kotlinx-coroutines-debug:1.7.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
@@ -233,7 +233,7 @@ dependencies {
 //    implementation 'androidx.compose.material3:material3-window-size-class'
 //
 //    // Optional - Integration with activities
-    implementation 'androidx.activity:activity-compose:1.8.2'
+//    implementation 'androidx.activity:activity-compose:1.8.2'
 //    // Optional - Integration with ViewModels
 //    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1'
 //    // Optional - Integration with LiveData

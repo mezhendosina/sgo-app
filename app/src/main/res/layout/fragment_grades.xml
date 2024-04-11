@@ -20,8 +20,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.gradesFlow.grades.GradesFragment">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout

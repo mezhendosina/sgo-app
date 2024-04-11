@@ -33,6 +33,7 @@ import com.mezhendosina.sgo.app.databinding.FragmentGradeItemBinding
 import com.mezhendosina.sgo.app.utils.GradesType
 import com.mezhendosina.sgo.app.utils.ItemOffsetDecoration
 import com.mezhendosina.sgo.app.utils.findTopNavController
+import com.mezhendosina.sgo.app.utils.getEmojiLesson
 import com.mezhendosina.sgo.app.utils.setLessonEmoji
 import com.mezhendosina.sgo.app.utils.setupColorWithGrade
 import com.mezhendosina.sgo.app.utils.setupGrade
@@ -83,7 +84,6 @@ class GradeItemFragment : Fragment(R.layout.fragment_grade_item) {
             MaterialContainerTransform().apply {
                 scrimColor = Color.TRANSPARENT
             }
-//        postponeEnterTransition()
     }
 
     override fun onViewCreated(
@@ -94,9 +94,7 @@ class GradeItemFragment : Fragment(R.layout.fragment_grade_item) {
         binding = FragmentGradeItemBinding.bind(view)
         val s = arguments?.getInt(GRADE_ID).toString()
         ViewCompat.setTransitionName(binding!!.root, s)
-//        binding!!.root.doOnPreDraw {
-//            startPostponedEnterTransition()
-//        }
+
         observeLesson()
         observeCalculatedGrade()
         CoroutineScope(Dispatchers.IO).launch {

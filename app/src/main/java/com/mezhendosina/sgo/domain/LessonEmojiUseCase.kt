@@ -7,7 +7,7 @@ import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
-import com.mezhendosina.sgo.data.emoji.EmojiRepository
+import com.mezhendosina.sgo.data.emoji.EmojiRepositoryImpl
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +20,7 @@ import javax.inject.Singleton
 class LessonEmojiUseCase
     @Inject
     constructor(
-        val emojiRepository: EmojiRepository,
+        val emojiRepository: EmojiRepositoryImpl,
         @ApplicationContext val context: Context,
     ) {
         fun setupImageView(
