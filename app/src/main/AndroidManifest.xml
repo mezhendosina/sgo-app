@@ -35,7 +35,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
-        android:theme="@style/Theme.SGOApp">
+        android:theme="@style/Theme.SGOApp.Start">
 
         <activity
             android:name=".activities.RoutingActivity"
@@ -44,17 +44,19 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
 
         </activity>
 
         <activity
             android:name=".activities.LoginActivity"
+            android:theme="@style/Theme.SGOApp"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".activities.MainActivity"
+            android:theme="@style/Theme.SGOApp"
             android:windowSoftInputMode="adjustPan" />
 
         <provider

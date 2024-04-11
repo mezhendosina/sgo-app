@@ -81,6 +81,7 @@ class MainActivity : AppCompatActivity() {
         analytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundleOf())
 
         setContentView(binding.root)
+        setupInsets(binding.root)
         CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.Main) {
                 viewModel.errorMessage.observe(this@MainActivity) {
@@ -88,14 +89,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             viewModel.login()
-
-            withContext(Dispatchers.Main) {
-                TransitionManager.beginDelayedTransition(
-                    binding.root,
-                    MaterialFadeThrough()
-                )
-                setupInsets(binding.root)
-            }
         }
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentListener, true)
 //        onBackPressedDispatcher.addCallback(onBackPressedCallback)

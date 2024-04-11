@@ -50,7 +50,7 @@ fun AppCompatActivity.setupInsets(fragmentContainer: View) {
                     insets.left,
                     topBarInset.top,
                     insets.right,
-                    view.paddingBottom
+                    insetsNavigation.bottom
                 )
             }
             WindowInsetsCompat.CONSUMED
