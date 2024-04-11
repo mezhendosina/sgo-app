@@ -1,17 +1,17 @@
 /*
- * Copyright 2023 Eugene Menshenin
+ * Copyright 2024 Eugene Menshenin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package com.mezhendosina.sgo.app.activities
@@ -21,45 +21,46 @@ import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionManager
 import com.google.android.material.transition.MaterialFadeThrough
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.mezhendosina.sgo.Singleton
 import com.mezhendosina.sgo.app.databinding.ContainerMainActivityBinding
 import com.mezhendosina.sgo.app.utils.errorDialog
 import com.mezhendosina.sgo.app.utils.setupInsets
-import com.mezhendosina.sgo.domain.FirebaseUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
     private lateinit var binding: ContainerMainActivityBinding
     private var navController: NavController? = null
 
-    @Inject
-    lateinit var firebaseUseCase: FirebaseUseCase
-
     private val viewModel: MainViewModel by viewModels()
 
-    private val fragmentListener =
-        object : FragmentManager.FragmentLifecycleCallbacks() {
-            override fun onFragmentCreated(
-                fm: FragmentManager,
-                f: Fragment,
-                savedInstanceState: Bundle?,
-            ) {
-                super.onFragmentCreated(fm, f, savedInstanceState)
-                if (f.findNavController() != navController) navController = f.findNavController()
-            }
+    private val fragmentListener = object : FragmentManager.FragmentLifecycleCallbacks() {
+        override fun onFragmentCreated(
+            fm: FragmentManager,
+            f: Fragment,
+            savedInstanceState: Bundle?
+        ) {
+            super.onFragmentCreated(fm, f, savedInstanceState)
+            if (f.findNavController() != navController) navController = f.findNavController()
+
         }
+    }
+    private lateinit var analytics: FirebaseAnalytics
 
 //    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
 //        override fun handleOnBackPressed() {
@@ -76,11 +77,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = ContainerMainActivityBinding.inflate(layoutInflater)
-        firebaseUseCase.appOpen()
-        binding.splashScreen.root.visibility = View.VISIBLE
-        binding.container.visibility = View.GONE
+        analytics = Firebase.analytics
+        analytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundleOf())
 
         setContentView(binding.root)
+        setupInsets(binding.root)
         CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.Main) {
                 viewModel.errorMessage.observe(this@MainActivity) {
@@ -88,16 +89,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             viewModel.login()
-
-            withContext(Dispatchers.Main) {
-                TransitionManager.beginDelayedTransition(
-                    binding.root,
-                    MaterialFadeThrough(),
-                )
-                binding.splashScreen.root.visibility = View.GONE
-                binding.container.visibility = View.VISIBLE
-                setupInsets(binding.root)
-            }
         }
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentListener, true)
 //        onBackPressedDispatcher.addCallback(onBackPressedCallback)
@@ -121,11 +112,9 @@ class MainActivity : AppCompatActivity() {
         Singleton.journalTabsLayout = null
     }
 
+
     override fun onBackPressed() {
-        if (navController?.currentDestination?.id == navController?.graph?.startDestinationId) {
-            super.onBackPressed()
-        } else {
-            navController?.popBackStack()
-        }
+        if (navController?.currentDestination?.id == navController?.graph?.startDestinationId) super.onBackPressed()
+        else navController?.popBackStack()
     }
 }
