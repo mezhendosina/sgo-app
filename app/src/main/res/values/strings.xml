@@ -186,4 +186,5 @@
     <string name="for_grade">Для</string>
     <string name="grade_requires">необходимо получить…</string>
     <string name="auth">Авторизация</string>
+    <string name="signin">Войти</string>
 </resources>
