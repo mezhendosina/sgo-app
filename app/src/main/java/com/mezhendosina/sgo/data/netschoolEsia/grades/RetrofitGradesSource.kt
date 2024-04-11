@@ -40,11 +40,11 @@ class RetrofitGradesSource
                 gradesApi.getWhyTotalGrade(studentId, subjectId, termId)
             }
 
-        override suspend fun getGrades(
+    override suspend fun getGrades(
             studentId: Int,
             yearId: Int,
         ): List<SubjectTotal> =
             wrapRetrofitExceptions {
                 gradesApi.getGrades(studentId, yearId)
             }
-    }
+}

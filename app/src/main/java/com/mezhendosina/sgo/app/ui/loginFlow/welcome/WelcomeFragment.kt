@@ -48,12 +48,6 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentWelcomeBinding.bind(view)
 
-        binding!!.defaultLogin.setOnClickListener {
-            findNavController().navigate(
-                R.id.action_welcomeFragment_to_chooseRegionFragment,
-                bundleOf(FROM_WELCOME to TO_SIGN_IN)
-            )
-        }
         binding!!.gosuslugiLogin.setOnClickListener {
             findNavController().navigate(
                 R.id.action_welcomeFragment_to_chooseRegionFragment,
@@ -67,10 +61,8 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
             with(binding!!) {
                 hi.visibility = View.VISIBLE
                 youIn.visibility = View.VISIBLE
-                whyDisabled.visibility = View.VISIBLE
                 about.visibility = View.VISIBLE
                 gosuslugiLogin.visibility = View.VISIBLE
-                defaultLogin.visibility = View.VISIBLE
             }
         }
     }
@@ -103,8 +95,6 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
         val transition = MaterialFadeThrough()
         TransitionManager.beginDelayedTransition(binding!!.root, transition)
         binding!!.gosuslugiLogin.visibility = View.VISIBLE
-        binding!!.defaultLogin.visibility = View.VISIBLE
-        binding!!.whyDisabled.visibility = View.VISIBLE
     }
 
 

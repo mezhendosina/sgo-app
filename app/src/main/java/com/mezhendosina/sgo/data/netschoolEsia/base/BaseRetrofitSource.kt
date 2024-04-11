@@ -17,11 +17,9 @@
 package com.mezhendosina.sgo.data.netschoolEsia.base
 
 import com.google.gson.JsonParseException
-import com.mezhendosina.sgo.Singleton
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.delay
 import okio.IOException
 import retrofit2.HttpException
 import java.net.SocketTimeoutException
@@ -31,13 +29,13 @@ import javax.inject.Inject
 @InstallIn(SingletonComponent::class)
 open class BaseRetrofitSource
 @Inject
-constructor(baseRetrofitConfig: RetrofitConfig) {
+constructor(
+    baseRetrofitConfig: RetrofitConfig
+) {
     private val errorAdapter = baseRetrofitConfig.gson.getAdapter(Error::class.java)
 
+
     suspend fun <T> wrapRetrofitExceptions(
-        requireLogin: Boolean = true,
-        debug: Boolean = false,
-        debugData: T? = null,
         block: suspend () -> T,
     ): T {
         return try {

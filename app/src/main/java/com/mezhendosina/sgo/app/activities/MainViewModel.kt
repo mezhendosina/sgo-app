@@ -30,29 +30,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel
-    @Inject
-    constructor(
-        private val loginRepository: LoginRepository,
-    ) : ViewModel() {
-        private val _errorMessage = MutableLiveData<String>()
-        val errorMessage: LiveData<String> = _errorMessage
+@Inject
+constructor(
+    private val loginRepository: LoginRepository,
+) : ViewModel() {
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> = _errorMessage
 
-        suspend fun login() {
-            try {
-                loginRepository.login()
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    _errorMessage.value = e.toDescription()
-                }
-            }
-        }
-
-        fun logout() {
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    loginRepository.logout()
-                } catch (_: Exception) {
-                }
+    suspend fun login() {
+        try {
+            loginRepository.login()
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                _errorMessage.value = e.toDescription()
             }
         }
     }
+}

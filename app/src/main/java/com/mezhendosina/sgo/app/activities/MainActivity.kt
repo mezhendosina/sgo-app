@@ -75,13 +75,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-
-        binding = ContainerMainActivityBinding.inflate(layoutInflater)
-        analytics = Firebase.analytics
-        analytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundleOf())
-
-        setContentView(binding.root)
-        setupInsets(binding.root)
         CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.Main) {
                 viewModel.errorMessage.observe(this@MainActivity) {
@@ -90,20 +83,15 @@ class MainActivity : AppCompatActivity() {
             }
             viewModel.login()
         }
+
+        binding = ContainerMainActivityBinding.inflate(layoutInflater)
+        analytics = Firebase.analytics
+        analytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundleOf())
+
+        setContentView(binding.root)
+        setupInsets(binding.root)
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentListener, true)
 //        onBackPressedDispatcher.addCallback(onBackPressedCallback)
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        CoroutineScope(Dispatchers.IO).launch {
-            viewModel.login()
-        }
-    }
-
-    override fun onStop() {
-        viewModel.logout()
-        super.onStop()
     }
 
     override fun onDestroy() {

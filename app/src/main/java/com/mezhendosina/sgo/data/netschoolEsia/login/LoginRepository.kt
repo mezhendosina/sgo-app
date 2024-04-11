@@ -22,5 +22,4 @@ interface LoginRepository {
     suspend fun login()
 
     suspend fun login(deviceCode: Int)
-    suspend fun logout()
 }

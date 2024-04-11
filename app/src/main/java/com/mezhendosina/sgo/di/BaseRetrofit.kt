@@ -35,9 +35,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class BaseRetrofit {
-    @Provides
-    @Singleton
-    fun createMyCookieJar(): MyCookieJar = MyCookieJar()
 
     @Provides
     @Singleton
@@ -62,13 +59,11 @@ class BaseRetrofit {
     fun createOkHttpClient(
         baseUrlInterceptor: BaseUrlInterceptor,
         headersInterceptor: HeadersInterceptor,
-        myCookieJar: MyCookieJar,
         loggingInterceptor: Interceptor,
     ): OkHttpClient {
         val cookieManager = CookieManager()
         cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL)
         return OkHttpClient.Builder()
-            .cookieJar(myCookieJar)
             .addInterceptor(baseUrlInterceptor)
             .addInterceptor(headersInterceptor)
             .addInterceptor(loggingInterceptor)

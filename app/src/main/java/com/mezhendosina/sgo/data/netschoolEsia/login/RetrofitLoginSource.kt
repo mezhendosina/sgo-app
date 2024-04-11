@@ -39,7 +39,7 @@ class RetrofitLoginSource
                 )
             }
 
-        override suspend fun getToken(refreshToken: String): GetTokenResponse =
+    override suspend fun getToken(refreshToken: String): GetTokenResponse =
             wrapRetrofitExceptions {
                 api.getToken(
                     grantType = "refresh_token",
@@ -47,8 +47,8 @@ class RetrofitLoginSource
                 )
             }
 
-        override suspend fun getUsers(): List<UserInfo> =
+    override suspend fun getUsers(): List<UserInfo> =
             wrapRetrofitExceptions {
                 api.getUsers()
             }
-    }
+}

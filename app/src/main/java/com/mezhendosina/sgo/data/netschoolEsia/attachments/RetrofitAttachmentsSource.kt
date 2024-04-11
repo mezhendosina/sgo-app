@@ -47,7 +47,7 @@ class RetrofitAttachmentsSource
                 )
             }
 
-        override suspend fun downloadAttachment(
+    override suspend fun downloadAttachment(
             attachmentId: Int,
             file: File,
         ): String? =
@@ -58,7 +58,7 @@ class RetrofitAttachmentsSource
                 return@wrapRetrofitExceptions request.headers()["Content-Type"]
             }
 
-        override suspend fun deleteAttachment(
+    override suspend fun deleteAttachment(
             assignmentId: Int,
             attachmentId: Int,
         ): Unit =
@@ -69,7 +69,7 @@ class RetrofitAttachmentsSource
                 )
             }
 
-        override suspend fun editAttachmentDescription(
+    override suspend fun editAttachmentDescription(
             attachmentId: Int,
             description: String,
         ): String =
@@ -77,7 +77,7 @@ class RetrofitAttachmentsSource
                 attachmentsSource.editAttachmentDescription(attachmentId, description)
             }
 
-        override suspend fun sendTextAnswer(
+    override suspend fun sendTextAnswer(
             assignmentId: Int,
             studentId: Int,
             answer: String,
@@ -87,13 +87,13 @@ class RetrofitAttachmentsSource
                 r
             }
 
-        override suspend fun sendFileAttachment(
+    override suspend fun sendFileAttachment(
             file: MultipartBody.Part,
             data: SendFileRequestEntity,
         ) = wrapRetrofitExceptions {
-            attachmentsSource.sendFileAttachment(
-                file,
-                data,
-            )
-        }
+        attachmentsSource.sendFileAttachment(
+            file,
+            data,
+        )
     }
+}

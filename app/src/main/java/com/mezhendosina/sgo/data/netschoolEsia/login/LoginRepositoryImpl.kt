@@ -50,5 +50,4 @@ constructor(
         }
     }
 
-    override suspend fun logout() = Unit
 }

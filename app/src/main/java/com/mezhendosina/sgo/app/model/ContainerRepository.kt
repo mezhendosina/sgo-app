@@ -17,11 +17,11 @@
 package com.mezhendosina.sgo.app.model
 
 import com.google.gson.Gson
+import com.mezhendosina.sgo.data.github.checkUpdates.CheckUpdates
 import com.mezhendosina.sgo.data.netschoolEsia.base.BaseRetrofitSource
 import com.mezhendosina.sgo.data.netschoolEsia.base.Download
 import com.mezhendosina.sgo.data.netschoolEsia.base.RetrofitConfig
 import com.mezhendosina.sgo.data.netschoolEsia.base.downloadToFileWithProgress
-import com.mezhendosina.sgo.data.github.checkUpdates.CheckUpdates
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
@@ -94,4 +94,4 @@ class ContainerRepository
             baseRetrofitSource.wrapRetrofitExceptions {
                 updateApi.downloadFile(url).downloadToFileWithProgress(file)
             }
-    }
+}
