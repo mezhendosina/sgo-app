@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.platform.MaterialSharedAxis
@@ -32,8 +33,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class AnswerFragment : Fragment(R.layout.fragment_answer) {
     private var binding: FragmentAnswerBinding? = null
 
-    internal val viewModel by viewModels<AnswerViewModel>()
-
+    internal val viewModel by activityViewModels<AnswerViewModel>()
     private var adapter: AnswerFileAdapter? = null
 
 //    private val selectFileLauncher =

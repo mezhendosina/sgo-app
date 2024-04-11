@@ -1,5 +1,6 @@
 package com.mezhendosina.sgo.data.netschoolEsia.lesson
 
+import com.mezhendosina.sgo.app.model.answer.AnswerRepository
 import com.mezhendosina.sgo.app.model.answer.FileUiEntity
 import com.mezhendosina.sgo.app.model.journal.entities.LessonUiEntity
 import com.mezhendosina.sgo.app.uiEntities.AboutLessonUiEntity
@@ -20,17 +21,28 @@ class LessonRepositoryImpl
 @Inject
 constructor(
     val diaryRepository: DiaryRepository,
+    private val answerRepository: AnswerRepository,
     val appSettings: AppSettings,
 ) : LessonRepository {
     private val _lesson = MutableStateFlow<AboutLessonUiEntity?>(null)
     override val lesson: StateFlow<AboutLessonUiEntity?> = _lesson
 
+    private var answerText = ""
+
     override fun getAnswerText(): String {
         return "TODO"
     }
 
-    override fun editAnswerText(text: String) {
-        TODO("Not yet implemented")
+    override suspend fun editAnswerText(text: String) {
+        val studentId = appSettings.getStudentId()
+        answerRepository.sendTextAnswer(
+            _lesson.value?.homeworkId ?: return,
+            text,
+            studentId
+        )
+        withContext(Dispatchers.Main) {
+            _lesson.value = lesson.value?.editAnswers(text, lesson.value?.answerFiles)
+        }
     }
 
     override suspend fun getAboutLesson(
@@ -73,7 +85,8 @@ constructor(
             AboutLessonUiEntity(
                 lessonUiEntity.classmeetingId,
                 lessonUiEntity.subjectName,
-                lessonUiEntity.homework!!.assignmentName,
+                lessonUiEntity.homework!!.id,
+                lessonUiEntity.homework.assignmentName,
                 homework.comment,
                 attachments.map {
                     FileUiEntity(

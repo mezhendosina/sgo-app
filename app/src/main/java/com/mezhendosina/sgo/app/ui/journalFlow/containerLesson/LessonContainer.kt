@@ -19,6 +19,7 @@ package com.mezhendosina.sgo.app.ui.journalFlow.containerLesson
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -28,6 +29,7 @@ import com.mezhendosina.sgo.app.R
 import com.mezhendosina.sgo.app.databinding.ContainerLessonBinding
 import com.mezhendosina.sgo.app.ui.journalFlow.answer.AnswerFragment.Companion.ADD_ANSWER
 import com.mezhendosina.sgo.app.ui.journalFlow.answer.AnswerFragment.Companion.EDIT_ANSWER
+import com.mezhendosina.sgo.app.ui.journalFlow.answer.AnswerViewModel
 import com.mezhendosina.sgo.app.utils.getEmojiLesson
 import com.mezhendosina.sgo.app.utils.setLessonEmoji
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,7 +42,7 @@ class LessonContainer : Fragment(R.layout.container_lesson) {
     private var binding: ContainerLessonBinding? = null
 
     private val viewModel by viewModels<LessonContainerViewModel>()
-
+    private val answerViewModel: AnswerViewModel by activityViewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = MaterialContainerTransform()
@@ -102,6 +104,7 @@ class LessonContainer : Fragment(R.layout.container_lesson) {
     private fun observerSendButton(innerNavController: NavController?) {
         binding!!.send.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
+                answerViewModel.sendAnswer()
                 viewModel.sendAnswers(requireContext())
             }
             innerNavController?.navigateUp()

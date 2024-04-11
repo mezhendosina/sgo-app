@@ -39,7 +39,7 @@ interface AttachmentsApi {
         @Body attachmentsIds: AttachmentsRequestEntity,
     ): List<AttachmentsResponseEntity>
 
-    @POST("webapi/assignments/{assignmentId}/answers")
+    @POST("webapi/assignments/{assignmentId}/answer/text")
     suspend fun sendTextAnswer(
         @Path("assignmentId") assignmentId: Int,
         @Query("studentId") studentId: Int,

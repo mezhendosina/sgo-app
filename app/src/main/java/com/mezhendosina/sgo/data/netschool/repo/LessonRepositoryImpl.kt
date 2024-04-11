@@ -51,7 +51,7 @@ class LessonRepositoryImpl
 
         override fun getAnswerText(): String = answerText
 
-        override fun editAnswerText(text: String) {
+        override suspend fun editAnswerText(text: String) {
             answerText = text
         }
 
@@ -90,6 +90,7 @@ class LessonRepositoryImpl
                 AboutLessonUiEntity(
                     lessonUiEntity.classmeetingId,
                     lessonUiEntity.subjectName,
+                    lessonUiEntity.homework?.id ?: -1,
                     lessonUiEntity.homework?.assignmentName ?: "",
                     aboutAssign?.description,
                     attachments,

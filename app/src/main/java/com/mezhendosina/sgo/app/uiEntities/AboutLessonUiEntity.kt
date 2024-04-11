@@ -21,6 +21,7 @@ import com.mezhendosina.sgo.app.model.answer.FileUiEntity
 data class AboutLessonUiEntity(
     val id: Int,
     val name: String,
+    val homeworkId: Int,
     val homework: String,
     val homeworkComment: String?,
     val attachments: List<FileUiEntity>?,
@@ -34,6 +35,7 @@ data class AboutLessonUiEntity(
     ) = AboutLessonUiEntity(
         id,
         name,
+        homeworkId,
         homework,
         homeworkComment,
         attachments,

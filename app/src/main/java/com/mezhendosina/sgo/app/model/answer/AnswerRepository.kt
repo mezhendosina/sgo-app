@@ -33,7 +33,6 @@ class AnswerRepository
     @Inject
     constructor(
         private val attachmentsSource: AttachmentsSource,
-        private val lessonRepository: LessonRepository,
     ) {
         suspend fun sendTextAnswer(
             assignId: Int,

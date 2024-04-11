@@ -1,7 +1,10 @@
 package com.mezhendosina.sgo.data.netschoolEsia.entities.common
 
 
+import android.content.Context
 import com.google.gson.annotations.SerializedName
+import com.mezhendosina.sgo.data.emoji.DefaultLessons
+import com.mezhendosina.sgo.data.emoji.EmojiEntity
 
 data class Subject(
     // here, in word 'Curriculum' (in annotation) it looks like that in JSON response from server
@@ -14,4 +17,14 @@ data class Subject(
     val name: String,
     @SerializedName("order")
     val order: Int
-)
+) {
+//    fun toEmoji(context: Context): EmojiEntity {
+//        val defaultEmoji = DefaultLessons.getEmojiLesson(name)
+//        val a = context
+//        EmojiEntity(
+//            id,
+//            ,
+//            name
+//        )
+//    }
+}

@@ -7,7 +7,7 @@ interface AnswerViewModelInterface {
 
     fun getHomework(): String
     fun getAnswer(): String?
-    suspend fun sendAnswer(answerText: String?)
+    suspend fun sendAnswer()
     suspend fun uploadFiles(context: Context)
     suspend fun downloadFiles(context: Context)
     suspend fun downloadFile(context: Context, fileUiEntity: FileUiEntity)

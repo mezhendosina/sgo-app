@@ -10,7 +10,7 @@ interface LessonRepository {
 
     fun getAnswerText(): String
 
-    fun editAnswerText(text: String)
+    suspend fun editAnswerText(text: String)
 
     suspend fun getAboutLesson(
         lessonUiEntity: LessonUiEntity,
