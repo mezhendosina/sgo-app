@@ -22,7 +22,7 @@ import android.view.ViewGroup
 import androidx.core.text.parseAsHtml
 import androidx.recyclerview.widget.RecyclerView
 import com.mezhendosina.sgo.app.databinding.ItemAnnouncementBinding
-import com.mezhendosina.sgo.data.netschool.api.announcements.AnnouncementsResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.announcements.AnnouncementsResponseEntity
 import dagger.Module
 import org.jsoup.Jsoup
 import javax.inject.Singleton

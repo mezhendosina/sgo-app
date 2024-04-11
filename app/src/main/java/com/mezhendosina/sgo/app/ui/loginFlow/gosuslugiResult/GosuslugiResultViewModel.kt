@@ -18,7 +18,6 @@ package com.mezhendosina.sgo.app.ui.loginFlow.gosuslugiResult
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.mezhendosina.sgo.app.utils.toDescription
 import com.mezhendosina.sgo.app.utils.toLiveData
 import com.mezhendosina.sgo.data.SettingsDataStore
@@ -27,7 +26,6 @@ import com.mezhendosina.sgo.data.netschoolEsia.login.LoginRepository
 import com.mezhendosina.sgo.data.netschoolEsia.utils.UtilsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -35,7 +33,7 @@ import javax.inject.Inject
 class GosuslugiResultViewModel
 @Inject
 constructor(
-    val loginRepository: com.mezhendosina.sgo.data.netschool.repo.LoginRepository,
+    val loginRepository: LoginRepository,
     val utilsRepository: UtilsRepository,
     val settingsDataStore: SettingsDataStore
 ) : ViewModel() {

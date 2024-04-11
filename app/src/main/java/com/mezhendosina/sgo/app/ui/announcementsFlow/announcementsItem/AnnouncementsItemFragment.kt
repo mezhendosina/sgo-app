@@ -35,7 +35,7 @@ import com.mezhendosina.sgo.app.model.attachments.ANNOUNCEMENT
 import com.mezhendosina.sgo.app.utils.AttachmentAdapter
 import com.mezhendosina.sgo.app.utils.AttachmentClickListener
 import com.mezhendosina.sgo.data.DateManipulation
-import com.mezhendosina.sgo.data.netschool.api.announcements.AnnouncementsResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.announcements.AnnouncementsResponseEntity
 import dagger.hilt.android.AndroidEntryPoint
 import io.noties.markwon.Markwon
 import io.noties.markwon.html.HtmlPlugin

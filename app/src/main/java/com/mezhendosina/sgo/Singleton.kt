@@ -26,7 +26,7 @@ import com.mezhendosina.sgo.app.uiEntities.FilterUiEntity
 import com.mezhendosina.sgo.app.uiEntities.UserUIEntity
 import com.mezhendosina.sgo.app.utils.LoadStates
 import com.mezhendosina.sgo.data.WeekStartEndEntity
-import com.mezhendosina.sgo.data.netschool.api.announcements.AnnouncementsResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.announcements.AnnouncementsResponseEntity
 import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.PastMandatoryEntity
 import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.GradesItem
 

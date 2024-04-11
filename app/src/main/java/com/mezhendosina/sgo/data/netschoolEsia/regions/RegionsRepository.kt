@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 
-package com.mezhendosina.sgo.data.github
+package com.mezhendosina.sgo.data.netschoolEsia.regions
 
-import com.mezhendosina.sgo.data.github.checkUpdates.CheckUpdates
-import retrofit2.http.GET
+import com.google.gson.Gson
+import com.mezhendosina.sgo.app.ui.loginFlow.chooseRegion.entities.ChooseRegionUiEntity
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityComponent
+import javax.inject.Inject
 
-interface GithubApi {
-    @GET("/repos/mezhendosina/che-zadali-app/releases/latest")
-    suspend fun getLatestUpdate(): CheckUpdates
+
+@Module
+@InstallIn(ActivityComponent::class)
+class RegionsRepository @Inject constructor() : RegionsApi {
+    override fun getRegions(): ChooseRegionUiEntity = Gson().fromJson(
+        Regions.REGIONS,
+        ChooseRegionUiEntity::class.java
+    )
 
 }

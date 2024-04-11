@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package com.mezhendosina.sgo.data.github
+package com.mezhendosina.sgo.data.netschoolEsia.regions
 
-import com.mezhendosina.sgo.data.github.checkUpdates.CheckUpdates
-import retrofit2.http.GET
+import com.mezhendosina.sgo.app.ui.loginFlow.chooseRegion.entities.ChooseRegionUiEntity
 
-interface GithubApi {
-    @GET("/repos/mezhendosina/che-zadali-app/releases/latest")
-    suspend fun getLatestUpdate(): CheckUpdates
-
+interface RegionsApi {
+    fun getRegions(): ChooseRegionUiEntity
 }

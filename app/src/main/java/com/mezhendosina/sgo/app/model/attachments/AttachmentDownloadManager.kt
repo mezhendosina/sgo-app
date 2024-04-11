@@ -7,7 +7,7 @@ import android.os.Build
 import android.os.Environment
 import androidx.core.content.FileProvider
 import com.mezhendosina.sgo.app.model.answer.FileUiEntity
-import com.mezhendosina.sgo.data.netschool.api.attachments.AttachmentsSource
+import com.mezhendosina.sgo.data.netschoolEsia.attachments.AttachmentsSource
 import com.mezhendosina.sgo.data.netschoolEsia.entities.attachments.SendFileRequestEntity
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -1,7 +1,6 @@
 package com.mezhendosina.sgo.data
 
 import androidx.datastore.preferences.core.Preferences
-import com.mezhendosina.sgo.data.netschool.api.login.LoginEntity
 import kotlinx.coroutines.flow.Flow
 
 interface AppSettings {
@@ -17,16 +16,6 @@ interface AppSettings {
     suspend fun saveToken(
         token: String,
         refreshToken: String,
-    )
-
-    suspend fun saveLogin(
-        loginData: LoginEntity,
-        loggedIn: Boolean = true,
-    )
-
-    suspend fun saveEsiaLogin(
-        loginState: String,
-        userId: String,
     )
 
     suspend fun logout()

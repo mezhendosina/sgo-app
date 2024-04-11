@@ -19,7 +19,7 @@ package com.mezhendosina.sgo.app.model.answer
 import android.content.Context
 import android.net.Uri
 import com.mezhendosina.sgo.app.utils.getFileNameFromUri
-import com.mezhendosina.sgo.data.netschool.api.attachments.AttachmentsSource
+import com.mezhendosina.sgo.data.netschoolEsia.attachments.AttachmentsSource
 import com.mezhendosina.sgo.data.netschoolEsia.entities.attachments.SendFileRequestEntity
 import com.mezhendosina.sgo.data.netschoolEsia.lesson.LessonRepository
 import kotlinx.coroutines.Dispatchers

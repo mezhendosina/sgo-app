@@ -23,7 +23,7 @@ import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
 import com.mezhendosina.sgo.app.utils.PermissionNotGranted
-import com.mezhendosina.sgo.data.netschool.api.attachments.AttachmentsSource
+import com.mezhendosina.sgo.data.netschoolEsia.attachments.AttachmentsSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

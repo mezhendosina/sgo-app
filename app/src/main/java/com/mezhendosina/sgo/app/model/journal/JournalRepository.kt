@@ -22,7 +22,7 @@ import com.mezhendosina.sgo.app.model.journal.entities.LessonUiEntity
 import com.mezhendosina.sgo.app.model.journal.entities.WeekDayUiEntity
 import com.mezhendosina.sgo.data.WeekStartEndEntity
 import com.mezhendosina.sgo.data.dateToRussian
-import com.mezhendosina.sgo.data.netschool.api.attachments.AttachmentsSource
+import com.mezhendosina.sgo.data.netschoolEsia.attachments.AttachmentsSource
 import com.mezhendosina.sgo.data.netschoolEsia.entities.attachments.AttachmentsRequestEntity
 import com.mezhendosina.sgo.data.netschoolEsia.entities.attachments.AttachmentsResponseEntity
 import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.Assignment

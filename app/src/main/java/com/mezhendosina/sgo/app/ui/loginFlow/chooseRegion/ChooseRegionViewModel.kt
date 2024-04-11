@@ -25,7 +25,7 @@ import com.mezhendosina.sgo.app.ui.loginFlow.chooseRegion.entities.ChooseRegionU
 import com.mezhendosina.sgo.app.utils.toDescription
 import com.mezhendosina.sgo.app.utils.toLiveData
 import com.mezhendosina.sgo.data.SettingsDataStore
-import com.mezhendosina.sgo.data.netschool.repo.RegionsRepository
+import com.mezhendosina.sgo.data.netschoolEsia.regions.RegionsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope

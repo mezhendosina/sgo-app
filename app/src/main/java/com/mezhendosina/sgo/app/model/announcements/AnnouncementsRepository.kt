@@ -17,7 +17,7 @@
 package com.mezhendosina.sgo.app.model.announcements
 
 import com.mezhendosina.sgo.Singleton
-import com.mezhendosina.sgo.data.netschool.api.announcements.AnnouncementsResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.announcements.AnnouncementsResponseEntity
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent

@@ -25,7 +25,7 @@ import com.mezhendosina.sgo.app.BuildConfig
 import com.mezhendosina.sgo.app.R
 import com.mezhendosina.sgo.app.databinding.ModalSheetUpdateBinding
 import com.mezhendosina.sgo.app.ui.main.container.ContainerViewModel
-import com.mezhendosina.sgo.data.requests.github.checkUpdates.CheckUpdates
+import com.mezhendosina.sgo.data.github.checkUpdates.CheckUpdates
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

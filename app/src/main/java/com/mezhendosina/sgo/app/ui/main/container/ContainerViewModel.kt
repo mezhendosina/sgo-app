@@ -31,7 +31,7 @@ import com.mezhendosina.sgo.data.WeekStartEndEntity
 import com.mezhendosina.sgo.data.getWeeksList
 import com.mezhendosina.sgo.data.netschoolEsia.base.Download
 import com.mezhendosina.sgo.data.netschoolEsia.base.uriFromFile
-import com.mezhendosina.sgo.data.requests.github.checkUpdates.CheckUpdates
+import com.mezhendosina.sgo.data.github.checkUpdates.CheckUpdates
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope

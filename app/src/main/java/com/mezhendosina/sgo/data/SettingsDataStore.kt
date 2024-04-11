@@ -9,7 +9,6 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.mezhendosina.sgo.app.utils.StudentNotFoundException
-import com.mezhendosina.sgo.data.netschool.api.login.LoginEntity
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -31,22 +30,13 @@ class SettingsDataStore
     AppSettings {
         companion object {
             val REGION_URL = stringPreferencesKey("region")
-            val SCHOOL_ID = intPreferencesKey("scid")
 
             val LOGGED_IN = booleanPreferencesKey("logged_in")
-            val LOGIN = stringPreferencesKey("login")
-
-            val PASSWORD = stringPreferencesKey("password")
-            val ESIA_LOGIN_STATE = stringPreferencesKey("esia_login_state")
 
             val REFRESH_TOKEN = stringPreferencesKey("netschool_refresh_token")
             val TOKEN = stringPreferencesKey("netschool_token")
 
-            val ESIA_USER_ID = stringPreferencesKey("esia_user_id")
             val CURRENT_USER_ID = intPreferencesKey("current_user_id")
-
-            val CURRENT_TRIM_ID = stringPreferencesKey("current_trim_id")
-            val TRIM_ID = intPreferencesKey("trim_id")
 
             val THEME = intPreferencesKey("theme")
             val LAST_VERSION_NUMBER = intPreferencesKey("last_version_number")
@@ -85,37 +75,12 @@ class SettingsDataStore
             }
         }
 
-        override suspend fun saveLogin(
-            loginData: LoginEntity,
-            loggedIn: Boolean,
-        ) {
-            context.dataStore.edit { prefs ->
-                prefs[LOGGED_IN] = loggedIn
-                prefs[LOGIN] = loginData.login
-                prefs[PASSWORD] = loginData.password
-                prefs[SCHOOL_ID] = loginData.schoolId
-            }
-        }
 
-        override suspend fun saveEsiaLogin(
-            loginState: String,
-            userId: String,
-        ) {
-            context.dataStore.edit { prefs ->
-                prefs[LOGIN] = ""
-                prefs[PASSWORD] = ""
-                prefs[SCHOOL_ID] = -1
-                prefs[ESIA_LOGIN_STATE] = loginState
-                prefs[ESIA_USER_ID] = userId
-            }
-        }
 
         override suspend fun logout() {
             context.dataStore.edit { prefs ->
                 prefs[LOGGED_IN] = false
-                prefs[LOGIN] = ""
-                prefs[PASSWORD] = ""
-                prefs[SCHOOL_ID] = 0
+                prefs[REFRESH_TOKEN] = ""
             }
         }
     }

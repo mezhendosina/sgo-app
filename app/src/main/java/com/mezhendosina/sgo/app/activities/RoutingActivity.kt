@@ -9,7 +9,7 @@ import com.google.android.material.color.DynamicColors
 import com.mezhendosina.sgo.app.BuildConfig
 import com.mezhendosina.sgo.data.AppSettings
 import com.mezhendosina.sgo.data.SettingsDataStore
-import com.mezhendosina.sgo.data.netschool.repo.LoginRepository
+import com.mezhendosina.sgo.data.netschoolEsia.login.LoginRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

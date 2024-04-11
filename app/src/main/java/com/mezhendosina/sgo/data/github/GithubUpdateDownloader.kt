@@ -28,7 +28,7 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.ContextCompat.registerReceiver
 import com.mezhendosina.sgo.data.netschoolEsia.base.BaseRetrofitSource
 import com.mezhendosina.sgo.data.netschoolEsia.base.RetrofitConfig
-import com.mezhendosina.sgo.data.requests.github.checkUpdates.CheckUpdates
+import com.mezhendosina.sgo.data.github.checkUpdates.CheckUpdates
 
 class GithubUpdateDownloader(retrofitConfig: RetrofitConfig) : BaseRetrofitSource(retrofitConfig) {
     private val githubApi = retrofitConfig.baseRetrofit.create(GithubApi::class.java)

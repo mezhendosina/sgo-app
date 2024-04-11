@@ -21,7 +21,7 @@ package com.mezhendosina.sgo.app
 // import com.google.gson.Gson
 // import com.google.gson.reflect.TypeToken
 // import com.mezhendosina.sgo.app.netschool.api.login.entities.SchoolEntity
-// import com.mezhendosina.sgo.data.netschool.NetSchoolExpectedResults
+// import com.mezhendosina.sgo.data.netschoolEsia.NetSchoolExpectedResults
 // import com.mezhendosina.sgo.data.netschoolEsia.NetSchoolSingleton
 // import junit.framework.TestCase.assertEquals
 // import kotlinx.coroutines.runBlocking

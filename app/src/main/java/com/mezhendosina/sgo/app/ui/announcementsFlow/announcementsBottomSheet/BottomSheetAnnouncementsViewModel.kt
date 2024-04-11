@@ -23,7 +23,7 @@ import com.mezhendosina.sgo.Singleton
 import com.mezhendosina.sgo.app.model.announcements.AnnouncementsActionListener
 import com.mezhendosina.sgo.app.model.announcements.AnnouncementsRepository
 import com.mezhendosina.sgo.app.utils.toDescription
-import com.mezhendosina.sgo.data.netschool.api.announcements.AnnouncementsResponseEntity
+import com.mezhendosina.sgo.data.netschoolEsia.announcements.AnnouncementsResponseEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
