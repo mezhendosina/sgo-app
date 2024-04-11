@@ -32,38 +32,4 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tint="?attr/colorOnPrimaryContainer" />
 
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/progress_bar"
-        android:layout_width="128dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:indeterminate="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/icon"
-        app:trackCornerRadius="8dp" />
-
-    <Button
-        android:id="@+id/retry_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/retry_button"
-        android:textAllCaps="false"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/progress_bar"
-        app:layout_constraintStart_toStartOf="@id/progress_bar"
-        app:layout_constraintTop_toTopOf="@id/progress_bar" />
-
-    <TextView
-        android:id="@+id/error_message"
-        style="@style/captions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:textIsSelectable="false"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/progress_bar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="test 123" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.android.material.color.DynamicColors
 import com.mezhendosina.sgo.app.BuildConfig
 import com.mezhendosina.sgo.data.AppSettings
@@ -26,7 +27,11 @@ class RoutingActivity : AppCompatActivity() {
     lateinit var loginRepository: LoginRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val splashScreen = installSplashScreen()
+
         super.onCreate(savedInstanceState)
+        splashScreen.setKeepOnScreenCondition { true }
         runBlocking {
             AppCompatDelegate.setDefaultNightMode(
                 settingsDataStore.getValue(SettingsDataStore.THEME).first()

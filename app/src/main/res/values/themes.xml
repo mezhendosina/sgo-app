@@ -19,6 +19,13 @@
     <dimen name="image_final_width">32dp</dimen>
     <dimen name="spacing_normal">16dp</dimen>
 
+    <style name="Theme.SGOApp.Start" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/md_theme_light_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground_monochromatic
+        </item>
+        <item name="postSplashScreenTheme">@style/Theme.SGOApp</item>
+    </style>
+
     <style name="Theme.SGOApp" parent="Theme.Material3.DayNight.NoActionBar">
         <!--        <item name="android:windowTranslucentStatus">true</item>-->
         <item name="android:statusBarColor">@color/md_theme_light_background</item>

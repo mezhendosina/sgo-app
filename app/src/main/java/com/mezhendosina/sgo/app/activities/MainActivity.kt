@@ -79,8 +79,6 @@ class MainActivity : AppCompatActivity() {
         binding = ContainerMainActivityBinding.inflate(layoutInflater)
         analytics = Firebase.analytics
         analytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundleOf())
-        binding.splashScreen.root.visibility = View.VISIBLE
-        binding.container.visibility = View.GONE
 
         setContentView(binding.root)
         CoroutineScope(Dispatchers.IO).launch {
@@ -96,8 +94,6 @@ class MainActivity : AppCompatActivity() {
                     binding.root,
                     MaterialFadeThrough()
                 )
-                binding.splashScreen.root.visibility = View.GONE
-                binding.container.visibility = View.VISIBLE
                 setupInsets(binding.root)
             }
         }
