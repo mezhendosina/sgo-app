@@ -1,4 +1,4 @@
-name: Publish update 
+name: Publish update
 
 on:
   push:
@@ -70,7 +70,7 @@ jobs:
         with:
           apk-path: /home/runner/work/che-zadali-app/che-zadali-app/app-release.apk
 
-  
+
 
   prepare-release-notes:
     needs: get-apk-version
@@ -101,7 +101,7 @@ jobs:
       - name: Fetch Latest Release
         id: fetch-latest-release
         uses: gregziegan/fetch-latest-release@v2.0.0
-        with: 
+        with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Get release tag
         id: get-release-tag
@@ -110,9 +110,27 @@ jobs:
         id: check-release-tag
         run: echo is_update=${{ steps.get-release-tag.outputs.last_tag }} != ${{ needs.get-apk-version.outputs.apk-version-name }} << $GITHUB_OUTPUT
 
+#  send-to-rustore:
+#    needs: [ prepare-release-notes, get-apk-version ]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Get APK
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: SGO app.apk
+#          path: ./
+#
+#      - name: rename APK
+#        run: mv /home/runner/work/che-zadali-app/che-zadali-app/app-release.apk /home/runner/work/che-zadali-app/che-zadali-app/che-zadali-app-v${{ needs.get-apk-version.outputs.apk-version-name }}.apk
+#
+#      - name: Create RuStore update
+#        run: curl -o ./output -H "Public-Token:${{ secrets.RUSTORE_API_KEY }}" -H "Content-Type:application/json" --data-raw "{"whatsNew":${{ needs.prepare-release-notes.outputs.release-notes }}" https://public-api.rustore.ru/public/v1/application/com.mezhendosina.sgo.app/version
+#      - name: Upload File
+#        run: curl -H "Public-Token:${{ secrets.RUSTORE_API_KEY }}" -F file=@"/home/runner/work/che-zadali-app/che-zadali-app/che-zadali-app-v${{ needs.get-apk-version.outputs.apk-version-name }}.apk" https://public-api.rustore.ru/public/v1/application/com.mezhendosina.sgo.app/version/$(cat ./output)/apk?isMainAPK=true
+
   send-to-channel:
     needs: [ prepare-release-notes, get-apk-version ]
-#    if: ${{ needs.get-last-release-version.outputs.is-update }}
+    #    if: ${{ needs.get-last-release-version.outputs.is-update }}
     runs-on: ubuntu-latest
     steps:
       - name: Get APK
@@ -153,9 +171,9 @@ jobs:
           tag_name: ${{ needs.get-apk-version.outputs.apk-version-name }}
           release_name: ${{ needs.get-apk-version.outputs.apk-version-name }}
           body: ${{ needs.prepare-release-notes.outputs.release-notes }}
-    
+
       - name: Upload APK
-        id: upload-release-asset 
+        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -164,3 +182,5 @@ jobs:
           asset_path: /home/runner/work/che-zadali-app/che-zadali-app/che-zadali-app.apk
           asset_name: che-zadali-app.apk
           asset_content_type: application/vnd.android.package-archive
+
+

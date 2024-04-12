@@ -1,17 +1,17 @@
 /*
- * Copyright 2023 Eugene Menshenin
+ * Copyright 2024 Eugene Menshenin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package com.mezhendosina.sgo.app.activities
@@ -75,14 +75,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-
-        binding = ContainerMainActivityBinding.inflate(layoutInflater)
-        analytics = Firebase.analytics
-        analytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundleOf())
-        binding.splashScreen.root.visibility = View.VISIBLE
-        binding.container.visibility = View.GONE
-
-        setContentView(binding.root)
         CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.Main) {
                 viewModel.errorMessage.observe(this@MainActivity) {
@@ -90,31 +82,16 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             viewModel.login()
-
-            withContext(Dispatchers.Main) {
-                TransitionManager.beginDelayedTransition(
-                    binding.root,
-                    MaterialFadeThrough()
-                )
-                binding.splashScreen.root.visibility = View.GONE
-                binding.container.visibility = View.VISIBLE
-                setupInsets(binding.root)
-            }
         }
+
+        binding = ContainerMainActivityBinding.inflate(layoutInflater)
+        analytics = Firebase.analytics
+        analytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundleOf())
+
+        setContentView(binding.root)
+        setupInsets(binding.root)
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentListener, true)
 //        onBackPressedDispatcher.addCallback(onBackPressedCallback)
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        CoroutineScope(Dispatchers.IO).launch {
-            viewModel.login()
-        }
-    }
-
-    override fun onStop() {
-        viewModel.logout()
-        super.onStop()
     }
 
     override fun onDestroy() {

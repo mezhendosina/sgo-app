@@ -1,17 +1,17 @@
 /*
- * Copyright 2023 Eugene Menshenin
+ * Copyright 2024 Eugene Menshenin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package com.mezhendosina.sgo.app.model.answer
@@ -19,9 +19,9 @@ package com.mezhendosina.sgo.app.model.answer
 import android.content.Context
 import android.net.Uri
 import com.mezhendosina.sgo.app.utils.getFileNameFromUri
-import com.mezhendosina.sgo.data.netschool.api.attachments.AttachmentsSource
-import com.mezhendosina.sgo.data.netschool.api.attachments.entities.SendFileRequestEntity
-import com.mezhendosina.sgo.data.netschool.repo.LessonRepositoryInterface
+import com.mezhendosina.sgo.data.netschoolEsia.attachments.AttachmentsSource
+import com.mezhendosina.sgo.data.netschoolEsia.entities.attachments.SendFileRequestEntity
+import com.mezhendosina.sgo.data.netschoolEsia.lesson.LessonRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -29,14 +29,18 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
-class AnswerRepository @Inject constructor(
-    private val attachmentsSource: AttachmentsSource,
-    private val lessonRepository: LessonRepositoryInterface
-) {
-
-    suspend fun sendTextAnswer(assignId: Int, text: String, studentId: Int) {
-        attachmentsSource.sendTextAnswer(assignId, studentId, text)
-    }
+class AnswerRepository
+    @Inject
+    constructor(
+        private val attachmentsSource: AttachmentsSource,
+    ) {
+        suspend fun sendTextAnswer(
+            assignId: Int,
+            text: String,
+            studentId: Int,
+        ) {
+            attachmentsSource.sendTextAnswer(assignId, studentId, text)
+        }
 //
 //    suspend fun sendFiles(
 //        context: Context,
@@ -60,30 +64,33 @@ class AnswerRepository @Inject constructor(
 //    }
 //
 
-    private suspend fun sendFile(
-        context: Context,
-        assignmentID: Int,
-        filePath: Uri,
-        description: String?
-    ): Int? {
-        val contentResolver = context.contentResolver
-        val a = contentResolver.openInputStream(filePath)
+        private suspend fun sendFile(
+            context: Context,
+            assignmentID: Int,
+            filePath: Uri,
+            description: String?,
+        ): Int? {
+            val contentResolver = context.contentResolver
+            val a = contentResolver.openInputStream(filePath)
 
-        val body = a?.readBytes()?.toRequestBody("*/*".toMediaTypeOrNull())
-        val fileName = getFileNameFromUri(context, filePath)
-        val out = if (body != null) {
-            val part = MultipartBody.Part.createFormData("file", fileName, body)
-            attachmentsSource.sendFileAttachment(
-                part,
-                SendFileRequestEntity(
-                    true,
-                    assignmentID,
-                    description,
-                    fileName ?: ""
-                )
-            )
-        } else null
-        withContext(Dispatchers.IO) { a?.close() }
-        return out
+            val body = a?.readBytes()?.toRequestBody("*/*".toMediaTypeOrNull())
+            val fileName = getFileNameFromUri(context, filePath)
+            val out =
+                if (body != null) {
+                    val part = MultipartBody.Part.createFormData("file", fileName, body)
+                    attachmentsSource.sendFileAttachment(
+                        part,
+                        SendFileRequestEntity(
+                            true,
+                            assignmentID,
+                            description,
+                            fileName ?: "",
+                        ),
+                    )
+                } else {
+                    null
+                }
+            withContext(Dispatchers.IO) { a?.close() }
+            return out
+        }
     }
-}

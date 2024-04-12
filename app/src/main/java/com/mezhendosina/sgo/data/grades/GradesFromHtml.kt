@@ -1,30 +1,28 @@
 /*
- * Copyright 2023 Eugene Menshenin
+ * Copyright 2024 Eugene Menshenin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package com.mezhendosina.sgo.data.grades
 
-import com.mezhendosina.sgo.app.utils.getEmojiLesson
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.GradesItem
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.gradeOptions.GradeOptions
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.gradeOptions.InputTag
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.gradeOptions.SelectTag
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.GradesItem
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.gradeOptions.GradeOptions
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.gradeOptions.InputTag
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.gradeOptions.SelectTag
 import org.jsoup.Jsoup
 
 class GradesFromHtml {
-
     private lateinit var reportType: List<SelectTag>
     private lateinit var PCLID: InputTag
     private lateinit var sid: InputTag
@@ -73,9 +71,10 @@ class GradesFromHtml {
 
         val getTableTag = jsoup.getElementsByClass("table-print").first()
 
-        val trTags = getTableTag?.getElementsByTag("tr")
-            ?.drop(2)
-            ?.dropLast(1)
+        val trTags =
+            getTableTag?.getElementsByTag("tr")
+                ?.drop(2)
+                ?.dropLast(1)
         trTags?.forEach { trTag ->
             val tdTags = trTag.getElementsByTag("td")
 
@@ -95,8 +94,8 @@ class GradesFromHtml {
                     threeGrade,
                     twoGrade,
                     null,
-                    avg
-                )
+                    avg,
+                ),
             )
         }
         return grades

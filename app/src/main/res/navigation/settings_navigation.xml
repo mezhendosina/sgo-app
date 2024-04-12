@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright 2023 Eugene Menshenin
+  ~ Copyright 2024 Eugene Menshenin
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
   ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~      http://www.apache.org/licenses/LICENSE-2.0
   ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
   -->
 
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
@@ -20,62 +20,19 @@
     android:id="@+id/settings_navigation"
     app:startDestination="@id/settingsFragment">
     <fragment
-        android:id="@+id/changePasswordFragment"
-        android:name="com.mezhendosina.sgo.app.ui.settingsFlow.changePassword.ChangePasswordFragment"
-        android:label="@string/change_password"
-        tools:layout="@layout/fragment_change_password" />
-    <fragment
-        android:id="@+id/changeControlQuestionFragment"
-        android:name="com.mezhendosina.sgo.app.ui.settingsFlow.changeControlQuestion.ChangeControlQuestionFragment"
-        android:label="@string/change_control_question"
-        tools:layout="@layout/fragment_change_control_question">
-        <action
-            android:id="@+id/action_changeControlQuestionFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/settingsFragment"
         android:name="com.mezhendosina.sgo.app.ui.settingsFlow.SettingsFragment"
         android:label="@string/settings">
-        <action
-            android:id="@+id/action_settingsFragment4_to_changePasswordFragment"
-            app:destination="@id/changePasswordFragment" />
-        <action
-            android:id="@+id/action_settingsFragment4_to_changeControlQuestionFragment"
-            app:destination="@id/changeControlQuestionFragment" />
         <action
             android:id="@+id/action_settingsFragment_pop3"
             app:popUpTo="@id/settingsFragment"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_settingsFragment_to_changeEmailFragment"
-            app:destination="@id/changeEmailFragment" />
-        <action
-            android:id="@+id/action_settingsFragment_to_changePhoneFragment"
-            app:destination="@id/changePhoneFragment" />
-        <action
             android:id="@+id/action_settingsFragment_to_aboutAppFragment"
             app:destination="@id/aboutAppFragment" />
         <action
-            android:id="@+id/action_settingsFragment_to_changeDiaryStyleFragment"
-            app:destination="@id/changeDiaryStyleFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/changeEmailFragment"
-        android:name="com.mezhendosina.sgo.app.ui.settingsFlow.changeEmail.ChangeEmailFragment"
-        android:label="@string/change_email">
-        <action
-            android:id="@+id/action_changeEmailFragment_to_settingsFragment2"
-            app:destination="@id/settingsFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/changePhoneFragment"
-        android:name="com.mezhendosina.sgo.app.ui.settingsFlow.changePhone.ChangePhoneFragment"
-        android:label="@string/change_phone_number"
-        tools:layout="@layout/fragment_change_phone_number">
-        <action
-            android:id="@+id/action_changePhoneFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
+            android:id="@+id/action_settingsFragment_to_themeFragment"
+            app:destination="@id/themeFragment" />
     </fragment>
     <fragment
         android:id="@+id/aboutAppFragment"
@@ -83,7 +40,7 @@
         android:label="@string/about_app"
         tools:layout="@layout/fragment_about_app" />
     <fragment
-        android:id="@+id/changeDiaryStyleFragment"
+        android:id="@+id/themeFragment"
         android:name="com.mezhendosina.sgo.app.ui.settingsFlow.changeTheme.ChangeThemeFragment"
         android:label="@string/selected_theme" />
 </navigation>

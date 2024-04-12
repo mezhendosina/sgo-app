@@ -1,17 +1,17 @@
 /*
- * Copyright 2023 Eugene Menshenin
+ * Copyright 2024 Eugene Menshenin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package com.mezhendosina.sgo.app.ui.journalFlow.journalItem.adapters
@@ -22,18 +22,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.mezhendosina.sgo.app.databinding.ItemPastMandatoryBinding
 import com.mezhendosina.sgo.data.DateManipulation
-import com.mezhendosina.sgo.data.netschool.api.diary.entities.PastMandatoryEntity
-import dagger.Module
+import com.mezhendosina.sgo.data.netschoolEsia.entities.diary.PastMandatoryEntity
 import javax.inject.Singleton
 
 typealias PastMandatoryClickListener = (PastMandatoryEntity) -> Unit
 
 @Singleton
 class PastMandatoryAdapter(
-    private val pastMandatoryClickListener: PastMandatoryClickListener
+    private val pastMandatoryClickListener: PastMandatoryClickListener,
 ) : RecyclerView.Adapter<PastMandatoryAdapter.PastMandatoryViewHolder>(),
     View.OnClickListener {
-
     var items: List<PastMandatoryEntity> = emptyList()
         set(value) {
             field = value
@@ -49,7 +47,10 @@ class PastMandatoryAdapter(
         pastMandatoryClickListener.invoke(pastMandatoryItem)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PastMandatoryViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): PastMandatoryViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemPastMandatoryBinding.inflate(inflater, parent, false)
 
@@ -58,7 +59,10 @@ class PastMandatoryAdapter(
         return PastMandatoryViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: PastMandatoryViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: PastMandatoryViewHolder,
+        position: Int,
+    ) {
         val item = items[position]
         holder.itemView.tag = item
         with(holder.binding) {

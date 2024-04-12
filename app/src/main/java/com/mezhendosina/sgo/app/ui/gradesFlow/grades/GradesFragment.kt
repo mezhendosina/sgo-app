@@ -32,7 +32,7 @@ import com.mezhendosina.sgo.app.R
 import com.mezhendosina.sgo.app.databinding.FragmentGradesBinding
 import com.mezhendosina.sgo.app.utils.LoadStates
 import com.mezhendosina.sgo.app.utils.findTopNavController
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.GradesItem
+import com.mezhendosina.sgo.data.netschoolEsia.entities.grades.GradesItem
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -47,20 +47,20 @@ class GradesFragment : Fragment(R.layout.fragment_grades) {
 
 
     private val gradeAdapter = GradeAdapter(object : OnGradeClickListener {
-        override fun invoke(p1: GradesItem, p2: View) {
-            val a = viewModel.grades.value?.indexOf(p1)
-
-            val navigationExtras = FragmentNavigatorExtras(
-                p2 to getString(R.string.grade_item_details_transition_name)
-            )
-
-            findTopNavController().navigate(
-                R.id.action_containerFragment_to_gradeItemFragment,
-                bundleOf("LESSON_INDEX" to a),
-                null,
-                navigationExtras
-            )
-            Singleton.gradesRecyclerViewLoaded.value = false
+        override fun invoke(p1: Int, p2: View) {
+//            val a = viewModel.grades.value?.indexOf(p1)
+//
+//            val navigationExtras = FragmentNavigatorExtras(
+//                p2 to getString(R.string.grade_item_details_transition_name)
+//            )
+//
+//            findTopNavController().navigate(
+//                R.id.action_containerFragment_to_gradeItemFragment,
+//                bundleOf("LESSON_INDEX" to a),
+//                null,
+//                navigationExtras
+//            )
+//            Singleton.gradesRecyclerViewLoaded.value = false
         }
     })
 

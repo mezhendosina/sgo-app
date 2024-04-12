@@ -1,17 +1,17 @@
 /*
- * Copyright 2023 Eugene Menshenin
+ * Copyright 2024 Eugene Menshenin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package com.mezhendosina.sgo.app.ui.main.container
@@ -21,6 +21,7 @@ import android.transition.TransitionManager
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
@@ -28,15 +29,17 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialFadeThrough
 import com.google.android.material.transition.platform.MaterialSharedAxis
-import com.google.firebase.analytics.FirebaseAnalytics
+// import com.google.firebase.analytics.FirebaseAnalytics
 import com.mezhendosina.sgo.Singleton
 import com.mezhendosina.sgo.app.BuildConfig
+import com.mezhendosina.sgo.app.GRADE_ID
 import com.mezhendosina.sgo.app.R
 import com.mezhendosina.sgo.app.databinding.ContainerMainBinding
 import com.mezhendosina.sgo.app.databinding.FragmentGradesBinding
@@ -54,7 +57,6 @@ import com.mezhendosina.sgo.app.utils.slideDownAnimation
 import com.mezhendosina.sgo.app.utils.slideUpAnimation
 import com.mezhendosina.sgo.data.SettingsDataStore
 import com.mezhendosina.sgo.data.currentWeekStart
-import com.mezhendosina.sgo.data.netschool.api.grades.entities.GradesItem
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -97,6 +99,7 @@ class ContainerFragment :
         sharedElementEnterTransition = MaterialContainerTransform()
         sharedElementReturnTransition = MaterialContainerTransform()
         setupGrades()
+        Singleton.updateGradeState.value = LoadStates.UPDATE
         CoroutineScope(Dispatchers.IO).launch {
             containerViewModel.checkUpdates()
             containerViewModel.loadWeeks()
@@ -138,7 +141,6 @@ class ContainerFragment :
             startPostponedEnterTransition()
             Singleton.gradesRecyclerViewLoaded.value = true
         }
-        observeDiaryStyle()
         observeUserId()
         observeWeeks(journalPagerAdapter)
 
@@ -200,15 +202,6 @@ class ContainerFragment :
         }
     }
 
-    private fun observeDiaryStyle() {
-        val firebaseAnalytics = FirebaseAnalytics.getInstance(requireContext())
-        CoroutineScope(Dispatchers.Main).launch {
-            settingsDataStore.getValue(SettingsDataStore.DIARY_STYLE).collect {
-                firebaseAnalytics.setUserProperty("diary_style", it)
-            }
-        }
-    }
-
     override fun onBottomNavItemClickListener(menuItem: MenuItem): Boolean {
         return when (menuItem.itemId) {
             R.id.journalFragment -> {
@@ -238,12 +231,11 @@ class ContainerFragment :
 
                     GRADES -> {
                         it.mainToolbar.setTitle(R.string.grades)
-                        Singleton.updateGradeState.value = LoadStates.UPDATE
+//                        Singleton.updateGradeState.value = LoadStates.UPDATE
                         it.slideUpAnimation()
                         it.journal.visibility = View.GONE
                         it.grades.root.visibility = View.VISIBLE
                         CoroutineScope(Dispatchers.IO).launch {
-                            gradesFilterViewModel.getYearsList()
                             gradesFilterViewModel.getGradeSort()
                         }
                     }
@@ -318,13 +310,12 @@ class ContainerFragment :
     }
 
     override fun observeGradesTrim() {
-        Singleton.gradesTerms.observe(viewLifecycleOwner) { gradeOptions ->
+        gradesFilterViewModel.trim.observe(viewLifecycleOwner) { gradeOptions ->
             binding?.let { containerMainBinding ->
                 if (gradeOptions != null) {
                     containerMainBinding.gradesTopBar.term.visibility = View.VISIBLE
                     CoroutineScope(Dispatchers.Main).launch {
-                        val trimId =
-                            settingsDataStore.getValue(SettingsDataStore.TRIM_ID).first()
+                        val trimId = gradesFilterViewModel.currentTrimID.value
                         containerMainBinding.gradesTopBar.term.text =
                             gradeOptions.firstOrNull { it.id == trimId }?.name
                     }
@@ -337,11 +328,11 @@ class ContainerFragment :
 
     override fun onGradesTrimClickListener() {
         binding?.gradesTopBar?.term?.setOnClickListener {
-            if (Singleton.gradesTerms.value != null) {
+            gradesFilterViewModel.trim.value?.let { filterUiEntityList ->
                 val filterBottomSheet =
                     FilterBottomSheet(
                         requireContext().getString(R.string.selected_grade_period),
-                        Singleton.gradesTerms.value!!,
+                        filterUiEntityList,
                     ) {
                         gradesFilterViewModel.changeTrimId(it)
                     }
@@ -351,34 +342,31 @@ class ContainerFragment :
                     "trim_selector_bottom_sheet",
                 )
             }
+
         }
     }
 
-    override fun observeGradesYear() {
-        gradesFilterViewModel.yearList.observe(viewLifecycleOwner) { yearList ->
 
+    override fun observeGradesYear() {
+        gradesFilterViewModel.currentYearId.observe(viewLifecycleOwner) { yearId ->
             binding?.let { containerMainBinding ->
-                val checkedItem = yearList.find { it.checked }
-                if (!yearList.isNullOrEmpty() && checkedItem != null) {
-                    containerMainBinding.gradesTopBar.year.visibility = View.VISIBLE
-                    containerMainBinding.gradesTopBar.year.isChecked =
-                        checkedItem.id != gradesFilterViewModel.currentYearId.value
-                    containerMainBinding.gradesTopBar.year.text = checkedItem.name
-                } else {
-                    containerMainBinding.gradesTopBar.year.visibility = View.GONE
-                }
+                val checkedItem =
+                    gradesFilterViewModel.years.value?.find { it.id == yearId } ?: return@observe
+                containerMainBinding.gradesTopBar.year.visibility = View.VISIBLE
+                containerMainBinding.gradesTopBar.year.text = checkedItem.name
             }
         }
     }
 
     override fun onGradesYearClickListener() {
         binding?.gradesTopBar?.year?.setOnClickListener {
-            val items = gradesFilterViewModel.yearList.value!!
+            val items = gradesFilterViewModel.years.value!!
             val filterBottomSheet =
                 FilterBottomSheet(
                     requireContext().getString(R.string.year_grade_header),
                     items,
                 ) {
+                    Singleton.updateGradeState.value = LoadStates.UPDATE
                     CoroutineScope(Dispatchers.IO).launch {
                         gradesFilterViewModel.updateYear(it)
                     }
@@ -451,19 +439,15 @@ class ContainerFragment :
         if (gradesViewModel.gradeAdapter == null) {
             gradesViewModel.setAdapter(
                 object : OnGradeClickListener {
-                    override fun invoke(
-                        p1: GradesItem,
-                        p2: View,
-                    ) {
+                    override fun invoke(p1: Int, p2: View) {
                         val navigationExtras =
                             FragmentNavigatorExtras(
-                                p2 to getString(R.string.grade_item_details_transition_name),
+                                p2 to p1.toString(),
                             )
-                        gradesViewModel.setLesson(p1)
 
                         findTopNavController().navigate(
                             R.id.action_containerFragment_to_gradeItemFragment,
-                            null,
+                            bundleOf(GRADE_ID to p1),
                             null,
                             navigationExtras,
                         )
@@ -549,21 +533,21 @@ class ContainerFragment :
 
     override fun FragmentGradesBinding.showEmptyState() {
         emptyState.root.visibility = View.VISIBLE
-        gradesRecyclerView.visibility = View.INVISIBLE
+//        gradesRecyclerView.visibility = View.INVISIBLE
         loading.root.visibility = View.INVISIBLE
         errorMessage.root.visibility = View.INVISIBLE
     }
 
     override fun FragmentGradesBinding.showLoading() {
         loading.root.visibility = View.VISIBLE
-        gradesRecyclerView.visibility = View.INVISIBLE
+//        gradesRecyclerView.visibility = View.INVISIBLE
         emptyState.root.visibility = View.GONE
         errorMessage.root.visibility = View.GONE
     }
 
     override fun FragmentGradesBinding.showError() {
         errorMessage.root.visibility = View.VISIBLE
-        gradesRecyclerView.visibility = View.INVISIBLE
+//        gradesRecyclerView.visibility = View.INVISIBLE
         emptyState.root.visibility = View.GONE
         loading.root.visibility = View.GONE
     }
