@@ -21,6 +21,7 @@ import com.mezhendosina.sgo.app.model.journal.entities.DiaryUiEntity
 import com.mezhendosina.sgo.app.model.journal.entities.LessonUiEntity
 import com.mezhendosina.sgo.app.model.journal.entities.WeekDayUiEntity
 import com.mezhendosina.sgo.data.AppSettings
+import com.mezhendosina.sgo.data.calendar.CalendarRepository
 import com.mezhendosina.sgo.data.dateToRussian
 import com.mezhendosina.sgo.data.dateToTime
 import com.mezhendosina.sgo.data.netschoolEsia.entities.announcements.AttachmentEntity
@@ -35,6 +36,7 @@ class DiaryRepositoryImpl
 constructor(
     val appSettings: AppSettings,
     val diarySource: DiarySource,
+    val calendarRepository: CalendarRepository,
     @ApplicationContext val context: Context
 ) : DiaryRepository {
 
@@ -55,11 +57,11 @@ constructor(
                     null,
                     classmeeting.classmeetingId,
                     classmeeting.day,
-                    dateToTime(classmeeting.endTime),
+                    calendarRepository.dateToTime(classmeeting.endTime),
                     false,
                     classmeeting.order,
                     classmeeting.scheduleTimeRelay,
-                    dateToTime(classmeeting.startTime),
+                    calendarRepository.dateToTime(classmeeting.startTime),
                     classmeeting.subjectName
                 )
             )

@@ -46,10 +46,9 @@ class CalendarRepositoryImpl @Inject constructor() : CalendarRepository {
         return afterStart && beforeEnd
     }
 
-    @SuppressLint("SimpleDateFormat")
     override fun dateToTime(date: String): String {
         val parse = baseDateFormat.parse(date)
-        return SimpleDateFormat("hh:mm").format(parse!!)
+        return SimpleDateFormat("HH:mm", locale).format(parse!!)
     }
 
     override fun getWeeksList(): List<WeekStartEndEntity> {
