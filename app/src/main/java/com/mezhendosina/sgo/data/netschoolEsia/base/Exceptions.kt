@@ -41,13 +41,12 @@ class ParseBackendResponseException(
 ) : AppException(cause = cause)
 
 fun Exception.toDescription(): String {
-    return this.stackTraceToString()
-//    return when (this) {
-//        is BackendException -> this.message.toString()
-//        is ConnectionException -> "Нет подключения к интернету"
-//        is ParseBackendResponseException -> "Сервер отправил непонятный ответ"
-//        is TimeOutError -> "Превышено время ожидания ответа от сервера"
-//        is ActivityNotFoundException -> "Похоже, что на устройстве не установлено приложение для открытия этого файла"
-//        else -> "Что-то пошло не так"
-//    }
+    return when (this) {
+        is BackendException -> this.message.toString()
+        is ConnectionException -> "Нет подключения к интернету"
+        is ParseBackendResponseException -> "Сервер отправил непонятный ответ"
+        is TimeOutError -> "Превышено время ожидания ответа от сервера"
+        is ActivityNotFoundException -> "Похоже, что на устройстве не установлено приложение для открытия этого файла"
+        else -> "Что-то пошло не так"
+    }
 }

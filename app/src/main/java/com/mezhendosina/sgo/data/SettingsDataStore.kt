@@ -79,7 +79,10 @@ class SettingsDataStore
             }
         }
 
-        override suspend fun getStudentId(): Int = getValue(CURRENT_USER_ID).first() ?: throw StudentNotFoundException()
+        override suspend fun getStudentId(): Int =
+
+            getValue(CURRENT_USER_ID).first() ?: throw StudentNotFoundException()
+
 
         override suspend fun saveToken(
             token: String,

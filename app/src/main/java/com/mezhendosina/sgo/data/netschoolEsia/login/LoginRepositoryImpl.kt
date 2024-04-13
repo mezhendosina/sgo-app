@@ -18,6 +18,7 @@ package com.mezhendosina.sgo.data.netschoolEsia.login
 
 import android.content.Context
 import com.mezhendosina.sgo.data.SettingsDataStore
+import com.mezhendosina.sgo.data.netschoolEsia.NetSchoolSingleton
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -37,6 +38,7 @@ constructor(
             loginResponse.accessToken,
             loginResponse.refreshToken,
         )
+        NetSchoolSingleton.isLoggedIn(true)
     }
 
     override suspend fun login() {
@@ -48,6 +50,7 @@ constructor(
                 it.refreshToken
             )
         }
+        NetSchoolSingleton.isLoggedIn(true)
     }
 
 }

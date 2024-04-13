@@ -82,7 +82,7 @@ class ContainerRepository
         private val updateApi = retrofit.create(UpdateApi::class.java)
 
         suspend fun checkUpdates(): CheckUpdates {
-            return baseRetrofitSource.wrapRetrofitExceptions {
+            return baseRetrofitSource.wrapRetrofitExceptions(true) {
                 updateApi.getLatestUpdate()
             }
         }
@@ -91,7 +91,7 @@ class ContainerRepository
             url: String,
             file: File,
         ): Flow<Download> =
-            baseRetrofitSource.wrapRetrofitExceptions {
+            baseRetrofitSource.wrapRetrofitExceptions(true) {
                 updateApi.downloadFile(url).downloadToFileWithProgress(file)
             }
 }

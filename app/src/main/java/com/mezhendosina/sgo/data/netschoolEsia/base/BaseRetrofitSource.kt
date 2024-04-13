@@ -17,9 +17,12 @@
 package com.mezhendosina.sgo.data.netschoolEsia.base
 
 import com.google.gson.JsonParseException
+import com.mezhendosina.sgo.data.netschoolEsia.NetSchoolSingleton
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import okio.IOException
 import retrofit2.HttpException
 import java.net.SocketTimeoutException
@@ -36,9 +39,16 @@ constructor(
 
 
     suspend fun <T> wrapRetrofitExceptions(
+        loggingRequest: Boolean = false,
         block: suspend () -> T,
     ): T {
         return try {
+            if (!loggingRequest){
+                val loggedIn = NetSchoolSingleton.loggedIn
+                while (!loggedIn.first()) {
+                    delay(1)
+                }
+            }
             block()
         } catch (e: JsonParseException) {
             throw ParseBackendResponseException(e)
