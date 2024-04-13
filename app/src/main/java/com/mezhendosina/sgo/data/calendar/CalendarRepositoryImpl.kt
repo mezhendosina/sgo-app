@@ -26,9 +26,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class CalendarRepositoryImpl @Inject constructor(
-
-) : CalendarRepository {
+class CalendarRepositoryImpl @Inject constructor() : CalendarRepository {
     private val locale = Locale("ru", "RU")
     private val baseDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", locale)
 
@@ -48,9 +46,10 @@ class CalendarRepositoryImpl @Inject constructor(
         return afterStart && beforeEnd
     }
 
+    @SuppressLint("SimpleDateFormat")
     override fun dateToTime(date: String): String {
         val parse = baseDateFormat.parse(date)
-        return SimpleDateFormat("hh:mm", locale).format(parse!!)
+        return SimpleDateFormat("hh:mm").format(parse!!)
     }
 
     override fun getWeeksList(): List<WeekStartEndEntity> {
