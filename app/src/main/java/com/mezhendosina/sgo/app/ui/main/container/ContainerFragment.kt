@@ -481,15 +481,6 @@ class ContainerFragment :
                             CoroutineScope(Dispatchers.IO).launch {
                                 gradesViewModel.load()
                             }
-                            TransitionManager.beginDelayedTransition(
-                                loading.root,
-                                fadeThrough,
-                            )
-                            TransitionManager.beginDelayedTransition(
-                                gradesRecyclerView,
-                                fadeThrough,
-                            )
-
                             loading.root.startShimmer()
                             showLoading()
                         }
@@ -511,9 +502,7 @@ class ContainerFragment :
                                 emptyState.emptyText.text = "Оценок нет"
                                 showEmptyState()
                             } else {
-                                gradesRecyclerView.doOnPreDraw {
-                                    showGrades()
-                                }
+                                showGrades()
                             }
                         }
 
@@ -533,21 +522,21 @@ class ContainerFragment :
 
     override fun FragmentGradesBinding.showEmptyState() {
         emptyState.root.visibility = View.VISIBLE
-//        gradesRecyclerView.visibility = View.INVISIBLE
+        gradesRecyclerView.visibility = View.INVISIBLE
         loading.root.visibility = View.INVISIBLE
         errorMessage.root.visibility = View.INVISIBLE
     }
 
     override fun FragmentGradesBinding.showLoading() {
         loading.root.visibility = View.VISIBLE
-//        gradesRecyclerView.visibility = View.INVISIBLE
+        gradesRecyclerView.visibility = View.INVISIBLE
         emptyState.root.visibility = View.GONE
         errorMessage.root.visibility = View.GONE
     }
 
     override fun FragmentGradesBinding.showError() {
         errorMessage.root.visibility = View.VISIBLE
-//        gradesRecyclerView.visibility = View.INVISIBLE
+        gradesRecyclerView.visibility = View.INVISIBLE
         emptyState.root.visibility = View.GONE
         loading.root.visibility = View.GONE
     }

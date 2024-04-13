@@ -157,7 +157,10 @@ class JournalItemFragment : Fragment(R.layout.fragment_item_journal) {
 
     private fun observeLoading() {
         if (binding != null) {
+
             viewModel.isLoading.observe(viewLifecycleOwner) {
+                val containerTransform = MaterialFadeThrough()
+                TransitionManager.beginDelayedTransition(binding!!.root, containerTransform)
                 when (it) {
                     null -> {
                         binding!!.loading.root.visibility = View.VISIBLE
@@ -170,8 +173,6 @@ class JournalItemFragment : Fragment(R.layout.fragment_item_journal) {
                     }
 
                     JournalLoadStates.BASE_LOADED -> {
-                        val containerTransform = MaterialFadeThrough()
-                        TransitionManager.beginDelayedTransition(binding!!.root, containerTransform)
                         binding!!.loading.root.stopShimmer()
                         binding!!.diary.doOnPreDraw {
                             binding!!.loading.root.visibility = View.GONE
