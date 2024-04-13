@@ -24,6 +24,7 @@ class Regions {
         const val AMUR_OBL = "Амурская область"
         const val KALUG_OBL = "Калужская область"
         const val KOSTROMS_OBL = "Костромская область"
+        const val KAMCH_KRAI = "Камчатский край"
         const val KRASNOD_KRAI = "Краснодарский край"
         const val LENINGRAD_OBL = "Ленинградская область"
         const val ZABAIKAL_KRAI = "Забайкальский край"
@@ -57,6 +58,12 @@ class Regions {
                 "      \"url\": \"https://region.obramur.ru/\",\n" +
                 "      \"emblem_url\": \"https://upload.wikimedia.org/wikipedia/commons/9/9f/Amurskaja_obl_coa_2008.png\"\n" +
                 "    },\n" +
+                "    {\n" +
+                "      \"name\": \"Камчатский край\",\n" +
+                "      \"url\": \"https://school.sgo41.ru/\",\n" +
+                "      \"emblem_url\":\"https://upload.wikimedia.org/wikipedia/commons/5/58/Coat_of_arms_of_Kaluga_Oblast.svg\"\n" +
+                "    },\n" +
+
                 "    {\n" +
                 "      \"name\": \"Калужская область\",\n" +
                 "      \"url\": \"https://edu.admoblkaluga.ru:444/\",\n" +
