@@ -99,11 +99,11 @@ class ContainerFragment :
         sharedElementEnterTransition = MaterialContainerTransform()
         sharedElementReturnTransition = MaterialContainerTransform()
         setupGrades()
-        Singleton.updateGradeState.value = LoadStates.UPDATE
         CoroutineScope(Dispatchers.IO).launch {
             containerViewModel.checkUpdates()
             containerViewModel.loadWeeks()
             containerViewModel.showUpdateDialog()
+            gradesViewModel.load()
         }
     }
 
@@ -126,7 +126,9 @@ class ContainerFragment :
                 gradesRecyclerView.adapter = gradesViewModel.gradeAdapter
 
                 errorMessage.retryButton.setOnClickListener {
-                    Singleton.updateGradeState.value = LoadStates.UPDATE
+                    CoroutineScope(Dispatchers.IO).launch {
+                        gradesViewModel.load()
+                    }
                 }
             }
 
@@ -366,9 +368,9 @@ class ContainerFragment :
                     requireContext().getString(R.string.year_grade_header),
                     items,
                 ) {
-                    Singleton.updateGradeState.value = LoadStates.UPDATE
                     CoroutineScope(Dispatchers.IO).launch {
                         gradesFilterViewModel.updateYear(it)
+                        gradesViewModel.load()
                     }
                 }
             filterBottomSheet.show(
@@ -473,14 +475,11 @@ class ContainerFragment :
     override fun observeGradesLoadState() {
         val fadeThrough = MaterialFadeThrough()
 
-        Singleton.updateGradeState.observe(viewLifecycleOwner) { loadState ->
+        gradesViewModel.states.observe(viewLifecycleOwner) { loadState ->
             binding?.let {
                 with(it.grades) {
                     when (loadState) {
                         LoadStates.UPDATE -> {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                gradesViewModel.load()
-                            }
                             loading.root.startShimmer()
                             showLoading()
                         }
