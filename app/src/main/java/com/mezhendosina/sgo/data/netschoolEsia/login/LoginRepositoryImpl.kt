@@ -18,6 +18,8 @@ package com.mezhendosina.sgo.data.netschoolEsia.login
 
 import android.content.Context
 import com.mezhendosina.sgo.data.SettingsDataStore
+import com.mezhendosina.sgo.data.calendar.CalendarRepository
+import com.mezhendosina.sgo.data.netschoolEsia.NetSchoolSingleton
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -29,25 +31,38 @@ class LoginRepositoryImpl
 constructor(
     val settingsDataStore: SettingsDataStore,
     val loginSource: LoginSource,
+    val calendarRepository: CalendarRepository,
     @ApplicationContext val context: Context
 ) : LoginRepository {
     override suspend fun login(deviceCode: Int) {
+        val now = calendarRepository.getNow()
         val loginResponse = loginSource.getToken(deviceCode)
         settingsDataStore.saveToken(
             loginResponse.accessToken,
             loginResponse.refreshToken,
+            now + loginResponse.expiresIn
+
         )
+        NetSchoolSingleton.isLoggedIn(true)
     }
 
     override suspend fun login() {
+        val timeToRefresh = settingsDataStore.getValue(SettingsDataStore.TIME_TO_REFRESH).first()
+        val now = calendarRepository.getNow()
+        if (timeToRefresh != null && timeToRefresh > now) {
+            NetSchoolSingleton.isLoggedIn(true)
+            return
+        }
         val token = settingsDataStore.getValue(SettingsDataStore.REFRESH_TOKEN)
+
         val newTokens = token.first()?.let { loginSource.getToken(it) }
         newTokens?.let {
             settingsDataStore.saveToken(
                 it.accessToken,
-                it.refreshToken
+                it.refreshToken,
+                now + newTokens.expiresIn
             )
         }
+        NetSchoolSingleton.isLoggedIn(true)
     }
-
 }

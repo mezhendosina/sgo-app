@@ -17,10 +17,24 @@
 package com.mezhendosina.sgo.data.netschoolEsia
 
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 object NetSchoolSingleton {
     val journalYearId = MutableLiveData<Int>()
 
-    val loggedIn = MutableStateFlow(false)
+    private val _loggedIn = MutableStateFlow(false)
+    val loggedIn: StateFlow<Boolean> = _loggedIn
+
+    suspend fun isLoggedIn(boolean: Boolean) {
+        _loggedIn.emit(boolean)
+    }
+
+    suspend fun <T> waitUntilLoggedIn(block: () -> T): T {
+        while (!loggedIn.value) {
+            delay(100)
+        }
+        return block.invoke()
+    }
 }

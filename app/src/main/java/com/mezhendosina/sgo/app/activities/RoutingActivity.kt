@@ -64,6 +64,7 @@ class RoutingActivity : AppCompatActivity() {
                 if (!settingsDataStore.getValue(SettingsDataStore.REFRESH_TOKEN).first()
                         .isNullOrEmpty()
                 ) {
+                    loginRepository.login()
                     Intent(this@RoutingActivity, MainActivity::class.java)
                 } else {
                     Intent(this@RoutingActivity, LoginActivity::class.java)

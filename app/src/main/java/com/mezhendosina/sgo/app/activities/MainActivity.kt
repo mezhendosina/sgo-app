@@ -81,7 +81,6 @@ class MainActivity : AppCompatActivity() {
                     errorDialog(this@MainActivity, it)
                 }
             }
-            viewModel.login()
         }
 
         binding = ContainerMainActivityBinding.inflate(layoutInflater)

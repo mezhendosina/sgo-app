@@ -32,7 +32,7 @@ class RetrofitLoginSource
         private val api = retrofitConfig.loginRetrofit.create(IdentityLoginApi::class.java)
 
         override suspend fun getToken(deviceCode: Int): GetTokenResponse =
-            wrapRetrofitExceptions {
+            wrapRetrofitExceptions(true) {
                 api.getToken(
                     grantType = "urn:ietf:params:oauth:grant-type:device_code",
                     deviceCode = deviceCode,
@@ -40,7 +40,7 @@ class RetrofitLoginSource
             }
 
     override suspend fun getToken(refreshToken: String): GetTokenResponse =
-            wrapRetrofitExceptions {
+            wrapRetrofitExceptions(true) {
                 api.getToken(
                     grantType = "refresh_token",
                     refreshToken = refreshToken,

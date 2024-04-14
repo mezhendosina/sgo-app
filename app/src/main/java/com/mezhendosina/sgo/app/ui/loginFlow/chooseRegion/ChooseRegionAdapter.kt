@@ -100,6 +100,7 @@ class ChooseRegionAdapter(
                 Regions.CHERNOG -> R.drawable.emblem_chern
                 Regions.CHUV_RESP -> R.drawable.emblme_chuvashsk
                 Regions.KALUG_OBL -> R.drawable.emblem_kaluga
+                Regions.KAMCH_KRAI -> R.drawable.emblem_kamch
                 Regions.KOSTROMS_OBL -> R.drawable.emblem_kostromsk
                 Regions.KRASNOD_KRAI -> R.drawable.emblem_krasnod
                 Regions.LENINGRAD_OBL -> R.drawable.emblem_leningradsk

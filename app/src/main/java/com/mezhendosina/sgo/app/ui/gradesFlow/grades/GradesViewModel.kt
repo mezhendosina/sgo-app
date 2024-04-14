@@ -39,6 +39,7 @@ class GradesViewModel @Inject constructor(
     private val gradesRepository: GradesRepository,
 ) : BaseViewModel() {
 
+
     private val _grades = MutableLiveData<List<GradesUiEntity>>()
     val grades: LiveData<List<GradesUiEntity>> = _grades
 
@@ -67,15 +68,18 @@ class GradesViewModel @Inject constructor(
 
     suspend fun load() {
         try {
+            withContext(Dispatchers.Main) {
+                _states.value = LoadStates.UPDATE
+            }
             gradesRepository.getGrades()
             withContext(Dispatchers.Main) {
-                Singleton.updateGradeState.value = LoadStates.FINISHED
+                _states.value = LoadStates.FINISHED
             }
         } catch (e: Exception) {
             withContext(Dispatchers.Main) {
                 Log.e(null, e.stackTraceToString())
                 _errorMessage.value = e.toDescription()
-                Singleton.updateGradeState.value = LoadStates.ERROR
+                _states.value = LoadStates.ERROR
             }
         }
     }

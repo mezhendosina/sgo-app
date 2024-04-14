@@ -24,4 +24,5 @@ open class BaseViewModel : ViewModel() {
     @Suppress("ktlint:standard:property-naming")
     protected val _states = MutableLiveData(LoadStates.UPDATE)
     val states: LiveData<LoadStates> = _states
+
 }

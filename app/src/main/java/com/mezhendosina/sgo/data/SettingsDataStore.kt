@@ -22,6 +22,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.mezhendosina.sgo.app.utils.StudentNotFoundException
@@ -51,6 +52,8 @@ class SettingsDataStore
 
             val REFRESH_TOKEN = stringPreferencesKey("netschool_refresh_token")
             val TOKEN = stringPreferencesKey("netschool_token")
+            val TIME_TO_REFRESH = longPreferencesKey("time_to_refresh")
+            val LAST_REFRESH = longPreferencesKey("last_refresh")
 
             val CURRENT_USER_ID = intPreferencesKey("current_user_id")
 
@@ -79,15 +82,20 @@ class SettingsDataStore
             }
         }
 
-        override suspend fun getStudentId(): Int = getValue(CURRENT_USER_ID).first() ?: throw StudentNotFoundException()
+        override suspend fun getStudentId(): Int =
+
+            getValue(CURRENT_USER_ID).first() ?: throw StudentNotFoundException()
+
 
         override suspend fun saveToken(
             token: String,
             refreshToken: String,
+            timeToRefresh: Long
         ) {
             context.dataStore.edit { prefs ->
                 prefs[TOKEN] = token
                 prefs[REFRESH_TOKEN] = refreshToken
+                prefs[TIME_TO_REFRESH] = timeToRefresh
             }
         }
 

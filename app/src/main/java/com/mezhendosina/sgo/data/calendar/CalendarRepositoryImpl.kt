@@ -16,7 +16,6 @@
 
 package com.mezhendosina.sgo.data.calendar
 
-import android.annotation.SuppressLint
 import com.mezhendosina.sgo.data.WeekStartEndEntity
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -26,11 +25,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class CalendarRepositoryImpl @Inject constructor(
-
-) : CalendarRepository {
+class CalendarRepositoryImpl @Inject constructor() : CalendarRepository {
     private val locale = Locale("ru", "RU")
     private val baseDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", locale)
+    override fun getNow(): Long {
+        return Calendar.getInstance().time.time
+    }
 
     override fun dateToRussianWithTime(date: String): String = date.toDate("dd.MM.yyyy hh:mm")
     override fun dateFormat(date: String): String = date.toDate("dd.MM.yyyy")
@@ -50,7 +50,7 @@ class CalendarRepositoryImpl @Inject constructor(
 
     override fun dateToTime(date: String): String {
         val parse = baseDateFormat.parse(date)
-        return SimpleDateFormat("hh:mm", locale).format(parse!!)
+        return SimpleDateFormat("HH:mm", locale).format(parse!!)
     }
 
     override fun getWeeksList(): List<WeekStartEndEntity> {

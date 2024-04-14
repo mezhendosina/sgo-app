@@ -29,7 +29,7 @@ import com.mezhendosina.sgo.app.databinding.FragmentChooseRegionBinding
 import com.mezhendosina.sgo.app.ui.loginFlow.setOnInsetChanges
 import com.mezhendosina.sgo.app.ui.loginFlow.welcome.WelcomeFragment
 import dagger.hilt.android.AndroidEntryPoint
-
+import com.mezhendosina.sgo.app.ui.loginFlow.chooseRegion.ChooseRegionAdapter
 @AndroidEntryPoint
 class ChooseRegionFragment : Fragment(R.layout.fragment_choose_region) {
 

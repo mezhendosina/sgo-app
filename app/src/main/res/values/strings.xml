@@ -178,7 +178,7 @@
     <string name="empty">Не заполнено</string>
     <string name="che_zadali">че задали?</string>
     <string name="share_app">Поделиться приложением</string>
-    <string name="special_thanks_body"><![CDATA[Даниилу Барменкову<br>Вячеславу Сумину<br>Марии Левчановой<br><a href=\"https://github.com/ArtemBay\">ArtemBay</a><a href=\"https://github.com/theentropyshard\">TheEntropyShard</a>]]></string>
+    <string name="special_thanks_body"><![CDATA[Даниилу Барменкову<br>Вячеславу Сумину<br>Марии Левчановой<br><a href=\"https://github.com/ArtemBay\">ArtemBay</a>\n<a href=\"https://github.com/theentropyshard\">TheEntropyShard</a>]]></string>
     <string name="now_not_avaliable">Пока недоступно, но скоро обязательно будет :)</string>
     <string name="monday">Понедельник день бездельник</string>
     <string name="tuesday">Вторник повторник</string>

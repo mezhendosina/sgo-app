@@ -99,11 +99,11 @@ class ContainerFragment :
         sharedElementEnterTransition = MaterialContainerTransform()
         sharedElementReturnTransition = MaterialContainerTransform()
         setupGrades()
-        Singleton.updateGradeState.value = LoadStates.UPDATE
         CoroutineScope(Dispatchers.IO).launch {
             containerViewModel.checkUpdates()
             containerViewModel.loadWeeks()
             containerViewModel.showUpdateDialog()
+            gradesViewModel.load()
         }
     }
 
@@ -126,7 +126,9 @@ class ContainerFragment :
                 gradesRecyclerView.adapter = gradesViewModel.gradeAdapter
 
                 errorMessage.retryButton.setOnClickListener {
-                    Singleton.updateGradeState.value = LoadStates.UPDATE
+                    CoroutineScope(Dispatchers.IO).launch {
+                        gradesViewModel.load()
+                    }
                 }
             }
 
@@ -366,9 +368,9 @@ class ContainerFragment :
                     requireContext().getString(R.string.year_grade_header),
                     items,
                 ) {
-                    Singleton.updateGradeState.value = LoadStates.UPDATE
                     CoroutineScope(Dispatchers.IO).launch {
                         gradesFilterViewModel.updateYear(it)
+                        gradesViewModel.load()
                     }
                 }
             filterBottomSheet.show(
@@ -473,23 +475,11 @@ class ContainerFragment :
     override fun observeGradesLoadState() {
         val fadeThrough = MaterialFadeThrough()
 
-        Singleton.updateGradeState.observe(viewLifecycleOwner) { loadState ->
+        gradesViewModel.states.observe(viewLifecycleOwner) { loadState ->
             binding?.let {
                 with(it.grades) {
                     when (loadState) {
                         LoadStates.UPDATE -> {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                gradesViewModel.load()
-                            }
-                            TransitionManager.beginDelayedTransition(
-                                loading.root,
-                                fadeThrough,
-                            )
-                            TransitionManager.beginDelayedTransition(
-                                gradesRecyclerView,
-                                fadeThrough,
-                            )
-
                             loading.root.startShimmer()
                             showLoading()
                         }
@@ -511,9 +501,7 @@ class ContainerFragment :
                                 emptyState.emptyText.text = "Оценок нет"
                                 showEmptyState()
                             } else {
-                                gradesRecyclerView.doOnPreDraw {
-                                    showGrades()
-                                }
+                                showGrades()
                             }
                         }
 
@@ -533,21 +521,21 @@ class ContainerFragment :
 
     override fun FragmentGradesBinding.showEmptyState() {
         emptyState.root.visibility = View.VISIBLE
-//        gradesRecyclerView.visibility = View.INVISIBLE
+        gradesRecyclerView.visibility = View.INVISIBLE
         loading.root.visibility = View.INVISIBLE
         errorMessage.root.visibility = View.INVISIBLE
     }
 
     override fun FragmentGradesBinding.showLoading() {
         loading.root.visibility = View.VISIBLE
-//        gradesRecyclerView.visibility = View.INVISIBLE
+        gradesRecyclerView.visibility = View.INVISIBLE
         emptyState.root.visibility = View.GONE
         errorMessage.root.visibility = View.GONE
     }
 
     override fun FragmentGradesBinding.showError() {
         errorMessage.root.visibility = View.VISIBLE
-//        gradesRecyclerView.visibility = View.INVISIBLE
+        gradesRecyclerView.visibility = View.INVISIBLE
         emptyState.root.visibility = View.GONE
         loading.root.visibility = View.GONE
     }

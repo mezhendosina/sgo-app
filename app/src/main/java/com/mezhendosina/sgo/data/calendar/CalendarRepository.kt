@@ -19,7 +19,7 @@ package com.mezhendosina.sgo.data.calendar
 import com.mezhendosina.sgo.data.WeekStartEndEntity
 
 interface CalendarRepository {
-
+    fun getNow(): Long
     fun dateToRussianWithTime(date: String): String
     fun dateFormat(date: String): String
     fun dateToRussian(date: String): String

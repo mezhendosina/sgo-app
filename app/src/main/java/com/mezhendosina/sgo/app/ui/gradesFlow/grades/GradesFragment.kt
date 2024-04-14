@@ -72,7 +72,9 @@ class GradesFragment : Fragment(R.layout.fragment_grades) {
         binding!!.gradesRecyclerView.adapter = gradeAdapter
 
         binding!!.errorMessage.retryButton.setOnClickListener {
-            Singleton.updateGradeState.value = LoadStates.UPDATE
+            CoroutineScope(Dispatchers.IO).launch {
+                viewModel.load()
+            }
         }
 
         observeGrades()
@@ -107,23 +109,15 @@ class GradesFragment : Fragment(R.layout.fragment_grades) {
     private fun observeGradeState() {
         val fadeThrough = MaterialFadeThrough()
 
-        Singleton.updateGradeState.observe(viewLifecycleOwner) {
+        viewModel.states.observe(viewLifecycleOwner) {
+            TransitionManager.beginDelayedTransition(
+                binding!!.root,
+                fadeThrough
+            )
             when (it) {
                 LoadStates.UPDATE -> {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        viewModel.load()
-                    }
+
                     if (binding != null) {
-                        TransitionManager.beginDelayedTransition(
-                            binding!!.loading.root,
-                            fadeThrough
-                        )
-                        TransitionManager.beginDelayedTransition(
-                            binding!!.gradesRecyclerView,
-                            fadeThrough
-                        )
-
-
                         binding!!.loading.root.startShimmer()
                         binding!!.showLoading()
                     }
