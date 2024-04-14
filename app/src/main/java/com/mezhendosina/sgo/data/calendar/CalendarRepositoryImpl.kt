@@ -16,7 +16,6 @@
 
 package com.mezhendosina.sgo.data.calendar
 
-import android.annotation.SuppressLint
 import com.mezhendosina.sgo.data.WeekStartEndEntity
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -29,6 +28,9 @@ import javax.inject.Singleton
 class CalendarRepositoryImpl @Inject constructor() : CalendarRepository {
     private val locale = Locale("ru", "RU")
     private val baseDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", locale)
+    override fun getNow(): Long {
+        return Calendar.getInstance().time.time
+    }
 
     override fun dateToRussianWithTime(date: String): String = date.toDate("dd.MM.yyyy hh:mm")
     override fun dateFormat(date: String): String = date.toDate("dd.MM.yyyy")

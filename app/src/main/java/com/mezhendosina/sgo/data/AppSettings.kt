@@ -32,6 +32,7 @@ interface AppSettings {
     suspend fun saveToken(
         token: String,
         refreshToken: String,
+        timeToRefresh: Long
     )
 
     suspend fun logout()
